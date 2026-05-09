@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Контакти — ICEVAULT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;700;900&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="scroll-progress" id="scrollProgress"></div>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-follower" id="cursorFollower"></div>
+  <div class="grain"></div>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <a href="index.html" class="nav-logo">ICEVAULT</a>
+    <div class="nav-links">
+      <a href="index.html#collection">Колекція</a>
+      <a href="index.html#brands">Бренди</a>
+      <a href="index.html#catalog">Каталог</a>
+      <a href="index.html#about">Про нас</a>
+      <a href="contacts.html" class="nav-active">Контакти</a>
+    </div>
+    <div class="nav-right">
+      <div class="nav-clock" id="navClock">--:--:--</div>
+      <button class="menu-btn" id="menuBtn" aria-label="Меню"><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-inner">
+      <a href="index.html#collection" class="mobile-link" data-close>Колекція</a>
+      <a href="index.html#brands" class="mobile-link" data-close>Бренди</a>
+      <a href="index.html#catalog" class="mobile-link" data-close>Каталог</a>
+      <a href="index.html#about" class="mobile-link" data-close>Про нас</a>
+      <a href="contacts.html" class="mobile-link">Контакти</a>
+    </div>
+    <div class="mobile-menu-footer"><span id="mobileDate">--.--.----</span></div>
+  </div>
+
+  <!-- Page Hero -->
+  <section class="page-hero">
+    <div class="page-hero-content">
+      <div class="page-hero-eyebrow fade-up">Зв'яжіться з нами</div>
+      <h1 class="page-hero-title clip-reveal">КОНТАКТИ</h1>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="contact-section">
+    <div class="contact-grid">
+
+      <!-- Info Column -->
+      <div class="contact-info">
+        <h2 class="contact-info-title clip-reveal">Ми завжди<br>на зв'язку</h2>
+
+        <div class="contact-items">
+          <div class="contact-item fade-up">
+            <span class="contact-icon">✦</span>
+            <div>
+              <div class="contact-item-label">Адреса</div>
+              <div class="contact-item-val">вул. Хокейна, 7<br>Київ, 01001</div>
+            </div>
+          </div>
+          <div class="contact-item fade-up" style="--delay:0.1s">
+            <span class="contact-icon">✦</span>
+            <div>
+              <div class="contact-item-label">Телефон</div>
+              <div class="contact-item-val">+38 (044) 000-00-00</div>
+            </div>
+          </div>
+          <div class="contact-item fade-up" style="--delay:0.2s">
+            <span class="contact-icon">✦</span>
+            <div>
+              <div class="contact-item-label">Email</div>
+              <div class="contact-item-val">info@icevault.ua</div>
+            </div>
+          </div>
+          <div class="contact-item fade-up" style="--delay:0.3s">
+            <span class="contact-icon">✦</span>
+            <div>
+              <div class="contact-item-label">Графік роботи</div>
+              <div class="contact-item-val">Пн–Пт: 10:00–20:00<br>Сб–Нд: 11:00–18:00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Map placeholder -->
+        <div class="map-placeholder fade-up" style="--delay:0.4s">
+          <div class="ph-label">
+            <span class="ph-tag">КАРТА</span>
+            <p>Google Maps або Leaflet.js карта<br>Центр Києва, маркер на адресі<br>iframe або JS виджет, 100%×280px</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Column -->
+      <div class="contact-form-col">
+        <h2 class="contact-form-title clip-reveal">Напишіть<br>нам</h2>
+        <div class="form-status" id="formStatus"></div>
+
+        <form class="contact-form" id="contactForm" novalidate>
+
+          <div class="form-group" id="fg-name">
+            <label class="form-label" for="cName">Ім'я *</label>
+            <input class="form-input" id="cName" type="text" placeholder="Ваше ім'я" autocomplete="given-name" />
+            <span class="form-error" id="err-name"></span>
+          </div>
+
+          <div class="form-group" id="fg-email">
+            <label class="form-label" for="cEmail">Email *</label>
+            <input class="form-input" id="cEmail" type="email" placeholder="your@email.com" autocomplete="email" />
+            <span class="form-error" id="err-email"></span>
+          </div>
+
+          <div class="form-group" id="fg-phone">
+            <label class="form-label" for="cPhone">Телефон</label>
+            <input class="form-input" id="cPhone" type="tel" placeholder="+38 (0XX) XXX-XX-XX" autocomplete="tel" />
+            <span class="form-error" id="err-phone"></span>
+          </div>
+
+          <div class="form-group" id="fg-subject">
+            <label class="form-label" for="cSubject">Тема *</label>
+            <select class="form-input form-select" id="cSubject">
+              <option value="">— Оберіть тему —</option>
+              <option value="order">Замовлення</option>
+              <option value="consult">Консультація</option>
+              <option value="return">Повернення</option>
+              <option value="other">Інше</option>
+            </select>
+            <span class="form-error" id="err-subject"></span>
+          </div>
+
+          <div class="form-group" id="fg-msg">
+            <label class="form-label" for="cMsg">Повідомлення *</label>
+            <textarea class="form-input form-textarea" id="cMsg" placeholder="Ваше повідомлення..." rows="5"></textarea>
+            <span class="form-error" id="err-msg"></span>
+          </div>
+
+          <div class="form-group form-check-group">
+            <label class="form-check-label">
+              <input type="checkbox" id="cAgree" />
+              <span class="check-box"></span>
+              Я погоджуюсь з <a href="#">умовами використання</a>
+            </label>
+            <span class="form-error" id="err-agree"></span>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-primary form-submit" id="submitBtn">
+              <span id="submitText">Надіслати</span>
+              <span id="submitSpinner" class="spinner" style="display:none;">⟳</span>
+            </button>
+            <button type="button" class="btn-outline form-reset" id="resetBtn">Очистити</button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq-section">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <h2 class="section-title clip-reveal">Часті питання</h2>
+    </div>
+    <div class="faq-list" id="faqList">
+      <div class="faq-item">
+        <button class="faq-q">Яка доставка по Україні?<span class="faq-arrow">↓</span></button>
+        <div class="faq-a">Безкоштовна доставка Новою поштою при замовленні від 5000 ₴. До 5000 ₴ — 150 ₴ незалежно від відділення.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Чи можна повернути товар?<span class="faq-arrow">↓</span></button>
+        <div class="faq-a">Так, протягом 14 днів з моменту отримання. Товар повинен бути у незношеному стані з оригінальною упаковкою.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Чи є гарантія на ковзани?<span class="faq-arrow">↓</span></button>
+        <div class="faq-a">Всі ковзани Bauer, CCM та Graf постачаються з офіційною гарантією виробника 12–24 місяці.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Чи можна підібрати розмір ковзанів онлайн?<span class="faq-arrow">↓</span></button>
+        <div class="faq-a">Так! Наші консультанти допоможуть підібрати точний розмір через чат або телефон. Для кожного бренду розміри відрізняються.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Developer Section -->
+  <section class="developer-section" id="developer">
+    <div class="dev-inner">
+      <div class="dev-badge">ПРО РОЗРОБНИКА</div>
+      <div class="dev-card">
+        <div class="dev-photo-wrap">
+          <img src="assets/me.jpg" alt="Сінєльніков Руслан" class="dev-photo" onerror="this.parentElement.innerHTML='<div class=\'dev-photo-ph\'><span>ФОТО<br>РОЗРОБНИКА</span></div>'" />
+        </div>
+        <div class="dev-info">
+          <div class="dev-info-row"><span class="dev-label">Виконавець</span><span class="dev-value">Сінєльніков Руслан</span></div>
+          <div class="dev-info-row"><span class="dev-label">Група</span><span class="dev-value">Б-122-22-1-ТП</span></div>
+          <div class="dev-info-row"><span class="dev-label">Рік</span><span class="dev-value" id="devYear">2025</span></div>
+          <div class="dev-info-row"><span class="dev-label">Технології</span><span class="dev-value dev-tech">HTML · CSS · JavaScript</span></div>
+          <div class="dev-info-row"><span class="dev-label">Браузер</span><span class="dev-value" id="devBrowser">—</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">ICEVAULT</div>
+        <p>Твій бонус на перший лід.</p>
+      </div>
+      <div class="footer-links-col">
+        <span class="footer-col-title">Каталог</span>
+        <a href="index.html#catalog">Ковзани</a>
+        <a href="index.html#catalog">Ключки</a>
+        <a href="index.html#catalog">Шоломи</a>
+      </div>
+      <div class="footer-links-col">
+        <span class="footer-col-title">Бренди</span>
+        <a href="index.html#brands">Bauer</a>
+        <a href="index.html#brands">CCM</a>
+        <a href="index.html#brands">Reebok</a>
+        <a href="index.html#brands">Graf</a>
+        <a href="index.html#brands">True Hockey</a>
+        <a href="index.html#brands">Warrior</a>
+      </div>
+      <div class="footer-links-col">
+        <span class="footer-col-title">Інформація</span>
+        <a href="contacts.html">Контакти</a>
+        <a href="#">Доставка</a>
+        <a href="#">FAQ</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="footerYear">2025</span> ICEVAULT. Всі права захищено.</span>
+      <div class="footer-session"><span>Час на сайті: <span id="sessionTimer">00:00</span></span></div>
+      <div class="footer-social">
+        <a href="#" aria-label="Instagram">IG</a>
+        <a href="#" aria-label="Telegram">TG</a>
+        <a href="#" aria-label="YouTube">YT</a>
+      </div>
+    </div>
+  </footer>
+
+  <button class="back-top" id="backTop" aria-label="Вгору">↑</button>
+  <script src="script.js"></script>
+</body>
+</html>

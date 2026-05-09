@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ICEVAULT — Преміум Хокейне Екіпірування</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;700;900&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Scroll progress bar -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- Custom Cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-follower" id="cursorFollower"></div>
+
+  <!-- Grain Overlay -->
+  <div class="grain"></div>
+
+  <!-- ─── NAV ─── -->
+  <nav class="nav" id="nav">
+    <a href="index.html" class="nav-logo">ICEVAULT</a>
+    <div class="nav-links">
+      <a href="#collection">Колекція</a>
+      <a href="#brands">Бренди</a>
+      <a href="#catalog">Каталог</a>
+      <a href="#about">Про нас</a>
+      <a href="contacts.html">Контакти</a>
+    </div>
+    <div class="nav-right">
+      <!-- Live Clock -->
+      <div class="nav-clock" id="navClock">--:--:--</div>
+      <button class="cart-btn" id="cartBtn" aria-label="Кошик">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+      <button class="menu-btn" id="menuBtn" aria-label="Меню">
+        <span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-inner">
+      <a href="#collection" class="mobile-link" data-close>Колекція</a>
+      <a href="#brands" class="mobile-link" data-close>Бренди</a>
+      <a href="#catalog" class="mobile-link" data-close>Каталог</a>
+      <a href="#about" class="mobile-link" data-close>Про нас</a>
+      <a href="contacts.html" class="mobile-link">Контакти</a>
+    </div>
+    <div class="mobile-menu-footer">
+      <span id="mobileDate">--.--.----</span>
+    </div>
+  </div>
+
+  <!-- Cart Drawer -->
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h3 class="cart-title">Кошик</h3>
+      <button class="cart-close" id="cartClose">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <div class="cart-empty">Кошик порожній</div>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total-row">
+        <span>Разом:</span>
+        <span class="cart-total" id="cartTotal">0 ₴</span>
+      </div>
+      <button class="btn-primary cart-checkout" onclick="alert('Дякуємо за замовлення! Ми зв\'яжемось з вами найближчим часом.')">Оформити замовлення</button>
+    </div>
+  </div>
+
+  <!-- ─── HERO ─── -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <div class="img-placeholder hero-img-ph">
+        <div class="ph-label">
+          <span class="ph-tag">HERO ФОТО</span>
+          <p>Хокеїст у повній преміум-екіпіровці на льоду<br>Bauer Supreme / CCM Ribcor Pro<br>Темне кінематографічне освітлення, пара від дихання<br>Горизонтальне, 1920×1080+, blur edges</p>
+        </div>
+      </div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-eyebrow split-chars" data-text="Преміум Колекція 2024">Преміум Колекція 2024</div>
+      <h1 class="hero-title">
+        <span class="hero-line clip-reveal">ГРАЙ</span>
+        <span class="hero-line clip-reveal" style="--delay:0.12s">НА</span>
+        <span class="hero-line clip-reveal accent-line" style="--delay:0.24s">МЕЖІ</span>
+      </h1>
+      <div class="hero-sub fade-up" style="--delay:0.5s">
+        <p>Тільки преміум-сегмент.<br>Тільки топ-бренди світу.</p>
+        <a href="#collection" class="btn-primary">Дивитись колекцію</a>
+      </div>
+    </div>
+    <!-- Live date block on hero -->
+    <div class="hero-date-block">
+      <span id="heroDate">-- / -- / ----</span>
+      <span id="heroTime" class="hero-time-live">--:--:--</span>
+    </div>
+    <div class="hero-scroll-hint">
+      <span>Скролити</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ─── MARQUEE ─── -->
+  <div class="marquee-wrap">
+    <div class="marquee-track" id="marqueeTrack">
+      <span>BAUER</span><span class="dot">·</span>
+      <span>CCM</span><span class="dot">·</span>
+      <span>REEBOK</span><span class="dot">·</span>
+      <span>GRAF</span><span class="dot">·</span>
+      <span>TRUE HOCKEY</span><span class="dot">·</span>
+      <span>SHER-WOOD</span><span class="dot">·</span>
+      <span>WARRIOR</span><span class="dot">·</span>
+      <span>BAUER</span><span class="dot">·</span>
+      <span>CCM</span><span class="dot">·</span>
+      <span>REEBOK</span><span class="dot">·</span>
+      <span>GRAF</span><span class="dot">·</span>
+      <span>TRUE HOCKEY</span><span class="dot">·</span>
+      <span>SHER-WOOD</span><span class="dot">·</span>
+      <span>WARRIOR</span><span class="dot">·</span>
+    </div>
+  </div>
+
+  <!-- ─── FEATURED COLLECTION ─── -->
+  <section class="collection" id="collection">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <h2 class="section-title clip-reveal">Топ колекція</h2>
+      <p class="section-desc fade-up">Відібрано для гравців, які не йдуть на компроміс</p>
+    </div>
+    <div class="collection-grid">
+      <div class="col-item col-item--large hover-tilt">
+        <div class="col-item-img">
+          <div class="img-placeholder">
+            <div class="ph-label">
+              <span class="ph-tag">ФОТО</span>
+              <p>Bauer Supreme Mach Skates<br>Чорно-золоті, студійне фото<br>Кут 45°, підсвітка леза</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-item-info">
+          <span class="item-brand">Bauer</span>
+          <h3 class="item-name">Supreme Mach Skates</h3>
+          <div class="item-bottom">
+            <span class="item-price">38 500 ₴</span>
+            <button class="btn-add" data-id="bauer-mach" data-name="Bauer Supreme Mach Skates" data-price="38500">+ Додати</button>
+          </div>
+        </div>
+        <div class="item-badge">TOP PRO</div>
+      </div>
+      <div class="col-item hover-tilt">
+        <div class="col-item-img">
+          <div class="img-placeholder">
+            <div class="ph-label">
+              <span class="ph-tag">ФОТО</span>
+              <p>True Hockey Catalyst 9X<br>Темний фон, срібне лезо<br>Динамічний кут</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-item-info">
+          <span class="item-brand">True Hockey</span>
+          <h3 class="item-name">Catalyst 9X Skates</h3>
+          <div class="item-bottom">
+            <span class="item-price">36 200 ₴</span>
+            <button class="btn-add" data-id="true-catalyst" data-name="True Catalyst 9X Skates" data-price="36200">+ Додати</button>
+          </div>
+        </div>
+        <div class="item-badge">NEW</div>
+      </div>
+      <div class="col-item hover-tilt">
+        <div class="col-item-img">
+          <div class="img-placeholder">
+            <div class="ph-label">
+              <span class="ph-tag">ФОТО</span>
+              <p>CCM Ribcor 100K Pro<br>Чорний з червоним, студіо<br>Пара ковзанів зверху</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-item-info">
+          <span class="item-brand">CCM</span>
+          <h3 class="item-name">Ribcor 100K Pro</h3>
+          <div class="item-bottom">
+            <span class="item-price">32 000 ₴</span>
+            <button class="btn-add" data-id="ccm-ribcor" data-name="CCM Ribcor 100K Pro" data-price="32000">+ Додати</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── BRANDS ─── -->
+  <section class="brands" id="brands">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <h2 class="section-title clip-reveal">Бренди</h2>
+    </div>
+
+    <div class="brand-block">
+      <div class="brand-text">
+        <div class="brand-tag fade-up">Заснований 1927</div>
+        <h3 class="brand-name clip-reveal">BAUER</h3>
+        <p class="brand-desc fade-up">Лідер хокейної індустрії. Технологія Curv Composite, Carbon Curv Shell — ковзани для тих, хто грає на рівні NHL.</p>
+        <a href="#catalog" class="btn-outline fade-up" data-filter-brand="Bauer">Товари Bauer</a>
+      </div>
+      <div class="brand-img-wrap">
+        <div class="img-placeholder brand-img-ph">
+          <div class="ph-label"><span class="ph-tag">BAUER ФОТО</span><p>Лінійка Supreme Mach + Vapor Hyperlite 2<br>Темний фон, золоті акценти, 1200×800</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="brand-block brand-block--reverse">
+      <div class="brand-text">
+        <div class="brand-tag fade-up">Заснований 1899</div>
+        <h3 class="brand-name clip-reveal">CCM</h3>
+        <p class="brand-desc fade-up">Понад 120 років досконалості. Ribcor 100K Pro та Jetspeed FT7 Pro — вибір зірок NHL.</p>
+        <a href="#catalog" class="btn-outline fade-up" data-filter-brand="CCM">Товари CCM</a>
+      </div>
+      <div class="brand-img-wrap">
+        <div class="img-placeholder brand-img-ph">
+          <div class="ph-label"><span class="ph-tag">CCM ФОТО</span><p>Ribcor 100K Pro + Jetspeed FT7<br>Синьо-червона палітра, студіо, 1200×800</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="brand-block">
+      <div class="brand-text">
+        <div class="brand-tag fade-up">Хокейна лінія</div>
+        <h3 class="brand-name clip-reveal">REEBOK</h3>
+        <p class="brand-desc fade-up">Класика жанру. Reebok Hockey 11K Pump — легендарні ковзани з системою накачування, які досі в грі.</p>
+        <a href="#catalog" class="btn-outline fade-up" data-filter-brand="Reebok">Товари Reebok</a>
+      </div>
+      <div class="brand-img-wrap">
+        <div class="img-placeholder brand-img-ph">
+          <div class="ph-label"><span class="ph-tag">REEBOK ФОТО</span><p>11K Pump Skates + 11K Helmet<br>Чорно-помаранчевий, 1200×800</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="brand-block brand-block--reverse">
+      <div class="brand-text">
+        <div class="brand-tag fade-up">Заснований 1921</div>
+        <h3 class="brand-name clip-reveal">GRAF</h3>
+        <p class="brand-desc fade-up">Швейцарська точність. Graf Ultra G9035 — ручна робота, натуральна шкіра, для гравців, що цінують традиції.</p>
+        <a href="#catalog" class="btn-outline fade-up" data-filter-brand="Graf">Товари Graf</a>
+      </div>
+      <div class="brand-img-wrap">
+        <div class="img-placeholder brand-img-ph">
+          <div class="ph-label"><span class="ph-tag">GRAF ФОТО</span><p>Graf Ultra G9035 Skates<br>Бежево-чорний, швейцарський стиль, 1200×800</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="brand-block">
+      <div class="brand-text">
+        <div class="brand-tag fade-up">Канада · Преміум</div>
+        <h3 class="brand-name clip-reveal">TRUE</h3>
+        <p class="brand-desc fade-up">True Hockey Catalyst — custom fit прямо на заводі. Ковзани та ключки для найвимогливіших гравців планети.</p>
+        <a href="#catalog" class="btn-outline fade-up" data-filter-brand="True Hockey">Товари True</a>
+      </div>
+      <div class="brand-img-wrap">
+        <div class="img-placeholder brand-img-ph">
+          <div class="ph-label"><span class="ph-tag">TRUE HOCKEY ФОТО</span><p>Catalyst 9X + AX9 Stick<br>Чорно-білий мінімалізм, 1200×800</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="brand-block brand-block--reverse">
+      <div class="brand-text">
+        <div class="brand-tag fade-up">Заснований 1906</div>
+        <h3 class="brand-name clip-reveal">SHER-WOOD</h3>
+        <p class="brand-desc fade-up">Легенда хокею. Sher-Wood Rekker M90 — вуглецеве волокно, унікальний баланс, культова класика.</p>
+        <a href="#catalog" class="btn-outline fade-up" data-filter-brand="Sher-Wood">Товари Sher-Wood</a>
+      </div>
+      <div class="brand-img-wrap">
+        <div class="img-placeholder brand-img-ph">
+          <div class="ph-label"><span class="ph-tag">SHER-WOOD ФОТО</span><p>Rekker M90 Stick<br>Темний фон, золота деталізація, 1200×800</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="brand-block">
+      <div class="brand-text">
+        <div class="brand-tag fade-up">США · Elite</div>
+        <h3 class="brand-name clip-reveal">WARRIOR</h3>
+        <p class="brand-desc fade-up">Warrior Covert QRE 20 Pro — агресивний дизайн, максимальна швидкість передпліч. Warrior Alpha DX Pro — рукавиці з PE-накладками.</p>
+        <a href="#catalog" class="btn-outline fade-up" data-filter-brand="Warrior">Товари Warrior</a>
+      </div>
+      <div class="brand-img-wrap">
+        <div class="img-placeholder brand-img-ph">
+          <div class="ph-label"><span class="ph-tag">WARRIOR ФОТО</span><p>Covert QRE 20 + Alpha DX Pro Gloves<br>Чорно-жовтий, агресивний стиль, 1200×800</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CATALOG ─── -->
+  <section class="catalog" id="catalog">
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <h2 class="section-title clip-reveal">Преміум Каталог</h2>
+    </div>
+
+    <div class="filter-row" id="filterRow">
+      <button class="filter-btn active" data-filter="all">Все</button>
+      <button class="filter-btn" data-filter="skates">Ковзани</button>
+      <button class="filter-btn" data-filter="sticks">Ключки</button>
+      <button class="filter-btn" data-filter="helmets">Шоломи</button>
+      <button class="filter-btn" data-filter="pads">Захист</button>
+      <button class="filter-btn" data-filter="gloves">Рукавиці</button>
+    </div>
+
+    <div class="products-grid" id="productsGrid">
+      <!-- Rendered by JS -->
+    </div>
+  </section>
+
+  <!-- ─── EDITORIAL ─── -->
+  <section class="editorial">
+    <div class="editorial-inner">
+      <div class="editorial-text">
+        <h2 class="editorial-title">
+          <span class="clip-reveal">ОБЛАДНАЙ</span><br>
+          <span class="outline-text clip-reveal" style="--delay:0.1s">СЕБЕ</span><br>
+          <span class="clip-reveal" style="--delay:0.2s">ДЛЯ ПЕРЕМОГИ</span>
+        </h2>
+        <p class="editorial-sub fade-up">Кожен гравець заслуговує екіпіровку, яка тримає темп. Ми підбираємо тільки те, що перевірено на льодовому майданчику.</p>
+        <a href="#catalog" class="btn-primary fade-up">Купити зараз</a>
+      </div>
+      <div class="editorial-img-col">
+        <div class="img-placeholder editorial-img-ph">
+          <div class="ph-label"><span class="ph-tag">EDITORIAL ФОТО</span><p>Крупний план рукавиці на ключці або гравець під час удару<br>Темний кінематографічний стиль, 800×900</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── MARQUEE 2 ─── -->
+  <div class="marquee-wrap marquee-dark">
+    <div class="marquee-track marquee-reverse">
+      <span>PROFESSIONAL GEAR</span><span class="dot">·</span>
+      <span>NHL APPROVED</span><span class="dot">·</span>
+      <span>FREE SHIPPING</span><span class="dot">·</span>
+      <span>PREMIUM ONLY</span><span class="dot">·</span>
+      <span>PROFESSIONAL GEAR</span><span class="dot">·</span>
+      <span>NHL APPROVED</span><span class="dot">·</span>
+      <span>FREE SHIPPING</span><span class="dot">·</span>
+      <span>PREMIUM ONLY</span><span class="dot">·</span>
+    </div>
+  </div>
+
+  <!-- ─── ABOUT ─── -->
+  <section class="about" id="about">
+    <div class="about-inner">
+      <div class="about-img-col">
+        <div class="img-placeholder about-img-ph">
+          <div class="ph-label"><span class="ph-tag">ПРО НАС ФОТО</span><p>Магазин або льодовик зсередини<br>Стелажі з преміум екіпіровкою, 600×800</p></div>
+        </div>
+      </div>
+      <div class="about-text">
+        <div class="section-num">05</div>
+        <h2 class="about-title clip-reveal">Наша<br>Історія</h2>
+        <p class="about-body fade-up">ICEVAULT — це не просто магазин. Це місце, де хокей стає стилем життя. Тільки преміум-сегмент, тільки перевірені бренди.</p>
+        <p class="about-body fade-up">Офіційні дистриб'ютори Bauer, CCM, Reebok, Graf, True Hockey, Sher-Wood та Warrior в Україні.</p>
+        <div class="about-stats fade-up">
+          <div class="stat"><span class="stat-num count-up" data-target="500">0</span><span class="stat-label">товарів у наявності</span></div>
+          <div class="stat"><span class="stat-num count-up" data-target="7">0</span><span class="stat-label">топ-брендів</span></div>
+          <div class="stat"><span class="stat-num" data-target="5">5★</span><span class="stat-label">середня оцінка</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CTA ─── -->
+  <section class="cta">
+    <div class="cta-inner">
+      <h2 class="cta-title clip-reveal">БУДЬ ПЕРШИМ.<br>ЗНИЖКА 10%</h2>
+      <p class="cta-sub fade-up">Підпишись та отримай промокод на перше замовлення</p>
+      <form class="cta-form fade-up" id="ctaForm">
+        <input type="email" id="ctaEmail" placeholder="твій@email.com" required />
+        <button type="submit" class="btn-primary">Підписатися</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ─── DEVELOPER SECTION ─── -->
+  <section class="developer-section" id="developer">
+    <div class="dev-inner">
+      <div class="dev-badge">ПРО РОЗРОБНИКА</div>
+      <div class="dev-card">
+        <div class="dev-photo-wrap">
+          <img src="assets/me.jpg" alt="Сінєльніков Руслан" class="dev-photo" id="devPhoto" onerror="this.parentElement.innerHTML='<div class=\'dev-photo-ph\'><span>ФОТО<br>РОЗРОБНИКА</span></div>'" />
+        </div>
+        <div class="dev-info">
+          <div class="dev-info-row"><span class="dev-label">Виконавець</span><span class="dev-value">Сінєльніков Руслан</span></div>
+          <div class="dev-info-row"><span class="dev-label">Група</span><span class="dev-value">Б-122-22-1-ТП</span></div>
+          <div class="dev-info-row"><span class="dev-label">Рік</span><span class="dev-value" id="devYear">2025</span></div>
+          <div class="dev-info-row"><span class="dev-label">Технології</span><span class="dev-value dev-tech">HTML · CSS · JavaScript</span></div>
+          <div class="dev-info-row"><span class="dev-label">Браузер</span><span class="dev-value dev-browser" id="devBrowser">—</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">ICEVAULT</div>
+        <p>Твій бонус на перший лід.</p>
+      </div>
+      <div class="footer-links-col">
+        <span class="footer-col-title">Каталог</span>
+        <a href="#catalog">Ковзани</a>
+        <a href="#catalog">Ключки</a>
+        <a href="#catalog">Шоломи</a>
+        <a href="#catalog">Захист</a>
+        <a href="#catalog">Рукавиці</a>
+      </div>
+      <div class="footer-links-col">
+        <span class="footer-col-title">Бренди</span>
+        <a href="#brands">Bauer</a>
+        <a href="#brands">CCM</a>
+        <a href="#brands">Reebok</a>
+        <a href="#brands">Graf</a>
+        <a href="#brands">True Hockey</a>
+        <a href="#brands">Sher-Wood</a>
+        <a href="#brands">Warrior</a>
+      </div>
+      <div class="footer-links-col">
+        <span class="footer-col-title">Інформація</span>
+        <a href="contacts.html">Контакти</a>
+        <a href="#">Доставка</a>
+        <a href="#">Повернення</a>
+        <a href="#">FAQ</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="footerYear">2024</span> ICEVAULT. Всі права захищено.</span>
+      <div class="footer-session">
+        <span>Час на сайті: <span id="sessionTimer">00:00</span></span>
+      </div>
+      <div class="footer-social">
+        <a href="#" aria-label="Instagram">IG</a>
+        <a href="#" aria-label="Telegram">TG</a>
+        <a href="#" aria-label="YouTube">YT</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to top -->
+  <button class="back-top" id="backTop" aria-label="Вгору">↑</button>
+
+  <script src="script.js"></script>
+</body>
+</html>
