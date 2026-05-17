@@ -1,0 +1,6 @@
+.DS_Store
+output/
+.claude/settings.local.json
+Звіт з практики/
+*.log
+node_modules/

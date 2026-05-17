@@ -8,6 +8,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;700;900&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgo=" id="favicon" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/"
+    }
+  }
+  </script>
 </head>
 <body>
 
@@ -29,11 +38,20 @@
       <a href="#brands">Бренди</a>
       <a href="#catalog">Каталог</a>
       <a href="#about">Про нас</a>
+      <a href="wiki.html">Wiki</a>
       <a href="contacts.html">Контакти</a>
     </div>
     <div class="nav-right">
       <!-- Live Clock -->
       <div class="nav-clock" id="navClock">--:--:--</div>
+      <button class="ai-btn" id="aiBtn" aria-label="AI помічник підбору">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.39 4.84L20 8l-4 3.9.94 5.5L12 14.77l-4.94 2.6L8 11.9 4 8l5.61-1.16L12 2z"/></svg>
+        <span>AI Підбір</span>
+      </button>
+      <button class="theme-toggle" id="themeToggle" aria-label="Тема">
+        <svg class="ic-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="ic-sun"  width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
       <button class="cart-btn" id="cartBtn" aria-label="Кошик">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
@@ -55,6 +73,7 @@
       <a href="#brands" class="mobile-link" data-close>Бренди</a>
       <a href="#catalog" class="mobile-link" data-close>Каталог</a>
       <a href="#about" class="mobile-link" data-close>Про нас</a>
+      <a href="wiki.html" class="mobile-link">Wiki</a>
       <a href="contacts.html" class="mobile-link">Контакти</a>
     </div>
     <div class="mobile-menu-footer">
@@ -77,18 +96,15 @@
         <span>Разом:</span>
         <span class="cart-total" id="cartTotal">0 ₴</span>
       </div>
-      <button class="btn-primary cart-checkout" onclick="alert('Дякуємо за замовлення! Ми зв\'яжемось з вами найближчим часом.')">Оформити замовлення</button>
+      <button class="btn-primary cart-checkout" id="cartCheckoutBtn">Оформити замовлення</button>
     </div>
   </div>
 
   <!-- ─── HERO ─── -->
   <section class="hero" id="hero">
     <div class="hero-bg">
-      <div class="img-placeholder hero-img-ph">
-        <div class="ph-label">
-          <span class="ph-tag">HERO ФОТО</span>
-          <p>Хокеїст у повній преміум-екіпіровці на льоду<br>Bauer Supreme / CCM Ribcor Pro<br>Темне кінематографічне освітлення, пара від дихання<br>Горизонтальне, 1920×1080+, blur edges</p>
-        </div>
+      <div class="img-placeholder hero-img-ph has-img">
+        <img src="photo/20bafd7e5d64391fe262a7434c6dacb7.jpg" alt="Miracle on Ice 1980" loading="eager" fetchpriority="high" />
       </div>
     </div>
     <div class="hero-content">
@@ -144,49 +160,40 @@
     <div class="collection-grid">
       <div class="col-item col-item--large hover-tilt">
         <div class="col-item-img">
-          <div class="img-placeholder">
-            <div class="ph-label">
-              <span class="ph-tag">ФОТО</span>
-              <p>Bauer Supreme Mach Skates<br>Чорно-золоті, студійне фото<br>Кут 45°, підсвітка леза</p>
-            </div>
+          <div class="img-placeholder has-img has-img--contain">
+            <img src="photo/613471_01_9b29dde3-0f7c-4abe-ae25-5cbbe61857ff.png.webp" alt="Bauer Supreme MACH Skates" loading="lazy" />
           </div>
         </div>
         <div class="col-item-info">
           <span class="item-brand">Bauer</span>
-          <h3 class="item-name">Supreme Mach Skates</h3>
+          <h3 class="item-name">Supreme MACH Skates</h3>
           <div class="item-bottom">
-            <span class="item-price">38 500 ₴</span>
-            <button class="btn-add" data-id="bauer-mach" data-name="Bauer Supreme Mach Skates" data-price="38500">+ Додати</button>
+            <span class="item-price">48 000 ₴</span>
+            <button class="btn-add" data-id="bauer-supreme-mach" data-name="Bauer Supreme MACH Skates" data-price="48000">+ Додати</button>
           </div>
         </div>
         <div class="item-badge">TOP PRO</div>
       </div>
       <div class="col-item hover-tilt">
         <div class="col-item-img">
-          <div class="img-placeholder">
-            <div class="ph-label">
-              <span class="ph-tag">ФОТО</span>
-              <p>True Hockey Catalyst 9X<br>Темний фон, срібне лезо<br>Динамічний кут</p>
-            </div>
+          <div class="img-placeholder has-img has-img--contain">
+            <img src="photo/2024_Hockey_Catalyst_9x4_PlayerSkate_45AngleFront_Main-1600x1600-210612d_512x512.png.webp" alt="True Catalyst 9X4 Skates" loading="lazy" />
           </div>
         </div>
         <div class="col-item-info">
           <span class="item-brand">True Hockey</span>
-          <h3 class="item-name">Catalyst 9X Skates</h3>
+          <h3 class="item-name">Catalyst 9X4 Skates</h3>
           <div class="item-bottom">
             <span class="item-price">36 200 ₴</span>
-            <button class="btn-add" data-id="true-catalyst" data-name="True Catalyst 9X Skates" data-price="36200">+ Додати</button>
+            <button class="btn-add" data-id="true-catalyst" data-name="True Catalyst 9X4 Skates" data-price="36200">+ Додати</button>
           </div>
         </div>
         <div class="item-badge">NEW</div>
       </div>
       <div class="col-item hover-tilt">
         <div class="col-item-img">
-          <div class="img-placeholder">
-            <div class="ph-label">
-              <span class="ph-tag">ФОТО</span>
-              <p>CCM Ribcor 100K Pro<br>Чорний з червоним, студіо<br>Пара ковзанів зверху</p>
-            </div>
+          <div class="img-placeholder has-img has-img--contain">
+            <img src="photo/SK100KP-SR_7_512x512.png.webp" alt="CCM Ribcor 100K Pro Skates" loading="lazy" />
           </div>
         </div>
         <div class="col-item-info">
@@ -216,8 +223,8 @@
         <a href="#catalog" class="btn-outline fade-up" data-filter-brand="Bauer">Товари Bauer</a>
       </div>
       <div class="brand-img-wrap">
-        <div class="img-placeholder brand-img-ph">
-          <div class="ph-label"><span class="ph-tag">BAUER ФОТО</span><p>Лінійка Supreme Mach + Vapor Hyperlite 2<br>Темний фон, золоті акценти, 1200×800</p></div>
+        <div class="img-placeholder brand-img-ph has-img has-img--contain">
+          <img src="photo/613471_01_9b29dde3-0f7c-4abe-ae25-5cbbe61857ff.png.webp" alt="Bauer Supreme MACH" loading="lazy" />
         </div>
       </div>
     </div>
@@ -230,8 +237,8 @@
         <a href="#catalog" class="btn-outline fade-up" data-filter-brand="CCM">Товари CCM</a>
       </div>
       <div class="brand-img-wrap">
-        <div class="img-placeholder brand-img-ph">
-          <div class="ph-label"><span class="ph-tag">CCM ФОТО</span><p>Ribcor 100K Pro + Jetspeed FT7<br>Синьо-червона палітра, студіо, 1200×800</p></div>
+        <div class="img-placeholder brand-img-ph has-img has-img--contain">
+          <img src="photo/HSFT7P-SR_06.png" alt="CCM Jetspeed FT7" loading="lazy" />
         </div>
       </div>
     </div>
@@ -244,8 +251,8 @@
         <a href="#catalog" class="btn-outline fade-up" data-filter-brand="Reebok">Товари Reebok</a>
       </div>
       <div class="brand-img-wrap">
-        <div class="img-placeholder brand-img-ph">
-          <div class="ph-label"><span class="ph-tag">REEBOK ФОТО</span><p>11K Pump Skates + 11K Helmet<br>Чорно-помаранчевий, 1200×800</p></div>
+        <div class="img-placeholder brand-img-ph has-img has-img--contain">
+          <img src="assets/p-reebok-helm.png" alt="Reebok 11K Helmet" loading="lazy" />
         </div>
       </div>
     </div>
@@ -258,8 +265,8 @@
         <a href="#catalog" class="btn-outline fade-up" data-filter-brand="Graf">Товари Graf</a>
       </div>
       <div class="brand-img-wrap">
-        <div class="img-placeholder brand-img-ph">
-          <div class="ph-label"><span class="ph-tag">GRAF ФОТО</span><p>Graf Ultra G9035 Skates<br>Бежево-чорний, швейцарський стиль, 1200×800</p></div>
+        <div class="img-placeholder brand-img-ph has-img has-img--contain">
+          <img src="photo/graf_9035_75_flex_ice_skates_1_grande.png.webp" alt="Graf Ultra G9035" loading="lazy" />
         </div>
       </div>
     </div>
@@ -272,8 +279,8 @@
         <a href="#catalog" class="btn-outline fade-up" data-filter-brand="True Hockey">Товари True</a>
       </div>
       <div class="brand-img-wrap">
-        <div class="img-placeholder brand-img-ph">
-          <div class="ph-label"><span class="ph-tag">TRUE HOCKEY ФОТО</span><p>Catalyst 9X + AX9 Stick<br>Чорно-білий мінімалізм, 1200×800</p></div>
+        <div class="img-placeholder brand-img-ph has-img has-img--contain">
+          <img src="photo/2024_Hockey_Catalyst_9x4_PlayerSkate_45AngleFront_Main-1600x1600-210612d_512x512.png.webp" alt="True Catalyst 9X" loading="lazy" />
         </div>
       </div>
     </div>
@@ -286,8 +293,8 @@
         <a href="#catalog" class="btn-outline fade-up" data-filter-brand="Sher-Wood">Товари Sher-Wood</a>
       </div>
       <div class="brand-img-wrap">
-        <div class="img-placeholder brand-img-ph">
-          <div class="ph-label"><span class="ph-tag">SHER-WOOD ФОТО</span><p>Rekker M90 Stick<br>Темний фон, золота деталізація, 1200×800</p></div>
+        <div class="img-placeholder brand-img-ph has-img has-img--contain">
+          <img src="assets/p-sw-rekker.webp" alt="Sher-Wood Rekker" loading="lazy" />
         </div>
       </div>
     </div>
@@ -300,8 +307,8 @@
         <a href="#catalog" class="btn-outline fade-up" data-filter-brand="Warrior">Товари Warrior</a>
       </div>
       <div class="brand-img-wrap">
-        <div class="img-placeholder brand-img-ph">
-          <div class="ph-label"><span class="ph-tag">WARRIOR ФОТО</span><p>Covert QRE 20 + Alpha DX Pro Gloves<br>Чорно-жовтий, агресивний стиль, 1200×800</p></div>
+        <div class="img-placeholder brand-img-ph has-img has-img--contain">
+          <img src="assets/p-warrior-gloves.webp" alt="Warrior Alpha" loading="lazy" />
         </div>
       </div>
     </div>
@@ -314,6 +321,17 @@
       <h2 class="section-title clip-reveal">Преміум Каталог</h2>
     </div>
 
+    <div class="search-bar">
+      <input type="search" id="searchInput" placeholder="Пошук: бренд, модель, категорія…" autocomplete="off" />
+      <select id="filterBrand" aria-label="Бренд">
+        <option value="">Всі бренди</option>
+      </select>
+      <select id="filterSize" aria-label="Розмір">
+        <option value="">Всі розміри</option>
+      </select>
+      <button id="searchReset" type="button" title="Скинути">✕</button>
+    </div>
+
     <div class="filter-row" id="filterRow">
       <button class="filter-btn active" data-filter="all">Все</button>
       <button class="filter-btn" data-filter="skates">Ковзани</button>
@@ -321,6 +339,8 @@
       <button class="filter-btn" data-filter="helmets">Шоломи</button>
       <button class="filter-btn" data-filter="pads">Захист</button>
       <button class="filter-btn" data-filter="gloves">Рукавиці</button>
+      <button class="filter-btn" data-filter="bags">Сумки</button>
+      <button class="filter-btn" data-filter="accessories">Аксесуари</button>
     </div>
 
     <div class="products-grid" id="productsGrid">
@@ -341,8 +361,8 @@
         <a href="#catalog" class="btn-primary fade-up">Купити зараз</a>
       </div>
       <div class="editorial-img-col">
-        <div class="img-placeholder editorial-img-ph">
-          <div class="ph-label"><span class="ph-tag">EDITORIAL ФОТО</span><p>Крупний план рукавиці на ключці або гравець під час удару<br>Темний кінематографічний стиль, 800×900</p></div>
+        <div class="img-placeholder editorial-img-ph has-img">
+          <img src="assets/editorial-action.jpg" alt="Хокейний поєдинок" loading="lazy" />
         </div>
       </div>
     </div>
@@ -362,12 +382,27 @@
     </div>
   </div>
 
+  <!-- ─── TECH SHOWCASE (Three.js 3D PUCK) ─── -->
+  <section class="tech-showcase" id="tech">
+    <div class="tech-inner">
+      <div class="puck-3d" id="puck3d" aria-hidden="true"></div>
+      <div class="tech-text">
+        <div class="tech-eyebrow">3D ВІЗУАЛІЗАЦІЯ</div>
+        <h3 class="clip-reveal">КЛЮЧКА У 3D</h3>
+        <p class="fade-up">Інтерактивна 3D модель хокейної клюшки, відрендерена у реальному часі на WebGL. Карбонова текстура, металічні акценти, реалістичне освітлення. Веди мишкою — клюшка повторює рух. Це той самий стек, що рендерить ігри Unreal Engine у браузері.</p>
+        <div class="tech-stack fade-up">
+          <span>Three.js</span><span>WebGL</span><span>ExtrudeGeometry</span><span>PBR Materials</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ─── ABOUT ─── -->
   <section class="about" id="about">
     <div class="about-inner">
       <div class="about-img-col">
-        <div class="img-placeholder about-img-ph">
-          <div class="ph-label"><span class="ph-tag">ПРО НАС ФОТО</span><p>Магазин або льодовик зсередини<br>Стелажі з преміум екіпіровкою, 600×800</p></div>
+        <div class="img-placeholder about-img-ph has-img">
+          <img src="assets/about-team.jpg" alt="Хокейна команда" loading="lazy" />
         </div>
       </div>
       <div class="about-text">
@@ -443,6 +478,7 @@
       <div class="footer-links-col">
         <span class="footer-col-title">Інформація</span>
         <a href="contacts.html">Контакти</a>
+        <a href="wiki.html">Wiki / Лайфхаки</a>
         <a href="#">Доставка</a>
         <a href="#">Повернення</a>
         <a href="#">FAQ</a>
@@ -464,6 +500,66 @@
   <!-- Back to top -->
   <button class="back-top" id="backTop" aria-label="Вгору">↑</button>
 
+  <!-- ─── AI ASSISTANT MODAL ─── -->
+  <div class="ai-overlay" id="aiOverlay"></div>
+  <aside class="ai-modal" id="aiModal" role="dialog" aria-label="AI помічник підбору">
+    <div class="ai-header">
+      <div class="ai-brand">
+        <span class="ai-orb"></span>
+        <div>
+          <h3>AI Помічник</h3>
+          <p>Підбір екіпіровки за 30 секунд</p>
+        </div>
+      </div>
+      <button class="ai-close" id="aiClose" aria-label="Закрити">✕</button>
+    </div>
+    <div class="ai-body" id="aiBody">
+      <!-- step-by-step content rendered by JS -->
+    </div>
+  </aside>
+
+  <!-- ─── CHECKOUT MODAL ─── -->
+  <div class="checkout-overlay" id="checkoutOverlay"></div>
+  <aside class="checkout-modal" id="checkoutModal" role="dialog" aria-label="Оформлення замовлення">
+    <div class="checkout-header">
+      <h3>Оформлення замовлення</h3>
+      <button class="checkout-close" id="checkoutClose" aria-label="Закрити">✕</button>
+    </div>
+    <form class="checkout-form" id="checkoutForm" action="https://formsubmit.co/ajax/sinelnikovruslan45@gmail.com" method="POST">
+      <div class="checkout-banner">📬 Введи свій email — на нього прийде лист-підтвердження замовлення.</div>
+      <label class="checkout-field">
+        <span>Імʼя</span>
+        <input type="text" name="name" required minlength="2" placeholder="Іван Петренко" />
+      </label>
+      <label class="checkout-field">
+        <span>Email *</span>
+        <input type="email" name="email" required placeholder="you@example.com" />
+        <small>На цю адресу ми надішлемо підтвердження замовлення.</small>
+      </label>
+      <label class="checkout-field">
+        <span>Телефон</span>
+        <input type="tel" name="phone" required pattern="[+0-9\s()-]{10,}" placeholder="+380 67 000 0000" />
+      </label>
+      <label class="checkout-field">
+        <span>Місто доставки</span>
+        <input type="text" name="city" required placeholder="Київ" />
+      </label>
+      <label class="checkout-field">
+        <span>Коментар</span>
+        <textarea name="comment" rows="2" placeholder="Відділення Нової Пошти, побажання…"></textarea>
+      </label>
+      <input type="hidden" name="_subject" value="ICEVAULT — нове замовлення" />
+      <input type="hidden" name="_template" value="table" />
+      <input type="hidden" name="_captcha" value="false" />
+      <input type="hidden" name="order_summary" id="orderSummaryHidden" />
+      <input type="hidden" name="_autoresponse" id="autoresponseHidden" />
+      <div class="checkout-summary" id="checkoutSummary"></div>
+      <button type="submit" class="btn-primary checkout-submit">Надіслати замовлення</button>
+      <p class="checkout-note" id="checkoutNote"></p>
+    </form>
+  </aside>
+
   <script src="script.js"></script>
+  <script type="module" src="three3d.js"></script>
 </body>
 </html>

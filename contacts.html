@@ -28,6 +28,10 @@
     </div>
     <div class="nav-right">
       <div class="nav-clock" id="navClock">--:--:--</div>
+      <button class="ai-btn" id="aiBtn" aria-label="AI помічник підбору">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.39 4.84L20 8l-4 3.9.94 5.5L12 14.77l-4.94 2.6L8 11.9 4 8l5.61-1.16L12 2z"/></svg>
+        <span>AI Підбір</span>
+      </button>
       <button class="menu-btn" id="menuBtn" aria-label="Меню"><span></span><span></span></button>
     </div>
   </nav>
@@ -91,12 +95,15 @@
           </div>
         </div>
 
-        <!-- Map placeholder -->
-        <div class="map-placeholder fade-up" style="--delay:0.4s">
-          <div class="ph-label">
-            <span class="ph-tag">КАРТА</span>
-            <p>Google Maps або Leaflet.js карта<br>Центр Києва, маркер на адресі<br>iframe або JS виджет, 100%×280px</p>
-          </div>
+        <!-- Map (OpenStreetMap embed) -->
+        <div class="map-placeholder fade-up has-map" style="--delay:0.4s">
+          <iframe
+            src="https://www.openstreetmap.org/export/embed.html?bbox=30.5134%2C50.4451%2C30.5334%2C50.4551&amp;layer=mapnik&amp;marker=50.4501%2C30.5234"
+            style="width:100%; height:100%; border:0; filter:grayscale(.4) contrast(1.05);"
+            loading="lazy"
+            title="ICEVAULT — Київ"
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
         </div>
       </div>
 
@@ -252,6 +259,19 @@
   </footer>
 
   <button class="back-top" id="backTop" aria-label="Вгору">↑</button>
+  <!-- AI ASSISTANT MODAL -->
+  <div class="ai-overlay" id="aiOverlay"></div>
+  <aside class="ai-modal" id="aiModal" role="dialog" aria-label="AI помічник підбору">
+    <div class="ai-header">
+      <div class="ai-brand">
+        <span class="ai-orb"></span>
+        <div><h3>AI Помічник</h3><p>Підбір екіпіровки за 30 секунд</p></div>
+      </div>
+      <button class="ai-close" id="aiClose" aria-label="Закрити">✕</button>
+    </div>
+    <div class="ai-body" id="aiBody"></div>
+  </aside>
+
   <script src="script.js"></script>
 </body>
 </html>
