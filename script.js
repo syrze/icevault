@@ -1476,6 +1476,15 @@ document.getElementById('checkoutOverlay')?.addEventListener('click', closeCheck
 
 const ADMIN_EMAIL = 'sinelnikovruslan45@gmail.com';
 
+/* ────────────────────────────────────────────
+   Web3Forms — primary email sender.
+   1. Реєстрація: https://web3forms.com → введи свій email → отримай Access Key.
+   2. Встав ключ нижче замість 'YOUR_WEB3FORMS_KEY'.
+   3. Все. Жодної активації — листи летять одразу.
+   Безкоштовний тариф: 250 листів/міс.
+─────────────────────────────────────────── */
+const WEB3FORMS_KEY = 'YOUR_WEB3FORMS_KEY'; // ⚠ Замінити на свій з web3forms.com
+
 function buildMailto(d, to) {
   const subject = encodeURIComponent('ICEVAULT — нове замовлення від ' + (d.name || 'клієнта'));
   const body = encodeURIComponent(
@@ -1487,6 +1496,53 @@ function buildMailto(d, to) {
   return `mailto:${to}?subject=${subject}&body=${body}&cc=${d.email}`;
 }
 
+async function sendViaWeb3Forms(formObj) {
+  if (!WEB3FORMS_KEY || WEB3FORMS_KEY === 'YOUR_WEB3FORMS_KEY') {
+    throw new Error('web3forms-not-configured');
+  }
+  /* 1) Лист адміну */
+  const adminMsg = {
+    access_key: WEB3FORMS_KEY,
+    subject:    `ICEVAULT — нове замовлення від ${formObj.name}`,
+    from_name:  'ICEVAULT Shop',
+    email:      ADMIN_EMAIL,
+    replyto:    formObj.email,
+    message:    `Нове замовлення\n\nКлієнт: ${formObj.name}\nEmail: ${formObj.email}\nТелефон: ${formObj.phone}\nМісто: ${formObj.city}\n${formObj.comment ? 'Коментар: '+formObj.comment+'\n' : ''}\n${formObj.order_summary}`,
+  };
+  /* 2) Лист-підтвердження клієнту */
+  const customerMsg = {
+    access_key: WEB3FORMS_KEY,
+    subject:    '✓ Підтвердження замовлення ICEVAULT',
+    from_name:  'ICEVAULT',
+    email:      formObj.email,
+    replyto:    ADMIN_EMAIL,
+    message:    `Привіт, ${formObj.name}!\n\nДякуємо за замовлення в ICEVAULT. Деталі:\n\n${formObj.order_summary}\n\nМи звʼяжемось з тобою для підтвердження доставки.\n\n— Команда ICEVAULT`,
+  };
+  const post = (body) => fetch('https://api.web3forms.com/submit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify(body),
+  }).then(r => r.json());
+  const [a, c] = await Promise.all([post(adminMsg), post(customerMsg)]);
+  if (!a.success) throw new Error('admin: ' + (a.message || 'failed'));
+  if (!c.success) throw new Error('customer: ' + (c.message || 'failed'));
+  return { adminOk: true, customerOk: true };
+}
+
+async function sendViaFormSubmit(formObj, fd) {
+  if (!fd.has('_replyto')) fd.append('_replyto', formObj.email);
+  const res = await fetch('https://formsubmit.co/ajax/' + ADMIN_EMAIL, {
+    method: 'POST',
+    body: fd,
+    headers: { Accept: 'application/json' },
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || data.success === 'false' || data.success === false) {
+    throw new Error(data.message || ('HTTP ' + res.status));
+  }
+  return data;
+}
+
 const checkoutForm = document.getElementById('checkoutForm');
 if (checkoutForm) {
   checkoutForm.addEventListener('submit', async (e) => {
@@ -1494,35 +1550,38 @@ if (checkoutForm) {
     const note = document.getElementById('checkoutNote');
     const submitBtn = checkoutForm.querySelector('.checkout-submit');
     const fd = new FormData(checkoutForm);
-    /* FormSubmit потребує _replyto для коректної reply-адреси */
-    if (!fd.has('_replyto')) fd.append('_replyto', fd.get('email') || '');
     const formObj = Object.fromEntries(fd);
 
-    if (note) { note.textContent = '⏳ Надсилаємо…'; note.classList.remove('ok','warn'); }
+    if (note) { note.innerHTML = '⏳ Надсилаємо…'; note.classList.remove('ok','warn'); }
     if (submitBtn) submitBtn.disabled = true;
 
+    /* Спершу Web3Forms (миттєво). Якщо ключ не вказано — FormSubmit. */
+    let success = false;
     try {
-      const res = await fetch(checkoutForm.action, {
-        method: 'POST',
-        body: fd,
-        headers: { Accept: 'application/json' },
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || data.success === 'false' || data.success === false) {
-        throw new Error(data.message || ('HTTP ' + res.status));
+      await sendViaWeb3Forms(formObj);
+      success = true;
+      note.innerHTML = `✓ Замовлення прийнято! Лист-підтвердження надіслано на <b>${formObj.email}</b>.`;
+    } catch (web3err) {
+      try {
+        await sendViaFormSubmit(formObj, fd);
+        success = true;
+        note.innerHTML = `✓ Замовлення надіслано на <b>${formObj.email}</b>.<br><small>Перший раз? Перевір gmail <b>${ADMIN_EMAIL}</b> — там лист FormSubmit з кнопкою <b>Activate</b>. Натисни її, далі все автоматично.</small>`;
+      } catch (fsErr) {
+        const link = buildMailto(formObj, ADMIN_EMAIL);
+        note.innerHTML = `⚠ Не вдалося надіслати автоматично. <a href="${link}" target="_blank" style="color:#c4b5fd;text-decoration:underline"><b>Відкрити поштовий клієнт →</b></a><br><small>Причина: ${web3err.message} / ${fsErr.message}</small>`;
+        note.classList.add('warn');
       }
-      note.innerHTML = '✓ Замовлення прийнято! Лист-підтвердження надіслано на <b>' + formObj.email + '</b>.<br><small>Перший раз? Зайди на пошту ' + ADMIN_EMAIL + ' і натисни Activate у листі FormSubmit — тоді всі наступні замовлення приходитимуть автоматично.</small>';
+    }
+
+    if (success) {
       note.classList.add('ok');
       cart = []; saveCart(); updateCartUI();
       setTimeout(() => {
         closeCheckout(); checkoutForm.reset();
         note.innerHTML = ''; note.classList.remove('ok');
         if (submitBtn) submitBtn.disabled = false;
-      }, 5500);
-    } catch (err) {
-      const link = buildMailto(formObj, ADMIN_EMAIL);
-      note.innerHTML = `⚠ Автонадсилання недоступне (${err.message}). <a href="${link}" target="_blank" style="color:#c4b5fd;text-decoration:underline">Відкрити поштовий клієнт →</a>`;
-      note.classList.add('warn');
+      }, 6000);
+    } else {
       if (submitBtn) submitBtn.disabled = false;
     }
   });
