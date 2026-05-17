@@ -1449,10 +1449,6 @@ function renderCheckoutSummary() {
 }
 
 function openCheckout() {
-  if (cart.length === 0) {
-    alert('Кошик порожній. Додайте товари перед оформленням.');
-    return;
-  }
   closeCart();
   document.getElementById('checkoutModal')?.classList.add('open');
   document.getElementById('checkoutOverlay')?.classList.add('open');
@@ -1462,6 +1458,8 @@ function openCheckout() {
   if (sumHidden) sumHidden.value = buildOrderSummary();
   const auto = document.getElementById('autoresponseHidden');
   if (auto) auto.value = `Дякуємо за замовлення в ICEVAULT!\n\nМи отримали ваше замовлення та звʼяжемося з вами найближчим часом для підтвердження доставки.\n\nДеталі:\n${buildOrderSummary()}\n\nЗ повагою, команда ICEVAULT.`;
+  const submitBtn = document.querySelector('#checkoutForm .checkout-submit');
+  if (submitBtn) submitBtn.disabled = cart.length === 0;
 }
 
 function closeCheckout() {
@@ -1479,11 +1477,11 @@ const ADMIN_EMAIL = 'sinelnikovruslan45@gmail.com';
 /* ────────────────────────────────────────────
    Web3Forms — primary email sender.
    1. Реєстрація: https://web3forms.com → введи свій email → отримай Access Key.
-   2. Встав ключ нижче замість 'YOUR_WEB3FORMS_KEY'.
+   2. Встав ключ нижче замість '9f196991-7ce7-49ea-a397-ad2eb9b111dd'.
    3. Все. Жодної активації — листи летять одразу.
    Безкоштовний тариф: 250 листів/міс.
 ─────────────────────────────────────────── */
-const WEB3FORMS_KEY = 'YOUR_WEB3FORMS_KEY'; // ⚠ Замінити на свій з web3forms.com
+const WEB3FORMS_KEY = '9f196991-7ce7-49ea-a397-ad2eb9b111dd'; // ⚠ Замінити на свій з web3forms.com
 
 function buildMailto(d, to) {
   const subject = encodeURIComponent('ICEVAULT — нове замовлення від ' + (d.name || 'клієнта'));
@@ -1497,7 +1495,7 @@ function buildMailto(d, to) {
 }
 
 async function sendViaWeb3Forms(formObj) {
-  if (!WEB3FORMS_KEY || WEB3FORMS_KEY === 'YOUR_WEB3FORMS_KEY') {
+  if (!WEB3FORMS_KEY || WEB3FORMS_KEY === '9f196991-7ce7-49ea-a397-ad2eb9b111dd') {
     throw new Error('web3forms-not-configured');
   }
   /* 1) Лист адміну */
