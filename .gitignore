@@ -1,6 +1,22 @@
+# OS
 .DS_Store
+
+# Dev output & reports
 output/
-.claude/settings.local.json
 Звіт з практики/
-*.log
+
+# Claude
+.claude/settings.local.json
+
+# Dependencies & build
 node_modules/
+*.log
+
+# DB files
+server/icevault.db
+server/icevault.db-shm
+server/icevault.db-wal
+
+# Env secrets
+server/.env
+.env

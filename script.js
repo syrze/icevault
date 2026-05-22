@@ -168,7 +168,7 @@ const products = [
   new Product({ id:'ccm-axis19-mask',  name:'Axis 19 Goalie Mask',     brand:'CCM',         category:'helmets',    price:8200,  badge:'GOALIE',  img:'photo/CCM-Axis-19-Mask-Certified.png', imgDesc:'CCM Axis 19 Mask' }),
   new Product({ id:'ccm-axis-a15-mask',name:'Axis A1.5 Goalie Mask',   brand:'CCM',         category:'helmets',    price:10400, badge:'GOALIE',  img:'photo/goalie-masks-ccm-axis-a1-5-senior-goalie-mask-decal-1221726744_1800x1800.png.webp', imgDesc:'CCM Axis A1.5 Mask' }),
   new Product({ id:'ccm-axis-a19-chest',name:'Axis A19 Goalie Chest',  brand:'CCM',         category:'pads',       price:17200, badge:'GOALIE',  img:'photo/CCM-Axis-A19-Goalie-Chest-Arms-Protector.png', imgDesc:'CCM Axis A19 Chest' }),
-  new Product({ id:'ccm-tacks-pro-pads',name:'Tacks Pro Goalie Pads',  brand:'CCM',         category:'pads',       price:34500, badge:'TOP PRO', img:'photo/CCM26_DTC_TACKS PRO.png', imgDesc:'CCM Tacks Pro Goalie Pads' }),
+  new Product({ id:'ccm-tacks-pro-pads',name:'Tacks Pro Goalie Pads',  brand:'CCM',         category:'pads',       price:34500, badge:'TOP PRO', img:'photo/CCM26_DTC_TACKS-PRO.png', imgDesc:'CCM Tacks Pro Goalie Pads' }),
   new Product({ id:'ccm-ab-pro-chest', name:'AB Pro Spec Goalie Chest',brand:'CCM',         category:'pads',       price:24800, badge:'PRO',     img:'photo/ABPROSPEC_01.png', imgDesc:'CCM AB Pro Spec Chest' }),
   new Product({ id:'ccm-next-shin',    name:'Next Shin Guards',        brand:'CCM',         category:'pads',       price:3400,  badge:'NEW',     img:'photo/SGNEXT23_01_62023f4d-9216-4e37-9ebd-a6e90b93a2a4_1200x1200.png.webp', imgDesc:'CCM Next Shin' }),
   new Product({ id:'ccm-xf-shin',      name:'Tacks XF Shin Guards',    brand:'CCM',         category:'pads',       price:5200,  badge:null,      img:'photo/SGXF-SR_01.png', imgDesc:'CCM Tacks XF Shin' }),
@@ -1574,7 +1574,7 @@ document.getElementById('pmodalClose')?.addEventListener('click', closeProductMo
 document.getElementById('pmodalOverlay')?.addEventListener('click', closeProductModal);
 
 /* ═══════════════════════════════════════════════════════
-   33. CHECKOUT FORM (FormSubmit + autoresponder)
+   33. CHECKOUT FORM
 ═══════════════════════════════════════════════════════ */
 function buildOrderSummary() {
   if (cart.length === 0) return 'Кошик порожній';
@@ -1608,8 +1608,6 @@ function openCheckout() {
   renderCheckoutSummary();
   const sumHidden = document.getElementById('orderSummaryHidden');
   if (sumHidden) sumHidden.value = buildOrderSummary();
-  const auto = document.getElementById('autoresponseHidden');
-  if (auto) auto.value = `Дякуємо за замовлення в ICEVAULT!\n\nМи отримали ваше замовлення та звʼяжемося з вами найближчим часом для підтвердження доставки.\n\nДеталі:\n${buildOrderSummary()}\n\nЗ повагою, команда ICEVAULT.`;
   const submitBtn = document.querySelector('#checkoutForm .checkout-submit');
   if (submitBtn) submitBtn.disabled = cart.length === 0;
 }
