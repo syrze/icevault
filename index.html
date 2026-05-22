@@ -525,8 +525,8 @@
       <h3>Оформлення замовлення</h3>
       <button class="checkout-close" id="checkoutClose" aria-label="Закрити">✕</button>
     </div>
-    <form class="checkout-form" id="checkoutForm" action="https://formsubmit.co/ajax/sinelnikovruslan45@gmail.com" method="POST">
-      <div class="checkout-banner">📬 Введи свій email — на нього прийде лист-підтвердження замовлення.</div>
+    <form class="checkout-form" id="checkoutForm" novalidate>
+      <div class="checkout-banner">📬 Замовлення збережеться в БД. На email прийде підтвердження.</div>
       <label class="checkout-field">
         <span>Імʼя</span>
         <input type="text" name="name" required minlength="2" placeholder="Іван Петренко" />
@@ -548,11 +548,7 @@
         <span>Коментар</span>
         <textarea name="comment" rows="2" placeholder="Відділення Нової Пошти, побажання…"></textarea>
       </label>
-      <input type="hidden" name="_subject" value="ICEVAULT — нове замовлення" />
-      <input type="hidden" name="_template" value="table" />
-      <input type="hidden" name="_captcha" value="false" />
       <input type="hidden" name="order_summary" id="orderSummaryHidden" />
-      <input type="hidden" name="_autoresponse" id="autoresponseHidden" />
       <div class="checkout-summary" id="checkoutSummary"></div>
       <button type="submit" class="btn-primary checkout-submit">Надіслати замовлення</button>
       <p class="checkout-note" id="checkoutNote"></p>

@@ -479,7 +479,11 @@ if (filterRow) {
     btn.addEventListener('click', () => {
       filterRow.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      renderProductsFLIP(btn.dataset.filter);
+      const f = btn.dataset.filter;
+      renderProductsFLIP(f);
+      const url = new URL(window.location);
+      if (f === 'all') url.searchParams.delete('filter'); else url.searchParams.set('filter', f);
+      history.pushState({ filter: f }, '', url);
     });
   });
 }
@@ -671,10 +675,9 @@ if (devBrowserEl) {
   devBrowserEl.textContent = browserName;
 }
 
-// Перше відвідування — alert
 if (!localStorage.getItem('iv_visited')) {
   setTimeout(() => {
-    alert('Ласкаво просимо до ICEVAULT!\n\nТільки преміум-сегмент хокейного екіпірування.\nПідпишись та отримай знижку 10% на перше замовлення.');
+    if (typeof showToast === 'function') showToast('Ласкаво просимо до ICEVAULT — преміум хокей.');
     localStorage.setItem('iv_visited', '1');
   }, 1800);
 }
@@ -779,25 +782,9 @@ function applyFilterFromURL() {
 window.addEventListener('popstate', e => {
   const filter = e.state?.filter || 'all';
   renderProducts(filter);
-  const fr = document.getElementById('filterRow');
-  if (fr) fr.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === filter));
+  if (filterRow) filterRow.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === filter));
 });
 
-// Patch filter buttons to push history state
-const filterRowHistory = document.getElementById('filterRow');
-if (filterRowHistory) {
-  filterRowHistory.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const filter = btn.dataset.filter;
-      const url = new URL(window.location);
-      if (filter === 'all') { url.searchParams.delete('filter'); }
-      else { url.searchParams.set('filter', filter); }
-      history.pushState({ filter }, '', url);
-    });
-  });
-}
-
-// Apply on load (handles direct URL share)
 applyFilterFromURL();
 
 /* ─────────────────────────────────────────
@@ -943,8 +930,7 @@ if (contactForm) {
     if (el) el.addEventListener('blur', validateForm);
   });
 
-  // Submit
-  contactForm.addEventListener('submit', e => {
+  contactForm.addEventListener('submit', async e => {
     e.preventDefault();
     if (!validateForm()) return;
 
@@ -953,24 +939,65 @@ if (contactForm) {
     const submitSpinner = document.getElementById('submitSpinner');
     const formStatus = document.getElementById('formStatus');
 
-    // Симуляція відправки
     if (submitText) submitText.style.display = 'none';
     if (submitSpinner) submitSpinner.style.display = 'inline-block';
     if (submitBtn) submitBtn.disabled = true;
 
-    setTimeout(() => {
-      if (submitText) { submitText.style.display = ''; submitText.textContent = 'Надіслано ✓'; }
-      if (submitSpinner) submitSpinner.style.display = 'none';
+    const payload = {
+      name:    document.getElementById('cName').value.trim(),
+      email:   document.getElementById('cEmail').value.trim(),
+      phone:   document.getElementById('cPhone')?.value.trim() || '',
+      subject: document.getElementById('cSubject').value,
+      message: document.getElementById('cMsg').value.trim(),
+    };
+
+    let ok = false;
+    try {
+      const r = await fetch('/api/contact', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok || !d.ok) throw new Error(d.error || ('HTTP ' + r.status));
+      ok = true;
+    } catch {
+      try {
+        const r = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            access_key: '9f196991-7ce7-49ea-a397-ad2eb9b111dd',
+            subject: `ICEVAULT contact: ${payload.subject}`,
+            from_name: 'ICEVAULT contact form',
+            email: 'sinelnikovruslan45@gmail.com',
+            replyto: payload.email,
+            message: `Імʼя: ${payload.name}\nEmail: ${payload.email}\nТел: ${payload.phone}\nТема: ${payload.subject}\n\n${payload.message}`,
+          }),
+        });
+        const d = await r.json().catch(() => ({}));
+        ok = !!d.success;
+      } catch {}
+    }
+
+    if (submitSpinner) submitSpinner.style.display = 'none';
+    if (submitText) submitText.style.display = '';
+    if (ok) {
+      if (submitText) submitText.textContent = 'Надіслано ✓';
       if (formStatus) {
-        formStatus.textContent = 'Дякуємо! Ваше повідомлення успішно надіслано. Ми зв\'яжемось з вами протягом 24 годин.';
+        formStatus.textContent = 'Дякуємо! Ваше повідомлення успішно надіслано. Ми звʼяжемось з вами протягом 24 годин.';
         formStatus.className = 'form-status success';
       }
       contactForm.reset();
-      setTimeout(() => {
-        if (submitBtn) { submitBtn.disabled = false; }
-        if (submitText) submitText.textContent = 'Надіслати';
-      }, 4000);
-    }, 1500);
+    } else {
+      if (submitText) submitText.textContent = 'Помилка';
+      if (formStatus) {
+        formStatus.textContent = 'Не вдалося надіслати. Спробуйте пізніше або напишіть на sinelnikovruslan45@gmail.com';
+        formStatus.className = 'form-status error';
+      }
+    }
+    setTimeout(() => {
+      if (submitBtn) submitBtn.disabled = false;
+      if (submitText) submitText.textContent = 'Надіслати';
+    }, 4000);
   });
 
   // Reset
@@ -993,29 +1020,6 @@ document.querySelectorAll('.faq-q').forEach(btn => {
     const isOpen = item.classList.contains('open');
     document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
     if (!isOpen) item.classList.add('open');
-  });
-});
-
-/* ─────────────────────────────────────────
-   21. location.href — Навігація через confirm
-───────────────────────────────────────── */
-document.querySelectorAll('.cart-checkout').forEach(btn => {
-  btn.addEventListener('click', () => {
-    if (cart.length === 0) {
-      alert('Ваш кошик порожній. Додайте товари перед оформленням.');
-      return;
-    }
-    const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
-    const ok = confirm(`Підтвердити замовлення на суму ${total.toLocaleString('uk-UA')} ₴?\n\nТовари:\n${cart.map(i => `• ${i.name} × ${i.qty}`).join('\n')}`);
-    if (ok) {
-      cart = [];
-      saveCart();
-      updateCartUI();
-      closeCart();
-      alert('Дякуємо за замовлення!\nМи зв\'яжемося з вами найближчим часом.');
-      // location.href для переходу на contacts
-      // location.href = 'contacts.html';
-    }
   });
 });
 
@@ -1133,11 +1137,7 @@ if (themeToggleBtn) {
 }
 
 /* ─────────────────────────────────────────
-   27. THREE.JS — moved to three3d.js (ESM + GLTFLoader)
-───────────────────────────────────────── */
-
-/* ─────────────────────────────────────────
-   28. DYNAMIC FAVICON — canvas-based, reflects cart count
+   27. DYNAMIC FAVICON — canvas-based, reflects cart count
 ───────────────────────────────────────── */
 function updateFavicon() {
   const size = 64;
@@ -1473,72 +1473,47 @@ document.getElementById('checkoutClose')?.addEventListener('click', closeCheckou
 document.getElementById('checkoutOverlay')?.addEventListener('click', closeCheckout);
 
 const ADMIN_EMAIL = 'sinelnikovruslan45@gmail.com';
+const WEB3FORMS_KEY = '9f196991-7ce7-49ea-a397-ad2eb9b111dd';
+const API_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1') ? '' : '';
 
-/* ────────────────────────────────────────────
-   Web3Forms — primary email sender.
-   1. Реєстрація: https://web3forms.com → введи свій email → отримай Access Key.
-   2. Встав ключ нижче замість '9f196991-7ce7-49ea-a397-ad2eb9b111dd'.
-   3. Все. Жодної активації — листи летять одразу.
-   Безкоштовний тариф: 250 листів/міс.
-─────────────────────────────────────────── */
-const WEB3FORMS_KEY = '9f196991-7ce7-49ea-a397-ad2eb9b111dd'; // ⚠ Замінити на свій з web3forms.com
-
-function buildMailto(d, to) {
-  const subject = encodeURIComponent('ICEVAULT — нове замовлення від ' + (d.name || 'клієнта'));
-  const body = encodeURIComponent(
-    `Замовлення з сайту ICEVAULT\n\n` +
-    `Імʼя: ${d.name}\nEmail клієнта: ${d.email}\nТелефон: ${d.phone}\nМісто: ${d.city}\n` +
-    (d.comment ? `Коментар: ${d.comment}\n` : '') +
-    `\n${d.order_summary}\n`
-  );
-  return `mailto:${to}?subject=${subject}&body=${body}&cc=${d.email}`;
+async function sendViaBackend(formObj) {
+  const items = cart.map(i => ({ sku: i.id, name: `${i.brand} ${i.name}`, size: i.size, price: i.price, qty: i.qty }));
+  const r = await fetch((API_BASE || '') + '/api/orders', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...formObj, items }),
+  });
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok || !d.ok) throw new Error(d.error || ('HTTP ' + r.status));
+  return d;
 }
 
 async function sendViaWeb3Forms(formObj) {
-  if (!WEB3FORMS_KEY || WEB3FORMS_KEY === '9f196991-7ce7-49ea-a397-ad2eb9b111dd') {
-    throw new Error('web3forms-not-configured');
-  }
-  /* 1) Лист адміну */
-  const adminMsg = {
-    access_key: WEB3FORMS_KEY,
-    subject:    `ICEVAULT — нове замовлення від ${formObj.name}`,
-    from_name:  'ICEVAULT Shop',
-    email:      ADMIN_EMAIL,
-    replyto:    formObj.email,
-    message:    `Нове замовлення\n\nКлієнт: ${formObj.name}\nEmail: ${formObj.email}\nТелефон: ${formObj.phone}\nМісто: ${formObj.city}\n${formObj.comment ? 'Коментар: '+formObj.comment+'\n' : ''}\n${formObj.order_summary}`,
-  };
-  /* 2) Лист-підтвердження клієнту */
-  const customerMsg = {
-    access_key: WEB3FORMS_KEY,
-    subject:    '✓ Підтвердження замовлення ICEVAULT',
-    from_name:  'ICEVAULT',
-    email:      formObj.email,
-    replyto:    ADMIN_EMAIL,
-    message:    `Привіт, ${formObj.name}!\n\nДякуємо за замовлення в ICEVAULT. Деталі:\n\n${formObj.order_summary}\n\nМи звʼяжемось з тобою для підтвердження доставки.\n\n— Команда ICEVAULT`,
-  };
+  if (!WEB3FORMS_KEY) throw new Error('web3forms-not-configured');
   const post = (body) => fetch('https://api.web3forms.com/submit', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify(body),
   }).then(r => r.json());
-  const [a, c] = await Promise.all([post(adminMsg), post(customerMsg)]);
+  const [a, c] = await Promise.all([
+    post({ access_key: WEB3FORMS_KEY, subject: `ICEVAULT — нове замовлення від ${formObj.name}`,
+           from_name: 'ICEVAULT Shop', email: ADMIN_EMAIL, replyto: formObj.email,
+           message: `Клієнт: ${formObj.name}\nEmail: ${formObj.email}\nТелефон: ${formObj.phone}\nМісто: ${formObj.city}\n${formObj.comment ? 'Коментар: '+formObj.comment+'\n' : ''}\n${formObj.order_summary}` }),
+    post({ access_key: WEB3FORMS_KEY, subject: '✓ Підтвердження замовлення ICEVAULT',
+           from_name: 'ICEVAULT', email: formObj.email, replyto: ADMIN_EMAIL,
+           message: `Привіт, ${formObj.name}!\n\nДякуємо за замовлення. Деталі:\n\n${formObj.order_summary}\n\n— Команда ICEVAULT` }),
+  ]);
   if (!a.success) throw new Error('admin: ' + (a.message || 'failed'));
   if (!c.success) throw new Error('customer: ' + (c.message || 'failed'));
-  return { adminOk: true, customerOk: true };
 }
 
-async function sendViaFormSubmit(formObj, fd) {
-  if (!fd.has('_replyto')) fd.append('_replyto', formObj.email);
-  const res = await fetch('https://formsubmit.co/ajax/' + ADMIN_EMAIL, {
-    method: 'POST',
-    body: fd,
-    headers: { Accept: 'application/json' },
-  });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok || data.success === 'false' || data.success === false) {
-    throw new Error(data.message || ('HTTP ' + res.status));
-  }
-  return data;
+function buildMailto(d, to) {
+  const subject = encodeURIComponent('ICEVAULT — нове замовлення від ' + (d.name || 'клієнта'));
+  const body = encodeURIComponent(
+    `Замовлення з сайту ICEVAULT\n\nІмʼя: ${d.name}\nEmail: ${d.email}\nТелефон: ${d.phone}\nМісто: ${d.city}\n` +
+    (d.comment ? `Коментар: ${d.comment}\n` : '') + `\n${d.order_summary}\n`
+  );
+  return `mailto:${to}?subject=${subject}&body=${body}&cc=${d.email}`;
 }
 
 const checkoutForm = document.getElementById('checkoutForm');
@@ -1547,40 +1522,76 @@ if (checkoutForm) {
     e.preventDefault();
     const note = document.getElementById('checkoutNote');
     const submitBtn = checkoutForm.querySelector('.checkout-submit');
-    const fd = new FormData(checkoutForm);
-    const formObj = Object.fromEntries(fd);
+    const formObj = Object.fromEntries(new FormData(checkoutForm));
+    if (cart.length === 0) { note.innerHTML = '⚠ Кошик порожній.'; note.classList.add('warn'); return; }
 
-    if (note) { note.innerHTML = '⏳ Надсилаємо…'; note.classList.remove('ok','warn'); }
-    if (submitBtn) submitBtn.disabled = true;
+    note.innerHTML = '⏳ Надсилаємо…';
+    note.classList.remove('ok', 'warn');
+    submitBtn.disabled = true;
 
-    /* Спершу Web3Forms (миттєво). Якщо ключ не вказано — FormSubmit. */
-    let success = false;
+    let success = false, orderId = null;
     try {
-      await sendViaWeb3Forms(formObj);
+      const r = await sendViaBackend(formObj);
+      orderId = r.id;
       success = true;
-      note.innerHTML = `✓ Замовлення прийнято! Лист-підтвердження надіслано на <b>${formObj.email}</b>.`;
-    } catch (web3err) {
+      note.innerHTML = `✓ Замовлення <b>${r.id}</b> прийнято! Сума: <b>${r.total.toLocaleString('uk-UA')} ₴</b>.<br><small>Збережено в БД. Менеджер звʼяжеться з вами.</small>`;
+    } catch (backendErr) {
       try {
-        await sendViaFormSubmit(formObj, fd);
+        await sendViaWeb3Forms(formObj);
         success = true;
-        note.innerHTML = `✓ Замовлення надіслано на <b>${formObj.email}</b>.<br><small>Перший раз? Перевір gmail <b>${ADMIN_EMAIL}</b> — там лист FormSubmit з кнопкою <b>Activate</b>. Натисни її, далі все автоматично.</small>`;
-      } catch (fsErr) {
+        note.innerHTML = `✓ Замовлення надіслано на <b>${formObj.email}</b>.`;
+      } catch (web3err) {
         const link = buildMailto(formObj, ADMIN_EMAIL);
-        note.innerHTML = `⚠ Не вдалося надіслати автоматично. <a href="${link}" target="_blank" style="color:#c4b5fd;text-decoration:underline"><b>Відкрити поштовий клієнт →</b></a><br><small>Причина: ${web3err.message} / ${fsErr.message}</small>`;
+        note.innerHTML = `⚠ Backend та email недоступні. <a href="${link}" target="_blank" style="color:#c4b5fd;text-decoration:underline"><b>Відкрити поштовий клієнт →</b></a><br><small>${backendErr.message} / ${web3err.message}</small>`;
         note.classList.add('warn');
       }
     }
 
     if (success) {
       note.classList.add('ok');
+      try { localStorage.setItem('iv_last_order', orderId || ''); } catch {}
       cart = []; saveCart(); updateCartUI();
       setTimeout(() => {
         closeCheckout(); checkoutForm.reset();
         note.innerHTML = ''; note.classList.remove('ok');
-        if (submitBtn) submitBtn.disabled = false;
-      }, 6000);
+        submitBtn.disabled = false;
+      }, 6500);
     } else {
-      if (submitBtn) submitBtn.disabled = false;
+      submitBtn.disabled = false;
     }
   });
 }
+
+/* ═══════════════════════════════════════════════════════
+   33. BACKEND EXTRAS — pageview ping + order tracker
+═══════════════════════════════════════════════════════ */
+fetch('/api/pageview', {
+  method: 'POST', headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ path: location.pathname }),
+}).catch(() => {});
+
+window.trackOrder = async function (id) {
+  if (!id) return null;
+  try {
+    const r = await fetch('/api/orders/' + encodeURIComponent(id));
+    return r.ok ? r.json() : null;
+  } catch { return null; }
+};
+
+(function initOrderTracker() {
+  const btn = document.getElementById('trackOrderBtn');
+  const inp = document.getElementById('trackOrderInput');
+  const out = document.getElementById('trackOrderResult');
+  if (!btn || !inp || !out) return;
+  const last = localStorage.getItem('iv_last_order');
+  if (last) inp.value = last;
+  btn.addEventListener('click', async () => {
+    const id = inp.value.trim();
+    if (!id) { out.textContent = 'Введи ID замовлення'; return; }
+    out.textContent = '⏳ Шукаємо…';
+    const r = await window.trackOrder(id);
+    if (!r) { out.textContent = '⚠ Замовлення не знайдено'; return; }
+    const map = { new: 'Новий', processing: 'Обробляється', shipped: 'Відправлено', delivered: 'Доставлено', cancelled: 'Скасовано' };
+    out.innerHTML = `<b>${r.id}</b> — <span style="color:#10b981">${map[r.status] || r.status}</span> • ${r.total.toLocaleString('uk-UA')} ₴ • ${r.city}`;
+  });
+})();

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ICEVAULT — Admin</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Unbounded:wght@600;800&display=swap" rel="stylesheet" />
+<style>
+  body { font-family: 'Inter', sans-serif; }
+  .brand { font-family: 'Unbounded', sans-serif; letter-spacing: .12em; }
+  .card { background: #1e293b; border: 1px solid #334155; }
+  .pill-new        { background:#1e3a8a; color:#bfdbfe; }
+  .pill-processing { background:#854d0e; color:#fde68a; }
+  .pill-shipped    { background:#065f46; color:#bbf7d0; }
+  .pill-delivered  { background:#14532d; color:#86efac; }
+  .pill-cancelled  { background:#7f1d1d; color:#fecaca; }
+  .live-dot { width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;box-shadow:0 0 0 0 #22c55e;animation:p 1.5s infinite; }
+  @keyframes p { 0%{box-shadow:0 0 0 0 #22c55e80} 70%{box-shadow:0 0 0 10px #22c55e00} 100%{box-shadow:0 0 0 0 #22c55e00} }
+</style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+
+<header class="border-b border-slate-700 px-6 py-4 flex items-center justify-between">
+  <div class="flex items-center gap-3">
+    <span class="brand text-xl font-extrabold">ICEVAULT</span>
+    <span class="text-sm text-slate-400">Admin Dashboard</span>
+  </div>
+  <div class="flex items-center gap-3 text-sm">
+    <span class="live-dot"></span><span id="wsState" class="text-slate-300">connecting…</span>
+    <button id="logout" class="ml-4 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded">Logout</button>
+  </div>
+</header>
+
+<!-- TOKEN GATE -->
+<div id="gate" class="max-w-md mx-auto mt-24 card rounded-xl p-6">
+  <h2 class="text-lg font-semibold mb-3">Введи admin-token</h2>
+  <input id="tokenInput" type="password" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 mb-3" placeholder="ADMIN_TOKEN" />
+  <button id="enterBtn" class="w-full bg-indigo-500 hover:bg-indigo-600 rounded py-2 font-medium">Увійти</button>
+  <p class="text-xs text-slate-400 mt-3">Default: <code>icevault-admin-2026</code> (змінюй через env <code>ADMIN_TOKEN</code>).</p>
+</div>
+
+<main id="app" class="hidden max-w-7xl mx-auto p-6 space-y-6">
+
+  <!-- KPI -->
+  <section class="grid grid-cols-2 md:grid-cols-5 gap-4">
+    <div class="card p-4 rounded-xl"><div class="text-xs text-slate-400">Замовлень всього</div><div id="k_orders" class="text-2xl font-bold mt-1">—</div></div>
+    <div class="card p-4 rounded-xl"><div class="text-xs text-slate-400">Сьогодні</div><div id="k_today" class="text-2xl font-bold mt-1">—</div></div>
+    <div class="card p-4 rounded-xl"><div class="text-xs text-slate-400">Виручка</div><div id="k_rev" class="text-2xl font-bold mt-1">—</div></div>
+    <div class="card p-4 rounded-xl"><div class="text-xs text-slate-400">Перегляди</div><div id="k_views" class="text-2xl font-bold mt-1">—</div></div>
+    <div class="card p-4 rounded-xl"><div class="text-xs text-slate-400">Звернень</div><div id="k_contacts" class="text-2xl font-bold mt-1">—</div></div>
+  </section>
+
+  <!-- Charts row -->
+  <section class="grid lg:grid-cols-3 gap-4">
+    <div class="card p-4 rounded-xl lg:col-span-2">
+      <h3 class="font-semibold mb-2">Замовлення за 7 днів</h3>
+      <canvas id="chart7"></canvas>
+    </div>
+    <div class="card p-4 rounded-xl">
+      <h3 class="font-semibold mb-2">Топ міст</h3>
+      <canvas id="chartCities"></canvas>
+    </div>
+  </section>
+
+  <!-- Orders table -->
+  <section class="card rounded-xl overflow-hidden">
+    <div class="px-4 py-3 border-b border-slate-700 flex items-center justify-between">
+      <h3 class="font-semibold">Останні замовлення</h3>
+      <button id="refresh" class="text-sm bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded">Оновити</button>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-slate-800 text-slate-300">
+          <tr><th class="text-left p-3">ID</th><th class="text-left p-3">Клієнт</th><th class="text-left p-3">Місто</th><th class="text-right p-3">Сума</th><th class="p-3">Статус</th><th class="p-3">Дата</th></tr>
+        </thead>
+        <tbody id="ordersBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Contacts -->
+  <section class="card rounded-xl overflow-hidden">
+    <div class="px-4 py-3 border-b border-slate-700"><h3 class="font-semibold">Звернення з форми</h3></div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-slate-800 text-slate-300">
+          <tr><th class="text-left p-3">Імʼя</th><th class="text-left p-3">Email</th><th class="text-left p-3">Тема</th><th class="text-left p-3">Повідомлення</th><th class="p-3">Дата</th></tr>
+        </thead>
+        <tbody id="contactsBody"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let TOKEN = localStorage.getItem('iv_admin_token') || '';
+let chart7, chartCities;
+
+const fmt = (n) => Number(n).toLocaleString('uk-UA') + ' ₴';
+const fmtDate = (s) => new Date(s.replace(' ', 'T') + 'Z').toLocaleString('uk-UA');
+const escapeHtml = (s = '') => s.replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+async function api(p, opts = {}) {
+  const r = await fetch(p, { ...opts, headers: { ...(opts.headers||{}), 'Content-Type':'application/json', 'X-Admin-Token': TOKEN } });
+  if (r.status === 401) { logout(); throw new Error('unauthorized'); }
+  return r.json();
+}
+
+function login() {
+  TOKEN = $('tokenInput').value.trim();
+  localStorage.setItem('iv_admin_token', TOKEN);
+  bootstrap();
+}
+function logout() {
+  localStorage.removeItem('iv_admin_token'); TOKEN = '';
+  $('app').classList.add('hidden'); $('gate').classList.remove('hidden');
+}
+
+async function bootstrap() {
+  if (!TOKEN) { $('gate').classList.remove('hidden'); $('app').classList.add('hidden'); return; }
+  try {
+    await loadAll();
+    $('gate').classList.add('hidden'); $('app').classList.remove('hidden');
+    connectWs();
+  } catch { logout(); }
+}
+
+async function loadAll() {
+  await Promise.all([loadStats(), loadOrders(), loadContacts()]);
+}
+
+async function loadStats() {
+  const s = await fetch('/api/stats').then(r => r.json());
+  $('k_orders').textContent   = s.orders_total;
+  $('k_today').textContent    = s.orders_today;
+  $('k_rev').textContent      = fmt(s.revenue_total);
+  $('k_views').textContent    = s.views_today;
+  $('k_contacts').textContent = s.contacts_total;
+
+  const labels7 = s.last7.map(r => r.d.slice(5));
+  const data7   = s.last7.map(r => r.n);
+  if (chart7) chart7.destroy();
+  chart7 = new Chart($('chart7'), {
+    type: 'bar',
+    data: { labels: labels7, datasets: [{ label: 'Orders', data: data7, backgroundColor: '#6366f1', borderRadius: 6 }] },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+  });
+
+  const cityLabels = s.topCities.map(c => c.city);
+  const cityData   = s.topCities.map(c => c.n);
+  if (chartCities) chartCities.destroy();
+  chartCities = new Chart($('chartCities'), {
+    type: 'doughnut',
+    data: { labels: cityLabels, datasets: [{ data: cityData, backgroundColor: ['#6366f1','#8b5cf6','#ec4899','#10b981','#f59e0b'] }] },
+    options: { plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } } } }
+  });
+}
+
+async function loadOrders() {
+  const rows = await api('/api/admin/orders');
+  $('ordersBody').innerHTML = rows.map(r => `
+    <tr class="border-t border-slate-700 hover:bg-slate-800/50">
+      <td class="p-3 font-mono text-indigo-300">${r.id}</td>
+      <td class="p-3">${escapeHtml(r.name)}<div class="text-xs text-slate-400">${escapeHtml(r.email)} • ${escapeHtml(r.phone)}</div></td>
+      <td class="p-3">${escapeHtml(r.city)}</td>
+      <td class="p-3 text-right font-semibold">${fmt(r.total)}</td>
+      <td class="p-3 text-center">
+        <select data-id="${r.id}" class="status-sel px-2 py-1 rounded text-xs pill-${r.status}">
+          ${['new','processing','shipped','delivered','cancelled'].map(s => `<option value="${s}" ${s===r.status?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
+      <td class="p-3 text-xs text-slate-400">${fmtDate(r.created_at)}</td>
+    </tr>`).join('');
+  document.querySelectorAll('.status-sel').forEach(el => {
+    el.addEventListener('change', async (e) => {
+      await api('/api/admin/orders/' + e.target.dataset.id, { method:'PATCH', body: JSON.stringify({ status: e.target.value }) });
+      el.className = 'status-sel px-2 py-1 rounded text-xs pill-' + e.target.value;
+      loadStats();
+    });
+  });
+}
+
+async function loadContacts() {
+  const rows = await api('/api/admin/contacts');
+  $('contactsBody').innerHTML = rows.map(r => `
+    <tr class="border-t border-slate-700 hover:bg-slate-800/50">
+      <td class="p-3">${escapeHtml(r.name)}</td>
+      <td class="p-3 text-slate-300">${escapeHtml(r.email)}</td>
+      <td class="p-3">${escapeHtml(r.subject||'—')}</td>
+      <td class="p-3 max-w-md truncate" title="${escapeHtml(r.message)}">${escapeHtml(r.message)}</td>
+      <td class="p-3 text-xs text-slate-400">${fmtDate(r.created_at)}</td>
+    </tr>`).join('');
+}
+
+function connectWs() {
+  const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+  const ws = new WebSocket(`${proto}://${location.host}/ws`);
+  ws.onopen  = () => $('wsState').textContent = 'live';
+  ws.onclose = () => { $('wsState').textContent = 'disconnected'; setTimeout(connectWs, 3000); };
+  ws.onmessage = (e) => {
+    const ev = JSON.parse(e.data);
+    if (ev.type === 'order:new')    { loadOrders(); loadStats(); toast(`Нове замовлення ${ev.id} • ${fmt(ev.total)}`); }
+    if (ev.type === 'order:update') { loadOrders(); }
+    if (ev.type === 'contact:new')  { loadContacts(); toast(`Нове звернення від ${ev.name}`); }
+  };
+}
+
+function toast(text) {
+  const t = document.createElement('div');
+  t.className = 'fixed bottom-6 right-6 bg-indigo-500 text-white px-4 py-3 rounded-lg shadow-lg z-50';
+  t.textContent = text; document.body.appendChild(t);
+  setTimeout(() => t.remove(), 4000);
+}
+
+$('enterBtn').addEventListener('click', login);
+$('tokenInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') login(); });
+$('logout').addEventListener('click', logout);
+$('refresh').addEventListener('click', loadAll);
+
+bootstrap();
+</script>
+</body>
+</html>
