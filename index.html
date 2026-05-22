@@ -431,6 +431,19 @@
     </div>
   </section>
 
+  <!-- ─── TRACK ORDER ─── -->
+  <section class="track-order-section">
+    <div class="track-order-inner">
+      <div class="track-order-eyebrow">Відстеження</div>
+      <h3 class="track-order-title">Перевірити статус замовлення</h3>
+      <div class="track-order-form">
+        <input type="text" id="trackOrderInput" placeholder="IV-XXXXXXXX" maxlength="14" autocomplete="off" spellcheck="false" />
+        <button id="trackOrderBtn" class="btn-primary">Знайти</button>
+      </div>
+      <div id="trackOrderResult"></div>
+    </div>
+  </section>
+
   <!-- ─── DEVELOPER SECTION ─── -->
   <section class="developer-section" id="developer">
     <div class="dev-inner">
@@ -516,6 +529,13 @@
     <div class="ai-body" id="aiBody">
       <!-- step-by-step content rendered by JS -->
     </div>
+  </aside>
+
+  <!-- ─── PRODUCT DETAIL MODAL ─── -->
+  <div class="pmodal-overlay" id="pmodalOverlay"></div>
+  <aside class="pmodal" id="pmodal" role="dialog" aria-label="Деталі товару">
+    <button class="pmodal-close" id="pmodalClose" aria-label="Закрити">✕</button>
+    <div class="pmodal-inner" id="pmodalInner"></div>
   </aside>
 
   <!-- ─── CHECKOUT MODAL ─── -->

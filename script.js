@@ -12,7 +12,7 @@
    1. ВЛАСНИЙ ОБ'ЄКТ — Product
 ───────────────────────────────────────── */
 class Product {
-  constructor({ id, name, brand, category, price, badge, imgDesc, img, sizes }) {
+  constructor({ id, name, brand, category, price, badge, imgDesc, img, sizes, desc }) {
     this.id       = id;
     this.name     = name;
     this.brand    = brand;
@@ -22,6 +22,7 @@ class Product {
     this.imgDesc  = imgDesc;
     this.img      = img || null;
     this.sizes    = sizes || defaultSizesFor(category);
+    this.desc     = desc || null;
   }
   formatPrice() {
     return this.price.toLocaleString('uk-UA') + ' ₴';
@@ -368,7 +369,10 @@ function renderProducts(filter = 'all', opts = {}) {
           ${p.badge ? `<span class="item-badge-sm">${p.badge}</span>` : ''}
         </div>
         <h4 class="product-name">${p.name}</h4>
-        <span class="product-price">${p.formatPrice()}</span>
+        <div class="product-price-row">
+          <span class="product-price">${p.formatPrice()}</span>
+          <span class="stock-badge" id="stock-${p.id}"></span>
+        </div>
       </div>
     </div>
   `).join('');
@@ -382,6 +386,18 @@ function renderProducts(filter = 'all', opts = {}) {
   grid.querySelectorAll('.btn-share').forEach(btn => {
     btn.addEventListener('click', e => { e.stopPropagation(); shareProduct(btn.dataset.shareId); });
   });
+
+  // Card click → product modal
+  grid.querySelectorAll('.product-card').forEach(card => {
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('.btn-add-full, .btn-share')) return;
+      openProductModal(card.dataset.id);
+    });
+  });
+
+  // Stock badges
+  loadStockBadges(filtered.map(p => p.id));
 
   // Stagger animation (skipped when FLIP handles transitions)
   if (!skipStagger) {
@@ -1086,6 +1102,7 @@ document.addEventListener('keydown', e => {
 
     case 'Escape':
       closeCart();
+      closeProductModal();
       if (mobileMenu?.classList.contains('open')) {
         mobileMenu.classList.remove('open');
         menuBtn?.classList.remove('open');
@@ -1421,8 +1438,143 @@ document.getElementById('aiBtn')?.addEventListener('click', openAi);
 document.getElementById('aiClose')?.addEventListener('click', closeAi);
 document.getElementById('aiOverlay')?.addEventListener('click', closeAi);
 
+/* ─────────────────────────────────────────
+   Stock badges — batch fetch after render
+───────────────────────────────────────── */
+function loadStockBadges(ids) {
+  if (!ids.length) return;
+  const qs = ids.map(encodeURIComponent).join(',');
+  fetch('/api/stock/batch?skus=' + qs)
+    .then(r => r.ok ? r.json() : {})
+    .then(data => {
+      Object.entries(data).forEach(([id, qty]) => {
+        const el = document.getElementById('stock-' + id);
+        if (!el) return;
+        if (qty === 0)     { el.className = 'stock-badge stock-out'; el.textContent = 'Немає'; }
+        else if (qty < 5)  { el.className = 'stock-badge stock-low'; el.textContent = 'Мало'; }
+        else               { el.className = 'stock-badge stock-in';  el.textContent = 'В наявності'; }
+      });
+    })
+    .catch(() => {});
+}
+
 /* ═══════════════════════════════════════════════════════
-   32. CHECKOUT FORM (FormSubmit + autoresponder)
+   32. PRODUCT DETAIL MODAL
+═══════════════════════════════════════════════════════ */
+const productDescriptions = {
+  'bauer-supreme-mach':   'Флагман Bauer. Curv Composite конструкція, Carbon Curv Shell. Thermoformable boot + Form-fit X orthopedic insert. Вибір Коннора МакДевіда та еліти NHL.',
+  'bauer-vapor-x4':       'Vapor X4 для швидкісних гравців. Asymmetric Curv boot, Quarter Package для вузького профілю. Monoframe Curv Composite — жорсткість без компромісів.',
+  'bauer-vapor-3x':       'Vapor 3X — точне відчуття льоду для intermediate-рівня. Quarter package з Curv Composite, Pro-Blade ¼" steel. Ідеал для тих, хто росте як гравець.',
+  'bauer-pro-goal':       'Pro Goalie Skates — максимальна жорсткість для воротарів. True Composite boot, широка стійкість, SpeedPlate Custom orthotic.',
+  'bauer-supreme-flylite':'Vapor Flylite Stick — ultra-light constriction, kick point налаштований під швидкий постріл. Один з найлегших в каталозі Bauer.',
+  'bauer-hyp2':           'Vapor Hyperlite 2 — наступний рівень після Flylite. TeXtreme + Nano Carbon layering, мінімальна вага, максимальна точність.',
+  'ccm-ribcor':           'Ribcor 100K Pro — флагман CCM для гравців з прямим катанням. Custom Fit technology, XS Pro Carbon holder, SpeedBlade HD steel.',
+  'ccm-tacks-as550':      'Tacks AS 550 — AS-лінія для потужних гравців. Reinforced ankle/boot area. Відмінний перехід від початківця до серйозного рівня.',
+  'ccm-tacks-xfp':        'Tacks XF Pro — найпотужніший ковзан серії Tacks. Dual-Density ankle pads, Speed Core Stiffener, SpeedBlade XS holder.',
+  'ccm-ft7':              'Jetspeed FT7 Pro — швидкість і точність передачі. TeXtreme carbon shaft, kick point для hard shooters. Elite pick у NHL.',
+  'ccm-ft8':              'Jetspeed FT8 Pro — оновлена геометрія леза для контролю шайби. Nano-Carbon reinforcement, 3K woven carbon, покращена балістика пострілу.',
+  'true-catalyst':        'True Catalyst 9X4 — Custom Factory 3D fit прямо з фабрики. SL28 Carbon Composite, один з найлегших ковзанів у своєму класі.',
+  'true-cat-goal':        'Catalyst Goalie — той самий factory custom fit але для воротарів. True Composite shell, широкий профіль, зносостійкий Speedblade.',
+  'graf-g9035':           'Graf Ultra G9035 — швейцарська ручна робота з 1921 року. Натуральна шкіра, класичний профіль, для гравців які цінують традицію.',
+  'warrior-covert':       'Warrior Covert QRE 20 Pro — агресивний дизайн, максимальна швидкість передпліч. Carbon Composite reinforced, mid-kick point.',
+  'sw-rekker-m90':        'Sher-Wood Rekker M90 — карбонове волокно, унікальний баланс, культова класика Sher-Wood. Вибір для тих, хто любить традиції.',
+};
+
+function generateProductDesc(p) {
+  const map = {
+    skates:      `Преміум хокейні ковзани ${p.brand}. Інженерна точність для льодового майданчика. Обирайте розмір та замовляйте.`,
+    sticks:      `Хокейна ключка ${p.brand} — карбонова конструкція для точного пострілу та впевненого контролю шайби.`,
+    helmets:     `Захисний шолом ${p.brand} — сертифікований захист голови для ігрових навантажень. Комфорт і безпека.`,
+    gloves:      `Хокейні рукавиці ${p.brand} — преміум захист зап'ясть, відмінна мобільність для точних передач.`,
+    pads:        `Захисне спорядження ${p.brand} — надійний захист для активної гри на льоду. Легке і ергономічне.`,
+    bags:        `Хокейна сумка ${p.brand} — зручний та місткий спосіб транспортування всього необхідного спорядження.`,
+    accessories: `Хокейний аксесуар ${p.brand} — якість і функціональність для покращення вашої гри.`,
+  };
+  return map[p.category] || `Преміум хокейна екіпіровка ${p.brand} — для тих, хто не йде на компроміс.`;
+}
+
+function openProductModal(productId) {
+  const p = products.find(pr => pr.id === productId);
+  if (!p) return;
+  const overlay = document.getElementById('pmodalOverlay');
+  const modal   = document.getElementById('pmodal');
+  const inner   = document.getElementById('pmodalInner');
+  if (!overlay || !modal || !inner) return;
+
+  const desc = p.desc || productDescriptions[productId] || generateProductDesc(p);
+  let selectedSize = p.sizes[0] || '';
+
+  inner.innerHTML = `
+    <div class="pmodal-img-col">
+      ${p.img
+        ? `<img src="${p.img}" alt="${p.imgDesc}" />`
+        : `<div class="pmodal-img-ph">${p.imgDesc}</div>`}
+    </div>
+    <div class="pmodal-info-col">
+      <div class="pmodal-header">
+        <span class="pmodal-brand">${p.brand}</span>
+        ${p.badge ? `<span class="pmodal-badge-tag">${p.badge}</span>` : ''}
+      </div>
+      <h2 class="pmodal-name">${p.name}</h2>
+      <div class="pmodal-price">${p.formatPrice()}</div>
+      <p class="pmodal-desc">${desc}</p>
+      <div>
+        <div class="pmodal-section-label">Розмір</div>
+        <div class="pmodal-sizes">
+          ${p.sizes.map(s => `<button class="pmodal-size-chip${s === selectedSize ? ' selected' : ''}" data-size="${s}">${s}</button>`).join('')}
+        </div>
+      </div>
+      <div class="pmodal-stock in" id="pmodalStock">В наявності</div>
+      <button class="pmodal-add-btn" id="pmodalAddBtn" data-product-id="${p.id}">Додати в кошик</button>
+    </div>
+  `;
+
+  inner.querySelectorAll('.pmodal-size-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      inner.querySelectorAll('.pmodal-size-chip').forEach(c => c.classList.remove('selected'));
+      chip.classList.add('selected');
+      selectedSize = chip.dataset.size;
+    });
+  });
+
+  inner.querySelector('#pmodalAddBtn').addEventListener('click', () => {
+    const product = products.find(pr => pr.id === productId);
+    if (!product) return;
+    const existing = cart.find(i => i.id === productId);
+    if (existing) { existing.qty++; }
+    else { cart.push({ id: product.id, name: product.name, brand: product.brand, price: product.price, qty: 1, size: selectedSize }); }
+    saveCart(); updateCartUI();
+    closeProductModal();
+    openCart();
+  });
+
+  fetch('/api/stock/' + encodeURIComponent(productId))
+    .then(r => r.ok ? r.json() : null)
+    .then(data => {
+      const el = document.getElementById('pmodalStock');
+      if (!data || !el) return;
+      if (data.qty === 0)       { el.className = 'pmodal-stock out'; el.textContent = 'Немає в наявності'; }
+      else if (data.qty < 5)    { el.className = 'pmodal-stock low'; el.textContent = `Мало — ${data.qty} шт.`; }
+      else                      { el.className = 'pmodal-stock in';  el.textContent = 'В наявності'; }
+    })
+    .catch(() => {});
+
+  overlay.classList.add('open');
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeProductModal() {
+  document.getElementById('pmodalOverlay')?.classList.remove('open');
+  document.getElementById('pmodal')?.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('pmodalClose')?.addEventListener('click', closeProductModal);
+document.getElementById('pmodalOverlay')?.addEventListener('click', closeProductModal);
+
+/* ═══════════════════════════════════════════════════════
+   33. CHECKOUT FORM (FormSubmit + autoresponder)
 ═══════════════════════════════════════════════════════ */
 function buildOrderSummary() {
   if (cart.length === 0) return 'Кошик порожній';
@@ -1563,7 +1715,7 @@ if (checkoutForm) {
 }
 
 /* ═══════════════════════════════════════════════════════
-   33. BACKEND EXTRAS — pageview ping + order tracker
+   34. BACKEND EXTRAS — pageview ping + order tracker
 ═══════════════════════════════════════════════════════ */
 fetch('/api/pageview', {
   method: 'POST', headers: { 'Content-Type': 'application/json' },

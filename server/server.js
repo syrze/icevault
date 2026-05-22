@@ -5,11 +5,31 @@ import { WebSocketServer } from 'ws';
 import { nanoid } from 'nanoid';
 import { fileURLToPath } from 'url';
 import path from 'path';
+import nodemailer from 'nodemailer';
 import db from './db.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3000;
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || 'icevault-admin-2026';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'sinelnikovruslan45@gmail.com';
+
+const mailer = nodemailer.createTransport({
+  host:   process.env.SMTP_HOST || 'smtp.gmail.com',
+  port:   Number(process.env.SMTP_PORT) || 587,
+  secure: process.env.SMTP_SECURE === 'true',
+  auth:   process.env.SMTP_USER
+    ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
+    : undefined,
+});
+
+async function sendMail(opts) {
+  if (!process.env.SMTP_USER) return;
+  try {
+    await mailer.sendMail({ from: process.env.SMTP_FROM || process.env.SMTP_USER, ...opts });
+  } catch (e) {
+    console.error('[mail]', e.message);
+  }
+}
 
 const app = express();
 app.use(cors());
@@ -45,6 +65,12 @@ app.post('/api/orders', (req, res) => {
               VALUES (?,?,?,?,?,?,?,?)`).run(id, name, email, phone, city, comment, JSON.stringify(items), total);
   broadcast({ type: 'order:new', id, total, city, name });
   res.json({ ok: true, id, total, status: 'new' });
+
+  const itemLines = items.map(i => `  • ${i.name} ×${i.qty || 1} — ${((i.price * (i.qty || 1)) / 100).toFixed(0)} ₴`).join('\n');
+  sendMail({ to: ADMIN_EMAIL, subject: `ICEVAULT — замовлення ${id}`,
+    text: `Нове замовлення!\n\nID: ${id}\nКлієнт: ${name}\nEmail: ${email}\nТелефон: ${phone}\nМісто: ${city}\n${comment ? 'Коментар: ' + comment + '\n' : ''}\nТовари:\n${itemLines}\n\nСума: ${total} ₴` });
+  sendMail({ to: email, subject: `✓ Підтвердження замовлення ${id} — ICEVAULT`,
+    text: `Привіт, ${name}!\n\nДякуємо за замовлення ${id}.\n\nТовари:\n${itemLines}\n\nСума: ${total} ₴\n\nМенеджер звʼяжеться з вами найближчим часом.\n\n— Команда ICEVAULT` });
 });
 
 app.get('/api/orders/:id', (req, res) => {
@@ -77,6 +103,10 @@ app.post('/api/contact', (req, res) => {
     .run(name, email, phone, subject, message);
   broadcast({ type: 'contact:new', name, subject });
   res.json({ ok: true });
+
+  sendMail({ to: ADMIN_EMAIL,
+    subject: subject ? `ICEVAULT — "${subject}" від ${name}` : `ICEVAULT — повідомлення від ${name}`,
+    text: `Від: ${name} <${email}>\n${phone ? 'Телефон: ' + phone + '\n' : ''}Тема: ${subject || '—'}\n\n${message}` });
 });
 
 app.get('/api/admin/contacts', requireAdmin, (_req, res) => {
@@ -105,6 +135,17 @@ app.get('/api/stats', (_req, res) => {
 });
 
 /* ─── STOCK ─── */
+app.get('/api/stock/batch', (req, res) => {
+  const skus = (req.query.skus || '').split(',').slice(0, 80).map(s => s.trim()).filter(Boolean);
+  if (skus.length === 0) return res.json({});
+  const result = {};
+  skus.forEach(sku => {
+    const r = db.prepare('SELECT qty FROM stock WHERE sku=?').get(sku);
+    result[sku] = r?.qty ?? 99;
+  });
+  res.json(result);
+});
+
 app.get('/api/stock/:sku', (req, res) => {
   const r = db.prepare('SELECT qty FROM stock WHERE sku=?').get(req.params.sku);
   res.json({ sku: req.params.sku, qty: r?.qty ?? 99 });
