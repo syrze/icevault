@@ -1,0 +1,1626 @@
+[
+  {
+    "id": "bauer-supreme-mach",
+    "name": "Supreme MACH Skates",
+    "brand": "Bauer",
+    "category": "skates",
+    "price": 48000,
+    "badge": "TOP PRO",
+    "img": "photo/613471_01_9b29dde3-0f7c-4abe-ae25-5cbbe61857ff.png.webp",
+    "imgDesc": "Bauer Supreme MACH",
+    "sizes": [
+      "6",
+      "6.5",
+      "7",
+      "7.5",
+      "8",
+      "8.5",
+      "9",
+      "9.5",
+      "10",
+      "11"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-vapor-x4",
+    "name": "Vapor X4 Pro Skates",
+    "brand": "Bauer",
+    "category": "skates",
+    "price": 38500,
+    "badge": "TOP PRO",
+    "img": "photo/x4sr__1.png.webp",
+    "imgDesc": "Bauer Vapor X4 Pro",
+    "sizes": [
+      "6",
+      "6.5",
+      "7",
+      "7.5",
+      "8",
+      "8.5",
+      "9",
+      "9.5",
+      "10",
+      "11"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-vapor-3x",
+    "name": "Vapor 3X Skates",
+    "brand": "Bauer",
+    "category": "skates",
+    "price": 24800,
+    "badge": null,
+    "img": "photo/bauer-vapor-3x-intermediate-ice-hockey-skates-all-star-skates.webp",
+    "imgDesc": "Bauer Vapor 3X",
+    "sizes": [
+      "6",
+      "6.5",
+      "7",
+      "7.5",
+      "8",
+      "8.5",
+      "9",
+      "9.5",
+      "10",
+      "11"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-pro-goal",
+    "name": "Pro Goalie Skates",
+    "brand": "Bauer",
+    "category": "skates",
+    "price": 42000,
+    "badge": "GOALIE",
+    "img": "photo/proskate__1.png.webp",
+    "imgDesc": "Bauer Pro Goalie",
+    "sizes": [
+      "6",
+      "6.5",
+      "7",
+      "7.5",
+      "8",
+      "8.5",
+      "9",
+      "9.5",
+      "10",
+      "11"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-supreme-flylite",
+    "name": "Vapor Flylite Stick",
+    "brand": "Bauer",
+    "category": "sticks",
+    "price": 13200,
+    "badge": "NEW",
+    "img": "photo/20251118_162052-removebg-preview__36806.webp",
+    "imgDesc": "Bauer Vapor Flylite",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-hyp2",
+    "name": "Vapor Hyperlite 2 Stick",
+    "brand": "Bauer",
+    "category": "sticks",
+    "price": 15200,
+    "badge": "NEW",
+    "img": "photo/hyperlitestk__black_1_839e347d-e6b9-47cd-998c-26a5705bc34a_1250x.png.webp",
+    "imgDesc": "Bauer Vapor Hyperlite 2",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-flypro",
+    "name": "Vapor FlyPro Stick",
+    "brand": "Bauer",
+    "category": "sticks",
+    "price": 13800,
+    "badge": null,
+    "img": "photo/VaporFlyPro-SR-PLP-Image_fae11337-cb63-4172-bb69-8fd9d2673f70.png.webp",
+    "imgDesc": "Bauer Vapor FlyPro",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-twitch",
+    "name": "Vapor Twitch Stick",
+    "brand": "Bauer",
+    "category": "sticks",
+    "price": 12500,
+    "badge": null,
+    "img": "photo/VAPOR_STICK_TWITCH_SR_351x428_53ec89f8-cb5d-404a-bc20-c72f587f8cd2.png.webp",
+    "imgDesc": "Bauer Vapor Twitch",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-reakt-65",
+    "name": "RE-AKT 65 Helmet",
+    "brand": "Bauer",
+    "category": "helmets",
+    "price": 7200,
+    "badge": null,
+    "img": "photo/reakt65__black_1.png.webp",
+    "imgDesc": "Bauer RE-AKT 65",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-reakt-200",
+    "name": "RE-AKT 200 PRO Helmet",
+    "brand": "Bauer",
+    "category": "helmets",
+    "price": 8500,
+    "badge": null,
+    "img": "assets/p-bauer-reakt-new.avif",
+    "imgDesc": "Bauer RE-AKT 200 PRO",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-reakt-75",
+    "name": "RE-AKT 75 Helmet",
+    "brand": "Bauer",
+    "category": "helmets",
+    "price": 6400,
+    "badge": null,
+    "img": "photo/2D35C410-6403-4C8C-BF13-B85B374F8AD8_1_201_a-removebg-preview__14957.png",
+    "imgDesc": "Bauer RE-AKT 75",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-gloves",
+    "name": "Vapor 3X Pro Gloves",
+    "brand": "Bauer",
+    "category": "gloves",
+    "price": 9200,
+    "badge": null,
+    "img": "photo/Screenshot_2024-06-19_120431-removebg-preview.png.webp",
+    "imgDesc": "Bauer Vapor 3X Pro",
+    "sizes": [
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-x-shin",
+    "name": "Bauer X Shin Guards",
+    "brand": "Bauer",
+    "category": "pads",
+    "price": 4800,
+    "badge": null,
+    "img": "photo/BAUERXShinGuardIntermediate_1200x1200.png.webp",
+    "imgDesc": "Bauer X Shin",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-nsx-shin",
+    "name": "NSX Shin Guards",
+    "brand": "Bauer",
+    "category": "pads",
+    "price": 3900,
+    "badge": null,
+    "img": "photo/BauerNSXSHINGUARD_1200x1200.png.webp",
+    "imgDesc": "Bauer NSX Shin",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-x-elbow",
+    "name": "Bauer X Elbow Pads",
+    "brand": "Bauer",
+    "category": "pads",
+    "price": 3200,
+    "badge": null,
+    "img": "photo/Bauer-X-Ice-Hockey-Elbow-Pads-1.png",
+    "imgDesc": "Bauer X Elbow",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-flylite-eb",
+    "name": "Vapor Flylite Elbow JR",
+    "brand": "Bauer",
+    "category": "pads",
+    "price": 2950,
+    "badge": "JR",
+    "img": "photo/1064796_BTH25_PROTECTIVE_ELBOW_VAPOR_FLYLITE_JR_back_large.png.webp",
+    "imgDesc": "Bauer Flylite Elbow JR",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-pro-pant",
+    "name": "Pro Pant (Women)",
+    "brand": "Bauer",
+    "category": "pads",
+    "price": 5400,
+    "badge": null,
+    "img": "photo/1063710_BTH24_PROTECTIVE_PANT_WMNS-PRO-PANT_catalog-threequarter-front_REV.png.webp",
+    "imgDesc": "Bauer Pro Pant",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-goal-chest",
+    "name": "Reactor Pro Goalie Chest",
+    "brand": "Bauer",
+    "category": "pads",
+    "price": 14800,
+    "badge": "GOALIE",
+    "img": "photo/687121_01.png.webp",
+    "imgDesc": "Bauer Reactor Pro Chest",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-knee-pro",
+    "name": "Goal Knee Guard Pro",
+    "brand": "Bauer",
+    "category": "pads",
+    "price": 4100,
+    "badge": "GOALIE",
+    "img": "photo/1064956_BTH25_GOAL_KNEE-GUARD_PRO_SR_catalog-pair-front_23a0c4ca-c22b-4590-89ea-619c7e041782.png.webp",
+    "imgDesc": "Bauer Knee Guard Pro",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-ribcor",
+    "name": "Ribcor 100K Pro Skates",
+    "brand": "CCM",
+    "category": "skates",
+    "price": 32000,
+    "badge": "PRO",
+    "img": "photo/SK100KP-SR_7_512x512.png.webp",
+    "imgDesc": "CCM Ribcor 100K Pro",
+    "sizes": [
+      "6",
+      "6.5",
+      "7",
+      "7.5",
+      "8",
+      "8.5",
+      "9",
+      "9.5",
+      "10",
+      "11"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-tacks-as550",
+    "name": "Tacks AS 550 Skates",
+    "brand": "CCM",
+    "category": "skates",
+    "price": 18900,
+    "badge": "NEW",
+    "img": "photo/SKAS550_1024x1024.png.webp",
+    "imgDesc": "CCM Tacks AS 550",
+    "sizes": [
+      "6",
+      "6.5",
+      "7",
+      "7.5",
+      "8",
+      "8.5",
+      "9",
+      "9.5",
+      "10",
+      "11"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-tacks-as5",
+    "name": "Tacks AS5 Pro Skates",
+    "brand": "CCM",
+    "category": "skates",
+    "price": 29500,
+    "badge": null,
+    "img": "photo/SKAS5P-BLACKSTEEL_01.png",
+    "imgDesc": "CCM Tacks AS5 Pro",
+    "sizes": [
+      "6",
+      "6.5",
+      "7",
+      "7.5",
+      "8",
+      "8.5",
+      "9",
+      "9.5",
+      "10",
+      "11"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-tacks-as580",
+    "name": "Tacks AS 580 Skates",
+    "brand": "CCM",
+    "category": "skates",
+    "price": 22400,
+    "badge": null,
+    "img": "photo/SKAS580_SR_01.png",
+    "imgDesc": "CCM Tacks AS 580",
+    "sizes": [
+      "6",
+      "6.5",
+      "7",
+      "7.5",
+      "8",
+      "8.5",
+      "9",
+      "9.5",
+      "10",
+      "11"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-tacks-xfp",
+    "name": "Tacks XF Pro Skates",
+    "brand": "CCM",
+    "category": "skates",
+    "price": 34800,
+    "badge": "PRO",
+    "img": "photo/SKXFP-SR_01.png",
+    "imgDesc": "CCM Tacks XF Pro",
+    "sizes": [
+      "6",
+      "6.5",
+      "7",
+      "7.5",
+      "8",
+      "8.5",
+      "9",
+      "9.5",
+      "10",
+      "11"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-as-v-pro",
+    "name": "Tacks AS-V Pro Skates",
+    "brand": "CCM",
+    "category": "skates",
+    "price": 26900,
+    "badge": null,
+    "img": "photo/ccm-hockey-ccm-tacks-as-v-pro-skate-int.jpg.png",
+    "imgDesc": "CCM Tacks AS-V Pro",
+    "sizes": [
+      "6",
+      "6.5",
+      "7",
+      "7.5",
+      "8",
+      "8.5",
+      "9",
+      "9.5",
+      "10",
+      "11"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-ft7",
+    "name": "Jetspeed FT7 Pro Stick",
+    "brand": "CCM",
+    "category": "sticks",
+    "price": 14500,
+    "badge": "NEW",
+    "img": "photo/HSFT7P-SR_06.png",
+    "imgDesc": "CCM Jetspeed FT7 Pro",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-ft8",
+    "name": "Jetspeed FT8 Pro Stick",
+    "brand": "CCM",
+    "category": "sticks",
+    "price": 16200,
+    "badge": null,
+    "img": "photo/HSFT8P-SR-L_03.png",
+    "imgDesc": "CCM Jetspeed FT8 Pro",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-ft8cr",
+    "name": "Jetspeed FT8 Stick",
+    "brand": "CCM",
+    "category": "sticks",
+    "price": 13900,
+    "badge": null,
+    "img": "photo/HSFT8PCR.png",
+    "imgDesc": "CCM Jetspeed FT8",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-ftw",
+    "name": "Jetspeed FTW Women Stick",
+    "brand": "CCM",
+    "category": "sticks",
+    "price": 11800,
+    "badge": null,
+    "img": "photo/HSFTWP26B.png",
+    "imgDesc": "CCM Jetspeed FTW",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-tacks-hat",
+    "name": "Tacks 710 Helmet",
+    "brand": "CCM",
+    "category": "helmets",
+    "price": 6200,
+    "badge": null,
+    "img": "assets/p-ccm-tacks.webp",
+    "imgDesc": "CCM Tacks 710",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-next-elbow",
+    "name": "NEXT Elbow Pads",
+    "brand": "CCM",
+    "category": "pads",
+    "price": 2800,
+    "badge": null,
+    "img": "photo/EPNEXT23_01.png.webp",
+    "imgDesc": "CCM NEXT Elbow",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-goal-mask",
+    "name": "Axis A1 Pro Goalie Mask",
+    "brand": "CCM",
+    "category": "helmets",
+    "price": 16500,
+    "badge": "GOALIE",
+    "img": "photo/image_29309018-5c98-41c3-9bcc-5a8eec06da57.png.webp",
+    "imgDesc": "CCM Axis A1 Goalie Mask",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-asv-pants",
+    "name": "Tacks AS-V Pro Pants",
+    "brand": "CCM",
+    "category": "pads",
+    "price": 7200,
+    "badge": null,
+    "img": "photo/Screenshot2024-02-26at20.04.14.png.webp",
+    "imgDesc": "CCM Tacks AS-V Pants",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-xf-pants",
+    "name": "XF Pro Pants",
+    "brand": "CCM",
+    "category": "pads",
+    "price": 6500,
+    "badge": null,
+    "img": "photo/HPXF-SR-12_01-blue.png",
+    "imgDesc": "CCM XF Pro Pants",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "reebok-helm",
+    "name": "11K Pro Helmet",
+    "brand": "Reebok",
+    "category": "helmets",
+    "price": 5500,
+    "badge": null,
+    "img": "assets/p-reebok-helm.png",
+    "imgDesc": "Reebok 11K Helmet",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "graf-ultra",
+    "name": "Ultra G9035 Skates",
+    "brand": "Graf",
+    "category": "skates",
+    "price": 28000,
+    "badge": "HANDMADE",
+    "img": "photo/graf_9035_75_flex_ice_skates_1_grande.png.webp",
+    "imgDesc": "Graf Ultra G9035",
+    "sizes": [
+      "6",
+      "6.5",
+      "7",
+      "7.5",
+      "8",
+      "8.5",
+      "9",
+      "9.5",
+      "10",
+      "11"
+    ],
+    "desc": null
+  },
+  {
+    "id": "true-catalyst",
+    "name": "Catalyst 9X4 Skates",
+    "brand": "True Hockey",
+    "category": "skates",
+    "price": 36200,
+    "badge": "NEW",
+    "img": "photo/2024_Hockey_Catalyst_9x4_PlayerSkate_45AngleFront_Main-1600x1600-210612d_512x512.png.webp",
+    "imgDesc": "True Catalyst 9X4",
+    "sizes": [
+      "6",
+      "6.5",
+      "7",
+      "7.5",
+      "8",
+      "8.5",
+      "9",
+      "9.5",
+      "10",
+      "11"
+    ],
+    "desc": null
+  },
+  {
+    "id": "true-cat-goal",
+    "name": "Catalyst 7 Goalie Skates",
+    "brand": "True Hockey",
+    "category": "skates",
+    "price": 34800,
+    "badge": "GOALIE",
+    "img": "photo/33.png",
+    "imgDesc": "True Catalyst Goalie",
+    "sizes": [
+      "6",
+      "6.5",
+      "7",
+      "7.5",
+      "8",
+      "8.5",
+      "9",
+      "9.5",
+      "10",
+      "11"
+    ],
+    "desc": null
+  },
+  {
+    "id": "true-ax9",
+    "name": "AX9 Pro Stick",
+    "brand": "True Hockey",
+    "category": "sticks",
+    "price": 16800,
+    "badge": "TOP",
+    "img": "assets/p-true-ax9-new.webp",
+    "imgDesc": "True AX9",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "sw-rekker",
+    "name": "Rekker M90 Stick",
+    "brand": "Sher-Wood",
+    "category": "sticks",
+    "price": 11200,
+    "badge": null,
+    "img": "assets/p-sw-rekker.webp",
+    "imgDesc": "Sher-Wood Rekker M90",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "sw-pads",
+    "name": "Code I Pro Shoulder Pads",
+    "brand": "Sher-Wood",
+    "category": "pads",
+    "price": 6900,
+    "badge": null,
+    "img": "assets/p-sw-pads.png",
+    "imgDesc": "Sher-Wood Code I Pro",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "sw-rx3-eb",
+    "name": "Rekker RX3 Elbow Pads",
+    "brand": "Sher-Wood",
+    "category": "pads",
+    "price": 3400,
+    "badge": null,
+    "img": "photo/icehockey_elbow_pad_rx3_front_036_1.png.webp",
+    "imgDesc": "Sher-Wood RX3 Elbow",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "warrior-v4-goal",
+    "name": "V4 Pro Goalie Stick",
+    "brand": "Warrior",
+    "category": "sticks",
+    "price": 14200,
+    "badge": "GOALIE",
+    "img": "photo/1.png",
+    "imgDesc": "Warrior V4 Pro Goalie",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "warrior-ritual-asg",
+    "name": "Ritual ASG Pro Stick",
+    "brand": "Warrior",
+    "category": "sticks",
+    "price": 15800,
+    "badge": "GOALIE",
+    "img": "photo/QR1021L6_BK_P_1.png",
+    "imgDesc": "Warrior Ritual ASG Pro",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "warrior-ritual-g6",
+    "name": "Ritual G6E Goal Stick",
+    "brand": "Warrior",
+    "category": "sticks",
+    "price": 13500,
+    "badge": "GOALIE",
+    "img": "photo/QRM23L6_TWI_A_1.png",
+    "imgDesc": "Warrior Ritual G6E",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "warrior-qre",
+    "name": "Covert QRE 20 Pro Stick",
+    "brand": "Warrior",
+    "category": "sticks",
+    "price": 13500,
+    "badge": "PRO",
+    "img": "assets/p-warrior-qre-new.webp",
+    "imgDesc": "Warrior Covert QRE 20",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "warrior-gloves",
+    "name": "Alpha DX Pro Gloves",
+    "brand": "Warrior",
+    "category": "gloves",
+    "price": 8900,
+    "badge": null,
+    "img": "assets/p-warrior-gloves.webp",
+    "imgDesc": "Warrior Alpha DX Pro",
+    "sizes": [
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "desc": null
+  },
+  {
+    "id": "jersey-canada",
+    "name": "Vintage Canada Jersey",
+    "brand": "Reebok",
+    "category": "pads",
+    "price": 4800,
+    "badge": "RETRO",
+    "img": "photo/VS-IH-CAN-1b_593e11f9-8b0e-46b8-a907-d328be46b97e.png.webp",
+    "imgDesc": "Canada Jersey",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "fischer-rc-one-xpro",
+    "name": "RC One XPro Stick",
+    "brand": "Fischer",
+    "category": "sticks",
+    "price": 11400,
+    "badge": "NEW",
+    "img": "photo/stick-fischer-rc-one-xpro-sr.jpg",
+    "imgDesc": "Fischer RC One XPro",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "fischer-rc-one-is2",
+    "name": "RC One IS2 Stick",
+    "brand": "Fischer",
+    "category": "sticks",
+    "price": 9800,
+    "badge": null,
+    "img": "photo/FischerRCOneIS2_2_1200x1200.png.webp",
+    "imgDesc": "Fischer RC One IS2",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "sw-morph-pro",
+    "name": "Rekker Morph Pro Stick",
+    "brand": "Sher-Wood",
+    "category": "sticks",
+    "price": 13800,
+    "badge": "PRO",
+    "img": "photo/sherwood-sw-rekker-morph-pro-stick-sr.jpg.png",
+    "imgDesc": "Sher-Wood Rekker Morph Pro",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "sw-pmp-700",
+    "name": "Feather-Balanced PMP 700",
+    "brand": "Sher-Wood",
+    "category": "sticks",
+    "price": 4200,
+    "badge": "CLASSIC",
+    "img": "photo/tkachu_transparent.png.webp",
+    "imgDesc": "Sher-Wood PMP 700",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "sw-icon",
+    "name": "Icon Composite Stick",
+    "brand": "Sher-Wood",
+    "category": "sticks",
+    "price": 6900,
+    "badge": null,
+    "img": "photo/sherwood-icon-composite-stick-senior-right-3bf63035-6cd4-4e47-b918-1df36edafb9e.png.avif",
+    "imgDesc": "Sher-Wood Icon Composite",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "sw-t60x-shin",
+    "name": "T60x Shin Guards",
+    "brand": "Sher-Wood",
+    "category": "pads",
+    "price": 3400,
+    "badge": null,
+    "img": "photo/334489420__01______a_480x480.png.webp",
+    "imgDesc": "Sher-Wood T60x Shin",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "warrior-swagger",
+    "name": "Swagger Pro Goal Stick",
+    "brand": "Warrior",
+    "category": "sticks",
+    "price": 12900,
+    "badge": "GOALIE",
+    "img": "photo/8688349e-8e54-4f86-bbbc-0fce4dba4890.0ac61630f5876f51fde36db5caeb13b3.png",
+    "imgDesc": "Warrior Swagger Pro Goalie",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-bag-premium-jr",
+    "name": "Premium Carry Bag JR",
+    "brand": "Bauer",
+    "category": "bags",
+    "price": 2800,
+    "badge": "JR",
+    "img": "photo/bauerpremiumcarrybagjunior__black_1_1445x.png.webp",
+    "imgDesc": "Bauer Premium Carry Bag JR",
+    "sizes": [
+      "JR",
+      "SR",
+      "PRO"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-bag-core-jr",
+    "name": "Core Carry Bag JR",
+    "brand": "Bauer",
+    "category": "bags",
+    "price": 2200,
+    "badge": null,
+    "img": "photo/1063630_BTH24_BAG_CORECARRY_JR_BLK_catalog-threequarter-front_1445x.png.webp",
+    "imgDesc": "Bauer Core Carry Bag JR",
+    "sizes": [
+      "JR",
+      "SR",
+      "PRO"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-bag-elite-sr",
+    "name": "Elite Wheeled Bag SR",
+    "brand": "Bauer",
+    "category": "bags",
+    "price": 4900,
+    "badge": "WHEELED",
+    "img": "photo/1063632_BTH24_BAG_ELITEWHEELED_SR_BLK_catalog-threequarter-front_edit_1250x.png.webp",
+    "imgDesc": "Bauer Elite Wheeled Bag SR",
+    "sizes": [
+      "JR",
+      "SR",
+      "PRO"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-bag-pro",
+    "name": "Pro Carry Bag",
+    "brand": "CCM",
+    "category": "bags",
+    "price": 2600,
+    "badge": null,
+    "img": "photo/B54037-12_01.png",
+    "imgDesc": "CCM Pro Carry Bag",
+    "sizes": [
+      "JR",
+      "SR",
+      "PRO"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-bag-t9",
+    "name": "Team Pro T9 Bag",
+    "brand": "CCM",
+    "category": "bags",
+    "price": 3100,
+    "badge": "PRO",
+    "img": "photo/BTPRO-T9_01.png",
+    "imgDesc": "CCM Team Pro T9 Bag",
+    "sizes": [
+      "JR",
+      "SR",
+      "PRO"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-bag-sports",
+    "name": "Sports Duffle Bag",
+    "brand": "CCM",
+    "category": "bags",
+    "price": 1900,
+    "badge": null,
+    "img": "photo/BSPORTS-12_01.png",
+    "imgDesc": "CCM Sports Duffle",
+    "sizes": [
+      "JR",
+      "SR",
+      "PRO"
+    ],
+    "desc": null
+  },
+  {
+    "id": "shock-gel-max",
+    "name": "Gel Max Mouthguard",
+    "brand": "Shock Doctor",
+    "category": "accessories",
+    "price": 650,
+    "badge": null,
+    "img": "photo/shock-doctor-gel-max-mouthguard-mouthguard-sd-gmm-bk-ad-black-888748.png.webp",
+    "imgDesc": "Shock Doctor Gel Max",
+    "sizes": [
+      "JR",
+      "SR",
+      "ONE"
+    ],
+    "desc": null
+  },
+  {
+    "id": "shock-ultra2",
+    "name": "Ultra 2 STC Mouthguard",
+    "brand": "Shock Doctor",
+    "category": "accessories",
+    "price": 890,
+    "badge": "PRO",
+    "img": "photo/SD_7501_Ultra2.png.webp",
+    "imgDesc": "Shock Doctor Ultra 2 STC",
+    "sizes": [
+      "JR",
+      "SR",
+      "ONE"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-mask-930",
+    "name": "Profile 930 Goalie Mask",
+    "brand": "Bauer",
+    "category": "helmets",
+    "price": 9800,
+    "badge": "GOALIE",
+    "img": "photo/1063231_BTH24_GOAL_MASK_930_SR_catalog-threequarter-front_90c9d6b5-b674-43a6-b486-63741cdf19ba.png.webp",
+    "imgDesc": "Bauer Profile 930 Mask",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-mask-940",
+    "name": "Profile 940 Cat-Eye Mask",
+    "brand": "Bauer",
+    "category": "helmets",
+    "price": 14200,
+    "badge": "GOALIE",
+    "img": "photo/1064943_BTH25_GOAL_MASK_940_CAT-EYE_WHT_front.png.webp",
+    "imgDesc": "Bauer Profile 940 Cat-Eye",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-elite-chest",
+    "name": "Elite Goalie Chest",
+    "brand": "Bauer",
+    "category": "pads",
+    "price": 18900,
+    "badge": "GOALIE",
+    "img": "photo/Bauer-Elite-Goalie-Chest-Arms-Protector-copy.png",
+    "imgDesc": "Bauer Elite Goalie Chest",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-shadow-chest",
+    "name": "Shadow Goalie Chest",
+    "brand": "Bauer",
+    "category": "pads",
+    "price": 21500,
+    "badge": "PRO",
+    "img": "photo/shadowchest__1.png.webp",
+    "imgDesc": "Bauer Shadow Goalie Chest",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-gsx-chest",
+    "name": "GSX Goalie Chest",
+    "brand": "Bauer",
+    "category": "pads",
+    "price": 8400,
+    "badge": "GOALIE",
+    "img": "photo/gsxchest__black_1.png.webp",
+    "imgDesc": "Bauer GSX Goalie Chest",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-elite-goal-stick",
+    "name": "Elite Goalie Stick",
+    "brand": "Bauer",
+    "category": "sticks",
+    "price": 11800,
+    "badge": "GOALIE",
+    "img": "photo/elitegoalstick__black_1_9400f896-a88b-466e-9989-2a21065038c8.png.webp",
+    "imgDesc": "Bauer Elite Goal Stick",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-gsx-goal",
+    "name": "GSX Goalie Stick",
+    "brand": "Bauer",
+    "category": "sticks",
+    "price": 6400,
+    "badge": "GOALIE",
+    "img": "photo/Bauer-GSX-Goalie-Stick-Silver-Black.png",
+    "imgDesc": "Bauer GSX Goalie Stick",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-pro-goal-jock",
+    "name": "Pro Goalie Jock",
+    "brand": "Bauer",
+    "category": "pads",
+    "price": 2400,
+    "badge": "GOALIE",
+    "img": "photo/Bauer-Pro-Goalie-Jock2.png",
+    "imgDesc": "Bauer Pro Goalie Jock",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-elite-goal-jock",
+    "name": "Elite Goalie Jock",
+    "brand": "Bauer",
+    "category": "pads",
+    "price": 3100,
+    "badge": "GOALIE",
+    "img": "photo/1065224_BTH25_GOAL_JOCK_ELITE_SR_catalog-front_276f92bb-b2e6-4e17-8452-917d1b175a6f_1946x.png.webp",
+    "imgDesc": "Bauer Elite Goalie Jock",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-crew-sock",
+    "name": "Crew Sock",
+    "brand": "Bauer",
+    "category": "accessories",
+    "price": 320,
+    "badge": null,
+    "img": "photo/Bauercrewsock_Black__01_1250x.png.webp",
+    "imgDesc": "Bauer Crew Sock",
+    "sizes": [
+      "JR",
+      "SR",
+      "ONE"
+    ],
+    "desc": null
+  },
+  {
+    "id": "bauer-skate-socks",
+    "name": "Performance Skate Socks",
+    "brand": "Bauer",
+    "category": "accessories",
+    "price": 480,
+    "badge": null,
+    "img": "photo/1065353_BTH25_APPAREL_SKATE-SOCKS_PERF-TALL_SR_9945_1445x.png.webp",
+    "imgDesc": "Bauer Skate Socks",
+    "sizes": [
+      "JR",
+      "SR",
+      "ONE"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-axis19-mask",
+    "name": "Axis 19 Goalie Mask",
+    "brand": "CCM",
+    "category": "helmets",
+    "price": 8200,
+    "badge": "GOALIE",
+    "img": "photo/CCM-Axis-19-Mask-Certified.png",
+    "imgDesc": "CCM Axis 19 Mask",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-axis-a15-mask",
+    "name": "Axis A1.5 Goalie Mask",
+    "brand": "CCM",
+    "category": "helmets",
+    "price": 10400,
+    "badge": "GOALIE",
+    "img": "photo/goalie-masks-ccm-axis-a1-5-senior-goalie-mask-decal-1221726744_1800x1800.png.webp",
+    "imgDesc": "CCM Axis A1.5 Mask",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-axis-a19-chest",
+    "name": "Axis A19 Goalie Chest",
+    "brand": "CCM",
+    "category": "pads",
+    "price": 17200,
+    "badge": "GOALIE",
+    "img": "photo/CCM-Axis-A19-Goalie-Chest-Arms-Protector.png",
+    "imgDesc": "CCM Axis A19 Chest",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-tacks-pro-pads",
+    "name": "Tacks Pro Goalie Pads",
+    "brand": "CCM",
+    "category": "pads",
+    "price": 34500,
+    "badge": "TOP PRO",
+    "img": "photo/CCM26_DTC_TACKS-PRO.png",
+    "imgDesc": "CCM Tacks Pro Goalie Pads",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-ab-pro-chest",
+    "name": "AB Pro Spec Goalie Chest",
+    "brand": "CCM",
+    "category": "pads",
+    "price": 24800,
+    "badge": "PRO",
+    "img": "photo/ABPROSPEC_01.png",
+    "imgDesc": "CCM AB Pro Spec Chest",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-next-shin",
+    "name": "Next Shin Guards",
+    "brand": "CCM",
+    "category": "pads",
+    "price": 3400,
+    "badge": "NEW",
+    "img": "photo/SGNEXT23_01_62023f4d-9216-4e37-9ebd-a6e90b93a2a4_1200x1200.png.webp",
+    "imgDesc": "CCM Next Shin",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-xf-shin",
+    "name": "Tacks XF Shin Guards",
+    "brand": "CCM",
+    "category": "pads",
+    "price": 5200,
+    "badge": null,
+    "img": "photo/SGXF-SR_01.png",
+    "imgDesc": "CCM Tacks XF Shin",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-xf-goal-stick",
+    "name": "XF Pro Goalie Stick",
+    "brand": "CCM",
+    "category": "sticks",
+    "price": 13600,
+    "badge": "GOALIE",
+    "img": "photo/HSGXFP_RD_07.png",
+    "imgDesc": "CCM XF Pro Goal Stick",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-vector-goal-stick",
+    "name": "Vector Goalie Stick",
+    "brand": "CCM",
+    "category": "sticks",
+    "price": 8900,
+    "badge": "GOALIE",
+    "img": "photo/HSGVZ25C-NV.png",
+    "imgDesc": "CCM Vector Goalie Stick",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-pro-mask-wht",
+    "name": "Axis Pro Goalie Mask (White)",
+    "brand": "CCM",
+    "category": "helmets",
+    "price": 13800,
+    "badge": "PRO",
+    "img": "photo/GFAF9-SR-01_01.png",
+    "imgDesc": "CCM Axis Pro Mask White",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-pro-mask-blk",
+    "name": "Axis Pro Goalie Mask (Black)",
+    "brand": "CCM",
+    "category": "helmets",
+    "price": 13800,
+    "badge": "PRO",
+    "img": "photo/GFAF9CCE-BK_01.png",
+    "imgDesc": "CCM Axis Pro Mask Black",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "vaughn-gp-e79",
+    "name": "GP E7.9 Goalie Pads",
+    "brand": "Vaughn",
+    "category": "pads",
+    "price": 21800,
+    "badge": "GOALIE",
+    "img": "photo/GPE7.9CC-WH.WH.BK.BK.png",
+    "imgDesc": "Vaughn GP E7.9 Pads",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "vaughn-vp-ion-pro",
+    "name": "VP Ion Pro Goalie Chest",
+    "brand": "Vaughn",
+    "category": "pads",
+    "price": 19400,
+    "badge": "PRO",
+    "img": "photo/vp-ion-pro-front_1530.png",
+    "imgDesc": "Vaughn VP Ion Pro Chest",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "warrior-v4-pro-wh",
+    "name": "V4 Pro White Goal Stick",
+    "brand": "Warrior",
+    "category": "sticks",
+    "price": 14800,
+    "badge": "GOALIE",
+    "img": "photo/V4P23L4_WH_A_1.png",
+    "imgDesc": "Warrior V4 Pro White",
+    "sizes": [
+      "JR",
+      "INT",
+      "SR"
+    ],
+    "desc": null
+  },
+  {
+    "id": "warrior-jock",
+    "name": "Alpha Pro Jock",
+    "brand": "Warrior",
+    "category": "accessories",
+    "price": 1450,
+    "badge": null,
+    "img": "photo/warrior-alpha-jock-roller-hockey-accessories-31.webp",
+    "imgDesc": "Warrior Alpha Jock",
+    "sizes": [
+      "JR",
+      "SR",
+      "ONE"
+    ],
+    "desc": null
+  },
+  {
+    "id": "ccm-next-shin-yt",
+    "name": "Next Shin Guards Youth",
+    "brand": "CCM",
+    "category": "pads",
+    "price": 2200,
+    "badge": "JR",
+    "img": "photo/SGNEXT23_YT_01.png",
+    "imgDesc": "CCM Next Shin YT",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "cp51-evo",
+    "name": "CP51 EVO Chest Protector",
+    "brand": "Byte",
+    "category": "pads",
+    "price": 6200,
+    "badge": null,
+    "img": "photo/CP51_EVO_0.1_FRONT_9891176b-9cf0-4df4-904b-9607b2d6c5f2.png.webp",
+    "imgDesc": "Byte CP51 EVO",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "byte-knee",
+    "name": "Knee/Shin Pads",
+    "brand": "Byte",
+    "category": "pads",
+    "price": 1800,
+    "badge": null,
+    "img": "photo/ByteKneePadsFront.png.webp",
+    "imgDesc": "Byte Knee/Shin Pads",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "desc": null
+  },
+  {
+    "id": "usa-tee",
+    "name": "Team USA Hockey Tee",
+    "brand": "Reebok",
+    "category": "accessories",
+    "price": 1290,
+    "badge": "RETRO",
+    "img": "photo/tshirt-usa-white-back-510x510-1.png",
+    "imgDesc": "USA Hockey Tee",
+    "sizes": [
+      "JR",
+      "SR",
+      "ONE"
+    ],
+    "desc": null
+  }
+]

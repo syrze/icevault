@@ -95,30 +95,42 @@
 </main>
 
 <script>
+// коротка функція-помічник: знайти елемент на сторінці за його id
 const $ = (id) => document.getElementById(id);
+// admin-токен (пароль) зберігаємо у браузері, щоб не вводити щоразу
 let TOKEN = localStorage.getItem('iv_admin_token') || '';
+// посилання на два графіки (Chart.js), щоб потім їх можна було перемалювати
 let chart7, chartCities;
 
+// форматує число як ціну: 48000 -> "48 000 ₴"
 const fmt = (n) => Number(n).toLocaleString('uk-UA') + ' ₴';
+// перетворює дату з бази на читабельний український формат
 const fmtDate = (s) => new Date(s.replace(' ', 'T') + 'Z').toLocaleString('uk-UA');
+// екранує спецсимволи (<, >, & ...) — захист від XSS, щоб текст з форми не виконався як код
 const escapeHtml = (s = '') => s.replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
+// універсальний запит до захищених admin-ендпоінтів.
+// до кожного запиту додаємо заголовок X-Admin-Token. Якщо сервер відповів 401 — токен невірний, виходимо.
 async function api(p, opts = {}) {
   const r = await fetch(p, { ...opts, headers: { ...(opts.headers||{}), 'Content-Type':'application/json', 'X-Admin-Token': TOKEN } });
   if (r.status === 401) { logout(); throw new Error('unauthorized'); }
   return r.json();
 }
 
+// вхід: беремо токен з поля, зберігаємо в браузері, пробуємо завантажити дані
 function login() {
   TOKEN = $('tokenInput').value.trim();
   localStorage.setItem('iv_admin_token', TOKEN);
   bootstrap();
 }
+// вихід: стираємо токен і повертаємо екран входу
 function logout() {
   localStorage.removeItem('iv_admin_token'); TOKEN = '';
   $('app').classList.add('hidden'); $('gate').classList.remove('hidden');
 }
 
+// старт панелі: якщо токена нема — показуємо вікно входу;
+// якщо є — вантажимо всі дані, ховаємо вікно входу, підключаємо живі оновлення (WebSocket)
 async function bootstrap() {
   if (!TOKEN) { $('gate').classList.remove('hidden'); $('app').classList.add('hidden'); return; }
   try {
@@ -128,27 +140,32 @@ async function bootstrap() {
   } catch { logout(); }
 }
 
+// завантажити одразу всі три блоки даних паралельно (статистику, замовлення, звернення)
 async function loadAll() {
   await Promise.all([loadStats(), loadOrders(), loadContacts()]);
 }
 
+// завантажує KPI-цифри зверху і малює два графіки
 async function loadStats() {
   const s = await fetch('/api/stats').then(r => r.json());
+  // вставляємо цифри у карточки KPI
   $('k_orders').textContent   = s.orders_total;
   $('k_today').textContent    = s.orders_today;
   $('k_rev').textContent      = fmt(s.revenue_total);
   $('k_views').textContent    = s.views_today;
   $('k_contacts').textContent = s.contacts_total;
 
+  // стовпчиковий графік: кількість замовлень за останні 7 днів
   const labels7 = s.last7.map(r => r.d.slice(5));
   const data7   = s.last7.map(r => r.n);
-  if (chart7) chart7.destroy();
+  if (chart7) chart7.destroy();   // якщо графік уже був — прибираємо старий перед перемалюванням
   chart7 = new Chart($('chart7'), {
     type: 'bar',
     data: { labels: labels7, datasets: [{ label: 'Orders', data: data7, backgroundColor: '#6366f1', borderRadius: 6 }] },
     options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
   });
 
+  // кругова діаграма: топ міст за кількістю замовлень
   const cityLabels = s.topCities.map(c => c.city);
   const cityData   = s.topCities.map(c => c.n);
   if (chartCities) chartCities.destroy();
@@ -159,6 +176,7 @@ async function loadStats() {
   });
 }
 
+// завантажує таблицю замовлень і будує рядки HTML
 async function loadOrders() {
   const rows = await api('/api/admin/orders');
   $('ordersBody').innerHTML = rows.map(r => `
@@ -174,6 +192,7 @@ async function loadOrders() {
       </td>
       <td class="p-3 text-xs text-slate-400">${fmtDate(r.created_at)}</td>
     </tr>`).join('');
+  // на кожен випадаючий список статусу вішаємо обробник: при зміні — шлемо PATCH на сервер і оновлюємо колір
   document.querySelectorAll('.status-sel').forEach(el => {
     el.addEventListener('change', async (e) => {
       await api('/api/admin/orders/' + e.target.dataset.id, { method:'PATCH', body: JSON.stringify({ status: e.target.value }) });
@@ -183,6 +202,7 @@ async function loadOrders() {
   });
 }
 
+// завантажує таблицю звернень з форми контактів
 async function loadContacts() {
   const rows = await api('/api/admin/contacts');
   $('contactsBody').innerHTML = rows.map(r => `
@@ -195,6 +215,9 @@ async function loadContacts() {
     </tr>`).join('');
 }
 
+// підключення до WebSocket — "жива" лінія до сервера для миттєвих оновлень.
+// коли приходить подія (нове замовлення/звернення) — одразу оновлюємо таблиці без перезавантаження.
+// якщо звʼязок обірвався — пробуємо перепідключитись через 3 секунди.
 function connectWs() {
   const proto = location.protocol === 'https:' ? 'wss' : 'ws';
   const ws = new WebSocket(`${proto}://${location.host}/ws`);
@@ -208,6 +231,7 @@ function connectWs() {
   };
 }
 
+// показує спливаюче повідомлення (toast) у кутку на 4 секунди
 function toast(text) {
   const t = document.createElement('div');
   t.className = 'fixed bottom-6 right-6 bg-indigo-500 text-white px-4 py-3 rounded-lg shadow-lg z-50';
@@ -215,11 +239,13 @@ function toast(text) {
   setTimeout(() => t.remove(), 4000);
 }
 
+// прив'язуємо кнопки до дій: вхід, Enter у полі токена, вихід, оновлення
 $('enterBtn').addEventListener('click', login);
 $('tokenInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') login(); });
 $('logout').addEventListener('click', logout);
 $('refresh').addEventListener('click', loadAll);
 
+// запуск панелі при відкритті сторінки
 bootstrap();
 </script>
 </body>

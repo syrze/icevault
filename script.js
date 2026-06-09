@@ -1,16 +1,9 @@
-/* ═══════════════════════════════════════════════════════
-   ICEVAULT — MAIN SCRIPT
-   Covers: Objects, Arrays, Loops, BOM, DOM,
-           setInterval/setTimeout, location.href,
-           Event Handlers, Form Validation,
-           Scroll Animations, Cart, Clock
-═══════════════════════════════════════════════════════ */
-
 'use strict';
 
-/* ─────────────────────────────────────────
-   1. ВЛАСНИЙ ОБ'ЄКТ — Product
-───────────────────────────────────────── */
+// клас для товару — зберігає всі дані про одну позицію каталогу.
+// id потрібен щоб відрізняти товари між собою (наприклад у кошику),
+// badge — маленька наліпка типу "NEW" або "PRO" (може не бути),
+// img — шлях до фото, imgDesc — текстовий опис на випадок якщо фото не завантажилось.
 class Product {
   constructor({ id, name, brand, category, price, badge, imgDesc, img, sizes, desc }) {
     this.id       = id;
@@ -21,15 +14,20 @@ class Product {
     this.badge    = badge || null;
     this.imgDesc  = imgDesc;
     this.img      = img || null;
+    // якщо розміри не передали — беремо стандартні для категорії
     this.sizes    = sizes || defaultSizesFor(category);
     this.desc     = desc || null;
   }
+  // ціна з пробілами між тисячами і символом гривні (48000 -> 48 000)
   formatPrice() {
     return this.price.toLocaleString('uk-UA') + ' ₴';
   }
+  // повна назва товару (бренд + модель) — зручно для toast та share
   getLabel() {
     return `${this.brand} ${this.name}`;
   }
+  // чи підходить товар під пошук — шукаємо у назві, бренді, категорії та бейджі.
+  // переводимо у нижній регістр щоб пошук був без різниці великих/малих літер
   matchesSearch(query) {
     if (!query) return true;
     const q = query.toLowerCase().trim();
@@ -42,6 +40,9 @@ class Product {
   }
 }
 
+// дефолтні розміри для кожної категорії товарів.
+// ковзани — у дюймах (6 до 11), шоломи/захист — літерні розміри S-XL,
+// ключки — рівні гри JR (junior) / INT (intermediate) / SR (senior)
 function defaultSizesFor(category) {
   switch (category) {
     case 'skates':       return ['6','6.5','7','7.5','8','8.5','9','9.5','10','11'];
@@ -55,164 +56,29 @@ function defaultSizesFor(category) {
   }
 }
 
-/* ─────────────────────────────────────────
-   2. МАСИВ ПРОДУКТІВ (тільки преміум)
-───────────────────────────────────────── */
-const products = [
-  // ── Bauer ──
-  new Product({ id:'bauer-supreme-mach',name:'Supreme MACH Skates',    brand:'Bauer',      category:'skates',  price:48000, badge:'TOP PRO', img:'photo/613471_01_9b29dde3-0f7c-4abe-ae25-5cbbe61857ff.png.webp', imgDesc:'Bauer Supreme MACH' }),
-  new Product({ id:'bauer-vapor-x4',  name:'Vapor X4 Pro Skates',     brand:'Bauer',      category:'skates',  price:38500, badge:'TOP PRO', img:'photo/x4sr__1.png.webp',                 imgDesc:'Bauer Vapor X4 Pro' }),
-  new Product({ id:'bauer-vapor-3x',  name:'Vapor 3X Skates',         brand:'Bauer',      category:'skates',  price:24800, badge:null,      img:'photo/bauer-vapor-3x-intermediate-ice-hockey-skates-all-star-skates.webp', imgDesc:'Bauer Vapor 3X' }),
-  new Product({ id:'bauer-pro-goal',  name:'Pro Goalie Skates',       brand:'Bauer',      category:'skates',  price:42000, badge:'GOALIE',  img:'photo/proskate__1.png.webp',             imgDesc:'Bauer Pro Goalie' }),
-  new Product({ id:'bauer-supreme-flylite',name:'Vapor Flylite Stick',brand:'Bauer',      category:'sticks',  price:13200, badge:'NEW',     img:'photo/20251118_162052-removebg-preview__36806.webp', imgDesc:'Bauer Vapor Flylite' }),
-  new Product({ id:'bauer-hyp2',      name:'Vapor Hyperlite 2 Stick', brand:'Bauer',      category:'sticks',  price:15200, badge:'NEW',     img:'photo/hyperlitestk__black_1_839e347d-e6b9-47cd-998c-26a5705bc34a_1250x.png.webp', imgDesc:'Bauer Vapor Hyperlite 2' }),
-  new Product({ id:'bauer-flypro',    name:'Vapor FlyPro Stick',      brand:'Bauer',      category:'sticks',  price:13800, badge:null,      img:'photo/VaporFlyPro-SR-PLP-Image_fae11337-cb63-4172-bb69-8fd9d2673f70.png.webp', imgDesc:'Bauer Vapor FlyPro' }),
-  new Product({ id:'bauer-twitch',    name:'Vapor Twitch Stick',      brand:'Bauer',      category:'sticks',  price:12500, badge:null,      img:'photo/VAPOR_STICK_TWITCH_SR_351x428_53ec89f8-cb5d-404a-bc20-c72f587f8cd2.png.webp', imgDesc:'Bauer Vapor Twitch' }),
-  new Product({ id:'bauer-reakt-65',  name:'RE-AKT 65 Helmet',        brand:'Bauer',      category:'helmets', price:7200,  badge:null,      img:'photo/reakt65__black_1.png.webp',        imgDesc:'Bauer RE-AKT 65' }),
-  new Product({ id:'bauer-reakt-200', name:'RE-AKT 200 PRO Helmet',   brand:'Bauer',      category:'helmets', price:8500,  badge:null,      img:'assets/p-bauer-reakt-new.avif',          imgDesc:'Bauer RE-AKT 200 PRO' }),
-  new Product({ id:'bauer-reakt-75',  name:'RE-AKT 75 Helmet',        brand:'Bauer',      category:'helmets', price:6400,  badge:null,      img:'photo/2D35C410-6403-4C8C-BF13-B85B374F8AD8_1_201_a-removebg-preview__14957.png', imgDesc:'Bauer RE-AKT 75' }),
-  new Product({ id:'bauer-gloves',    name:'Vapor 3X Pro Gloves',     brand:'Bauer',      category:'gloves',  price:9200,  badge:null,      img:'photo/Screenshot_2024-06-19_120431-removebg-preview.png.webp', imgDesc:'Bauer Vapor 3X Pro' }),
-  new Product({ id:'bauer-x-shin',    name:'Bauer X Shin Guards',     brand:'Bauer',      category:'pads',    price:4800,  badge:null,      img:'photo/BAUERXShinGuardIntermediate_1200x1200.png.webp', imgDesc:'Bauer X Shin' }),
-  new Product({ id:'bauer-nsx-shin',  name:'NSX Shin Guards',         brand:'Bauer',      category:'pads',    price:3900,  badge:null,      img:'photo/BauerNSXSHINGUARD_1200x1200.png.webp', imgDesc:'Bauer NSX Shin' }),
-  new Product({ id:'bauer-x-elbow',   name:'Bauer X Elbow Pads',      brand:'Bauer',      category:'pads',    price:3200,  badge:null,      img:'photo/Bauer-X-Ice-Hockey-Elbow-Pads-1.png', imgDesc:'Bauer X Elbow' }),
-  new Product({ id:'bauer-flylite-eb',name:'Vapor Flylite Elbow JR',  brand:'Bauer',      category:'pads',    price:2950,  badge:'JR',      img:'photo/1064796_BTH25_PROTECTIVE_ELBOW_VAPOR_FLYLITE_JR_back_large.png.webp', imgDesc:'Bauer Flylite Elbow JR' }),
-  new Product({ id:'bauer-pro-pant',  name:'Pro Pant (Women)',        brand:'Bauer',      category:'pads',    price:5400,  badge:null,      img:'photo/1063710_BTH24_PROTECTIVE_PANT_WMNS-PRO-PANT_catalog-threequarter-front_REV.png.webp', imgDesc:'Bauer Pro Pant' }),
-  new Product({ id:'bauer-goal-chest', name:'Reactor Pro Goalie Chest',brand:'Bauer',      category:'pads',    price:14800, badge:'GOALIE',  img:'photo/687121_01.png.webp',               imgDesc:'Bauer Reactor Pro Chest' }),
-  new Product({ id:'bauer-knee-pro',  name:'Goal Knee Guard Pro',     brand:'Bauer',      category:'pads',    price:4100,  badge:'GOALIE',  img:'photo/1064956_BTH25_GOAL_KNEE-GUARD_PRO_SR_catalog-pair-front_23a0c4ca-c22b-4590-89ea-619c7e041782.png.webp', imgDesc:'Bauer Knee Guard Pro' }),
+// весь каталог товарів — масив з обʼєктів Product.
+// тут все: ковзани Bauer, CCM, Graf, ключки, шоломи, захист, рукавиці, сумки і аксесуари.
+// кожен товар має унікальний id, ціну в копійках і опціональний бейдж (PRO, NEW тощо)
+let products = [];   // наповнюється у loadCatalog() з /api/products (БД) або products.json
 
-  // ── CCM ──
-  new Product({ id:'ccm-ribcor',      name:'Ribcor 100K Pro Skates',  brand:'CCM',        category:'skates',  price:32000, badge:'PRO',     img:'photo/SK100KP-SR_7_512x512.png.webp',    imgDesc:'CCM Ribcor 100K Pro' }),
-  new Product({ id:'ccm-tacks-as550', name:'Tacks AS 550 Skates',     brand:'CCM',        category:'skates',  price:18900, badge:'NEW',     img:'photo/SKAS550_1024x1024.png.webp',       imgDesc:'CCM Tacks AS 550' }),
-  new Product({ id:'ccm-tacks-as5',   name:'Tacks AS5 Pro Skates',    brand:'CCM',        category:'skates',  price:29500, badge:null,      img:'photo/SKAS5P-BLACKSTEEL_01.png',         imgDesc:'CCM Tacks AS5 Pro' }),
-  new Product({ id:'ccm-tacks-as580', name:'Tacks AS 580 Skates',     brand:'CCM',        category:'skates',  price:22400, badge:null,      img:'photo/SKAS580_SR_01.png',                imgDesc:'CCM Tacks AS 580' }),
-  new Product({ id:'ccm-tacks-xfp',   name:'Tacks XF Pro Skates',     brand:'CCM',        category:'skates',  price:34800, badge:'PRO',     img:'photo/SKXFP-SR_01.png',                  imgDesc:'CCM Tacks XF Pro' }),
-  new Product({ id:'ccm-as-v-pro',    name:'Tacks AS-V Pro Skates',   brand:'CCM',        category:'skates',  price:26900, badge:null,      img:'photo/ccm-hockey-ccm-tacks-as-v-pro-skate-int.jpg.png', imgDesc:'CCM Tacks AS-V Pro' }),
-  new Product({ id:'ccm-ft7',         name:'Jetspeed FT7 Pro Stick',  brand:'CCM',        category:'sticks',  price:14500, badge:'NEW',     img:'photo/HSFT7P-SR_06.png',                 imgDesc:'CCM Jetspeed FT7 Pro' }),
-  new Product({ id:'ccm-ft8',         name:'Jetspeed FT8 Pro Stick',  brand:'CCM',        category:'sticks',  price:16200, badge:null,      img:'photo/HSFT8P-SR-L_03.png',               imgDesc:'CCM Jetspeed FT8 Pro' }),
-  new Product({ id:'ccm-ft8cr',       name:'Jetspeed FT8 Stick',      brand:'CCM',        category:'sticks',  price:13900, badge:null,      img:'photo/HSFT8PCR.png',                     imgDesc:'CCM Jetspeed FT8' }),
-  new Product({ id:'ccm-ftw',         name:'Jetspeed FTW Women Stick',brand:'CCM',        category:'sticks',  price:11800, badge:null,      img:'photo/HSFTWP26B.png',                    imgDesc:'CCM Jetspeed FTW' }),
-  new Product({ id:'ccm-ht720',       name:'Tacks 720 Helmet',        brand:'CCM',        category:'helmets', price:7400,  badge:null,      img:'photo/HT720_WH_01.png.webp',             imgDesc:'CCM Tacks 720' }),
-  new Product({ id:'ccm-tacks-hat',   name:'Tacks 710 Helmet',        brand:'CCM',        category:'helmets', price:6200,  badge:null,      img:'assets/p-ccm-tacks.webp',                imgDesc:'CCM Tacks 710' }),
-  new Product({ id:'ccm-next-elbow',  name:'NEXT Elbow Pads',         brand:'CCM',        category:'pads',    price:2800,  badge:null,      img:'photo/EPNEXT23_01.png.webp',             imgDesc:'CCM NEXT Elbow' }),
-  new Product({ id:'ccm-goal-mask',    name:'Axis A1 Pro Goalie Mask', brand:'CCM',        category:'helmets', price:16500, badge:'GOALIE',  img:'photo/image_29309018-5c98-41c3-9bcc-5a8eec06da57.png.webp', imgDesc:'CCM Axis A1 Goalie Mask' }),
-  new Product({ id:'ccm-asv-pants',   name:'Tacks AS-V Pro Pants',    brand:'CCM',        category:'pads',    price:7200,  badge:null,      img:'photo/Screenshot2024-02-26at20.04.14.png.webp', imgDesc:'CCM Tacks AS-V Pants' }),
-  new Product({ id:'ccm-xf-pants',    name:'XF Pro Pants',            brand:'CCM',        category:'pads',    price:6500,  badge:null,      img:'photo/HPXF-SR-12_01-blue.png',           imgDesc:'CCM XF Pro Pants' }),
-
-  // ── Reebok ──
-  new Product({ id:'reebok-helm',     name:'11K Pro Helmet',          brand:'Reebok',     category:'helmets', price:5500,  badge:null,      img:'assets/p-reebok-helm.png',               imgDesc:'Reebok 11K Helmet' }),
-  new Product({ id:'reebok-helm-blue',name:'RBK 6K Pro Helmet',       brand:'Reebok',     category:'helmets', price:4900,  badge:'CLASSIC', img:'photo/reebok-blue-hockey-helmet-hfi5c6qimd6ko8j8.jpg.png', imgDesc:'Reebok 6K Helmet' }),
-
-  // ── Graf ──
-  new Product({ id:'graf-ultra',      name:'Ultra G9035 Skates',      brand:'Graf',       category:'skates',  price:28000, badge:'HANDMADE',img:'photo/graf_9035_75_flex_ice_skates_1_grande.png.webp', imgDesc:'Graf Ultra G9035' }),
-
-  // ── True Hockey ──
-  new Product({ id:'true-catalyst',   name:'Catalyst 9X4 Skates',     brand:'True Hockey',category:'skates',  price:36200, badge:'NEW',     img:'photo/2024_Hockey_Catalyst_9x4_PlayerSkate_45AngleFront_Main-1600x1600-210612d_512x512.png.webp', imgDesc:'True Catalyst 9X4' }),
-  new Product({ id:'true-cat-goal',   name:'Catalyst 7 Goalie Skates',brand:'True Hockey',category:'skates',  price:34800, badge:'GOALIE',  img:'photo/33.png',                           imgDesc:'True Catalyst Goalie' }),
-  new Product({ id:'true-ax9',        name:'AX9 Pro Stick',           brand:'True Hockey',category:'sticks',  price:16800, badge:'TOP',     img:'assets/p-true-ax9-new.webp',             imgDesc:'True AX9' }),
-
-  // ── Sher-Wood ──
-  new Product({ id:'sw-rekker',       name:'Rekker M90 Stick',        brand:'Sher-Wood',  category:'sticks',  price:11200, badge:null,      img:'assets/p-sw-rekker.webp',                imgDesc:'Sher-Wood Rekker M90' }),
-  new Product({ id:'sw-pads',         name:'Code I Pro Shoulder Pads',brand:'Sher-Wood',  category:'pads',    price:6900,  badge:null,      img:'assets/p-sw-pads.png',                   imgDesc:'Sher-Wood Code I Pro' }),
-  new Product({ id:'sw-rx3-eb',       name:'Rekker RX3 Elbow Pads',   brand:'Sher-Wood',  category:'pads',    price:3400,  badge:null,      img:'photo/icehockey_elbow_pad_rx3_front_036_1.png.webp', imgDesc:'Sher-Wood RX3 Elbow' }),
-
-  // ── Warrior ──
-  new Product({ id:'warrior-covert-qr5',name:'Covert QR5 Pro Stick',  brand:'Warrior',    category:'sticks',  price:12800, badge:null,      img:'photo/de016cf3918edfa6_original.png.webp', imgDesc:'Warrior Covert QR5 Pro' }),
-  new Product({ id:'warrior-v4-goal', name:'V4 Pro Goalie Stick',     brand:'Warrior',    category:'sticks',  price:14200, badge:'GOALIE',  img:'photo/1.png',                            imgDesc:'Warrior V4 Pro Goalie' }),
-  new Product({ id:'warrior-ritual-asg',name:'Ritual ASG Pro Stick',  brand:'Warrior',    category:'sticks',  price:15800, badge:'GOALIE',  img:'photo/QR1021L6_BK_P_1.png',              imgDesc:'Warrior Ritual ASG Pro' }),
-  new Product({ id:'warrior-ritual-g6', name:'Ritual G6E Goal Stick', brand:'Warrior',    category:'sticks',  price:13500, badge:'GOALIE',  img:'photo/QRM23L6_TWI_A_1.png',              imgDesc:'Warrior Ritual G6E' }),
-  new Product({ id:'warrior-qre',     name:'Covert QRE 20 Pro Stick', brand:'Warrior',    category:'sticks',  price:13500, badge:'PRO',     img:'assets/p-warrior-qre-new.webp',          imgDesc:'Warrior Covert QRE 20' }),
-  new Product({ id:'warrior-gloves',  name:'Alpha DX Pro Gloves',     brand:'Warrior',    category:'gloves',  price:8900,  badge:null,      img:'assets/p-warrior-gloves.webp',           imgDesc:'Warrior Alpha DX Pro' }),
-
-  // ── Jersey & extras ──
-  new Product({ id:'jersey-canada',   name:'Vintage Canada Jersey',   brand:'Reebok',     category:'pads',    price:4800,  badge:'RETRO',   img:'photo/VS-IH-CAN-1b_593e11f9-8b0e-46b8-a907-d328be46b97e.png.webp', imgDesc:'Canada Jersey' }),
-
-  // ── Fischer ──
-  new Product({ id:'fischer-rc-one-xpro', name:'RC One XPro Stick',   brand:'Fischer',    category:'sticks',  price:11400, badge:'NEW',     img:'photo/stick-fischer-rc-one-xpro-sr.jpg', imgDesc:'Fischer RC One XPro' }),
-  new Product({ id:'fischer-rc-one-is2',  name:'RC One IS2 Stick',    brand:'Fischer',    category:'sticks',  price:9800,  badge:null,      img:'photo/FischerRCOneIS2_2_1200x1200.png.webp', imgDesc:'Fischer RC One IS2' }),
-
-  // ── Sher-Wood (нові) ──
-  new Product({ id:'sw-morph-pro',    name:'Rekker Morph Pro Stick',  brand:'Sher-Wood',  category:'sticks',  price:13800, badge:'PRO',     img:'photo/sherwood-sw-rekker-morph-pro-stick-sr.jpg.png', imgDesc:'Sher-Wood Rekker Morph Pro' }),
-  new Product({ id:'sw-pmp-700',      name:'Feather-Balanced PMP 700',brand:'Sher-Wood',  category:'sticks',  price:4200,  badge:'CLASSIC', img:'photo/tkachu_transparent.png.webp', imgDesc:'Sher-Wood PMP 700' }),
-  new Product({ id:'sw-icon',         name:'Icon Composite Stick',    brand:'Sher-Wood',  category:'sticks',  price:6900,  badge:null,      img:'photo/sherwood-icon-composite-stick-senior-right-3bf63035-6cd4-4e47-b918-1df36edafb9e.png.avif', imgDesc:'Sher-Wood Icon Composite' }),
-  new Product({ id:'sw-t60x-shin',    name:'T60x Shin Guards',        brand:'Sher-Wood',  category:'pads',    price:3400,  badge:null,      img:'photo/334489420__01______a_480x480.png.webp', imgDesc:'Sher-Wood T60x Shin' }),
-
-  // ── Warrior (нові) ──
-  new Product({ id:'warrior-swagger', name:'Swagger Pro Goal Stick',  brand:'Warrior',    category:'sticks',  price:12900, badge:'GOALIE',  img:'photo/8688349e-8e54-4f86-bbbc-0fce4dba4890.0ac61630f5876f51fde36db5caeb13b3.png', imgDesc:'Warrior Swagger Pro Goalie' }),
-
-  // ── Bags ──
-  new Product({ id:'bauer-bag-premium-jr', name:'Premium Carry Bag JR',brand:'Bauer',     category:'bags',    price:2800,  badge:'JR',      img:'photo/bauerpremiumcarrybagjunior__black_1_1445x.png.webp', imgDesc:'Bauer Premium Carry Bag JR' }),
-  new Product({ id:'bauer-bag-core-jr',    name:'Core Carry Bag JR',  brand:'Bauer',     category:'bags',    price:2200,  badge:null,      img:'photo/1063630_BTH24_BAG_CORECARRY_JR_BLK_catalog-threequarter-front_1445x.png.webp', imgDesc:'Bauer Core Carry Bag JR' }),
-  new Product({ id:'bauer-bag-elite-sr',   name:'Elite Wheeled Bag SR',brand:'Bauer',    category:'bags',    price:4900,  badge:'WHEELED', img:'photo/1063632_BTH24_BAG_ELITEWHEELED_SR_BLK_catalog-threequarter-front_edit_1250x.png.webp', imgDesc:'Bauer Elite Wheeled Bag SR' }),
-  new Product({ id:'ccm-bag-pro',     name:'Pro Carry Bag',           brand:'CCM',        category:'bags',    price:2600,  badge:null,      img:'photo/B54037-12_01.png', imgDesc:'CCM Pro Carry Bag' }),
-  new Product({ id:'ccm-bag-t9',      name:'Team Pro T9 Bag',         brand:'CCM',        category:'bags',    price:3100,  badge:'PRO',     img:'photo/BTPRO-T9_01.png', imgDesc:'CCM Team Pro T9 Bag' }),
-  new Product({ id:'ccm-bag-sports',  name:'Sports Duffle Bag',       brand:'CCM',        category:'bags',    price:1900,  badge:null,      img:'photo/BSPORTS-12_01.png', imgDesc:'CCM Sports Duffle' }),
-
-  // ── Accessories ──
-  new Product({ id:'shock-gel-max',   name:'Gel Max Mouthguard',      brand:'Shock Doctor',category:'accessories',price:650, badge:null,      img:'photo/shock-doctor-gel-max-mouthguard-mouthguard-sd-gmm-bk-ad-black-888748.png.webp', imgDesc:'Shock Doctor Gel Max' }),
-  new Product({ id:'shock-ultra2',    name:'Ultra 2 STC Mouthguard',  brand:'Shock Doctor',category:'accessories',price:890, badge:'PRO',     img:'photo/SD_7501_Ultra2.png.webp', imgDesc:'Shock Doctor Ultra 2 STC' }),
-
-  // ── Bauer Goalie ──
-  new Product({ id:'bauer-mask-930',   name:'Profile 930 Goalie Mask', brand:'Bauer',       category:'helmets',    price:9800,  badge:'GOALIE',  img:'photo/1063231_BTH24_GOAL_MASK_930_SR_catalog-threequarter-front_90c9d6b5-b674-43a6-b486-63741cdf19ba.png.webp', imgDesc:'Bauer Profile 930 Mask' }),
-  new Product({ id:'bauer-mask-940',   name:'Profile 940 Cat-Eye Mask',brand:'Bauer',       category:'helmets',    price:14200, badge:'GOALIE',  img:'photo/1064943_BTH25_GOAL_MASK_940_CAT-EYE_WHT_front.png.webp', imgDesc:'Bauer Profile 940 Cat-Eye' }),
-  new Product({ id:'bauer-elite-chest',name:'Elite Goalie Chest',      brand:'Bauer',       category:'pads',       price:18900, badge:'GOALIE',  img:'photo/Bauer-Elite-Goalie-Chest-Arms-Protector-copy.png', imgDesc:'Bauer Elite Goalie Chest' }),
-  new Product({ id:'bauer-shadow-chest',name:'Shadow Goalie Chest',    brand:'Bauer',       category:'pads',       price:21500, badge:'PRO',     img:'photo/shadowchest__1.png.webp', imgDesc:'Bauer Shadow Goalie Chest' }),
-  new Product({ id:'bauer-gsx-chest',  name:'GSX Goalie Chest',        brand:'Bauer',       category:'pads',       price:8400,  badge:'GOALIE',  img:'photo/gsxchest__black_1.png.webp', imgDesc:'Bauer GSX Goalie Chest' }),
-  new Product({ id:'bauer-elite-goal-stick',name:'Elite Goalie Stick', brand:'Bauer',       category:'sticks',     price:11800, badge:'GOALIE',  img:'photo/elitegoalstick__black_1_9400f896-a88b-466e-9989-2a21065038c8.png.webp', imgDesc:'Bauer Elite Goal Stick' }),
-  new Product({ id:'bauer-gsx-goal',   name:'GSX Goalie Stick',        brand:'Bauer',       category:'sticks',     price:6400,  badge:'GOALIE',  img:'photo/Bauer-GSX-Goalie-Stick-Silver-Black.png', imgDesc:'Bauer GSX Goalie Stick' }),
-  new Product({ id:'bauer-pro-goal-jock',name:'Pro Goalie Jock',       brand:'Bauer',       category:'pads',       price:2400,  badge:'GOALIE',  img:'photo/Bauer-Pro-Goalie-Jock2.png', imgDesc:'Bauer Pro Goalie Jock' }),
-  new Product({ id:'bauer-elite-goal-jock',name:'Elite Goalie Jock',   brand:'Bauer',       category:'pads',       price:3100,  badge:'GOALIE',  img:'photo/1065224_BTH25_GOAL_JOCK_ELITE_SR_catalog-front_276f92bb-b2e6-4e17-8452-917d1b175a6f_1946x.png.webp', imgDesc:'Bauer Elite Goalie Jock' }),
-  new Product({ id:'bauer-crew-sock',  name:'Crew Sock',               brand:'Bauer',       category:'accessories',price:320,   badge:null,      img:'photo/Bauercrewsock_Black__01_1250x.png.webp', imgDesc:'Bauer Crew Sock' }),
-  new Product({ id:'bauer-skate-socks',name:'Performance Skate Socks', brand:'Bauer',       category:'accessories',price:480,   badge:null,      img:'photo/1065353_BTH25_APPAREL_SKATE-SOCKS_PERF-TALL_SR_9945_1445x.png.webp', imgDesc:'Bauer Skate Socks' }),
-
-  // ── CCM Goalie ──
-  new Product({ id:'ccm-axis19-mask',  name:'Axis 19 Goalie Mask',     brand:'CCM',         category:'helmets',    price:8200,  badge:'GOALIE',  img:'photo/CCM-Axis-19-Mask-Certified.png', imgDesc:'CCM Axis 19 Mask' }),
-  new Product({ id:'ccm-axis-a15-mask',name:'Axis A1.5 Goalie Mask',   brand:'CCM',         category:'helmets',    price:10400, badge:'GOALIE',  img:'photo/goalie-masks-ccm-axis-a1-5-senior-goalie-mask-decal-1221726744_1800x1800.png.webp', imgDesc:'CCM Axis A1.5 Mask' }),
-  new Product({ id:'ccm-axis-a19-chest',name:'Axis A19 Goalie Chest',  brand:'CCM',         category:'pads',       price:17200, badge:'GOALIE',  img:'photo/CCM-Axis-A19-Goalie-Chest-Arms-Protector.png', imgDesc:'CCM Axis A19 Chest' }),
-  new Product({ id:'ccm-tacks-pro-pads',name:'Tacks Pro Goalie Pads',  brand:'CCM',         category:'pads',       price:34500, badge:'TOP PRO', img:'photo/CCM26_DTC_TACKS-PRO.png', imgDesc:'CCM Tacks Pro Goalie Pads' }),
-  new Product({ id:'ccm-ab-pro-chest', name:'AB Pro Spec Goalie Chest',brand:'CCM',         category:'pads',       price:24800, badge:'PRO',     img:'photo/ABPROSPEC_01.png', imgDesc:'CCM AB Pro Spec Chest' }),
-  new Product({ id:'ccm-next-shin',    name:'Next Shin Guards',        brand:'CCM',         category:'pads',       price:3400,  badge:'NEW',     img:'photo/SGNEXT23_01_62023f4d-9216-4e37-9ebd-a6e90b93a2a4_1200x1200.png.webp', imgDesc:'CCM Next Shin' }),
-  new Product({ id:'ccm-xf-shin',      name:'Tacks XF Shin Guards',    brand:'CCM',         category:'pads',       price:5200,  badge:null,      img:'photo/SGXF-SR_01.png', imgDesc:'CCM Tacks XF Shin' }),
-  new Product({ id:'ccm-xf-goal-stick',name:'XF Pro Goalie Stick',     brand:'CCM',         category:'sticks',     price:13600, badge:'GOALIE',  img:'photo/HSGXFP_RD_07.png', imgDesc:'CCM XF Pro Goal Stick' }),
-  new Product({ id:'ccm-vector-goal-stick',name:'Vector Goalie Stick', brand:'CCM',         category:'sticks',     price:8900,  badge:'GOALIE',  img:'photo/HSGVZ25C-NV.png', imgDesc:'CCM Vector Goalie Stick' }),
-
-  // ── CCM Pro Goalie Masks ──
-  new Product({ id:'ccm-pro-mask-wht', name:'Axis Pro Goalie Mask (White)', brand:'CCM',    category:'helmets',    price:13800, badge:'PRO',     img:'photo/GFAF9-SR-01_01.png', imgDesc:'CCM Axis Pro Mask White' }),
-  new Product({ id:'ccm-pro-mask-blk', name:'Axis Pro Goalie Mask (Black)', brand:'CCM',    category:'helmets',    price:13800, badge:'PRO',     img:'photo/GFAF9CCE-BK_01.png', imgDesc:'CCM Axis Pro Mask Black' }),
-
-  // ── Vaughn ──
-  new Product({ id:'vaughn-gp-e79',    name:'GP E7.9 Goalie Pads',     brand:'Vaughn',      category:'pads',       price:21800, badge:'GOALIE',  img:'photo/GPE7.9CC-WH.WH.BK.BK.png', imgDesc:'Vaughn GP E7.9 Pads' }),
-  new Product({ id:'vaughn-vp-ion-pro',name:'VP Ion Pro Goalie Chest', brand:'Vaughn',      category:'pads',       price:19400, badge:'PRO',     img:'photo/vp-ion-pro-front_1530.png', imgDesc:'Vaughn VP Ion Pro Chest' }),
-
-  // ── Warrior (нові) ──
-  new Product({ id:'warrior-v4-pro-wh',name:'V4 Pro White Goal Stick', brand:'Warrior',     category:'sticks',     price:14800, badge:'GOALIE',  img:'photo/V4P23L4_WH_A_1.png', imgDesc:'Warrior V4 Pro White' }),
-  new Product({ id:'warrior-jock',     name:'Alpha Pro Jock',          brand:'Warrior',     category:'accessories',price:1450,  badge:null,      img:'photo/warrior-alpha-jock-roller-hockey-accessories-31.webp', imgDesc:'Warrior Alpha Jock' }),
-
-  // ── CCM Next Shin Youth ──
-  new Product({ id:'ccm-next-shin-yt',name:'Next Shin Guards Youth',   brand:'CCM',         category:'pads',       price:2200,  badge:'JR',      img:'photo/SGNEXT23_YT_01.png', imgDesc:'CCM Next Shin YT' }),
-
-  // ── CP51 (generic body armor) ──
-  new Product({ id:'cp51-evo',         name:'CP51 EVO Chest Protector',brand:'Byte',        category:'pads',       price:6200,  badge:null,      img:'photo/CP51_EVO_0.1_FRONT_9891176b-9cf0-4df4-904b-9607b2d6c5f2.png.webp', imgDesc:'Byte CP51 EVO' }),
-
-  // ── Byte ──
-  new Product({ id:'byte-knee',        name:'Knee/Shin Pads',          brand:'Byte',        category:'pads',       price:1800,  badge:null,      img:'photo/ByteKneePadsFront.png.webp', imgDesc:'Byte Knee/Shin Pads' }),
-
-  // ── Apparel ──
-  new Product({ id:'usa-tee',          name:'Team USA Hockey Tee',     brand:'Reebok',      category:'accessories',price:1290,  badge:'RETRO',   img:'photo/tshirt-usa-white-back-510x510-1.png', imgDesc:'USA Hockey Tee' }),
-];
-
-/* ─────────────────────────────────────────
-   3. КОШИК (localStorage + власний об'єкт)
-───────────────────────────────────────── */
+// кошик зберігається у localStorage між сесіями.
+// читаємо при завантаженні; якщо там пусто або битий json — стартуємо з порожнім масивом
 let cart = JSON.parse(localStorage.getItem('iv_cart') || '[]');
 
+// зберігає кошик у localStorage. викликаємо після кожної зміни (додав, видалив, змінив кількість)
 function saveCart() {
   localStorage.setItem('iv_cart', JSON.stringify(cart));
 }
 
+// перемальовує весь UI кошика: цифру біля іконки, суму, список товарів.
+// викликається після кожної зміни кошика, щоб користувач бачив актуальний стан
 function updateCartUI() {
+  // рахуємо загальну кількість одиниць у кошику (сума всіх qty)
   const count = cart.reduce((s, i) => s + i.qty, 0);
+  // загальна сума: ціна * кількість для кожного, потім складаємо
   const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
 
+  // кружечок з цифрою біля іконки кошика. робимо легке збільшення для анімації
   const cartCountEl = document.getElementById('cartCount');
   if (cartCountEl) {
     cartCountEl.textContent = count;
@@ -220,17 +86,21 @@ function updateCartUI() {
     setTimeout(() => { cartCountEl.style.transform = 'scale(1)'; }, 300);
   }
 
+  // сума у форматі "12 500 грн"
   const totalEl = document.getElementById('cartTotal');
   if (totalEl) totalEl.textContent = total.toLocaleString('uk-UA') + ' ₴';
 
   const itemsEl = document.getElementById('cartItems');
   if (!itemsEl) return;
 
+  // якщо кошик пустий — показуємо плейсхолдер
   if (cart.length === 0) {
     itemsEl.innerHTML = '<div class="cart-empty">Кошик порожній</div>';
     return;
   }
 
+  // будуємо HTML-розмітку для кожного товару через .map() і склеюємо в один рядок.
+  // у розмітці: бренд, назва, кнопки +/-, поточна ціна, кнопка видалення
   itemsEl.innerHTML = cart.map(item => `
     <div class="cart-item">
       <div class="cart-item-info">
@@ -249,7 +119,8 @@ function updateCartUI() {
     </div>
   `).join('');
 
-  // Qty buttons
+  // вішаємо обробники на кнопки +/- для зміни кількості.
+  // якщо кількість дійшла до 0 — товар сам видаляється з кошика
   itemsEl.querySelectorAll('.qty-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.id;
@@ -266,7 +137,7 @@ function updateCartUI() {
     });
   });
 
-  // Remove buttons
+  // кнопка-хрестик повністю видаляє позицію з кошика
   itemsEl.querySelectorAll('.cart-item-remove').forEach(btn => {
     btn.addEventListener('click', () => {
       cart = cart.filter(i => i.id !== btn.dataset.id);
@@ -276,13 +147,14 @@ function updateCartUI() {
   });
 }
 
+// додає товар у кошик. спочатку запитує розмір через prompt,
+// якщо такий товар уже є — просто збільшуємо кількість, інакше додаємо новий запис
 function addToCart(productId) {
   const product = products.find(p => p.id === productId);
   if (!product) return;
 
-  // prompt для вибору розміру (BOM window.prompt)
   const size = prompt(`Оберіть розмір для "${product.getLabel()}":\n(наприклад: 7, 7.5, 8, 8.5, 9, 9.5, S, M, L, XL)`);
-  if (size === null) return; // скасовано
+  if (size === null) return;
 
   const existing = cart.find(i => i.id === productId);
   if (existing) {
@@ -293,10 +165,11 @@ function addToCart(productId) {
   saveCart();
   updateCartUI();
 
-  // Показати drawer
   openCart();
 }
 
+// відкриває бічну панель кошика (drawer) + затемнення фону.
+// блокуємо скрол body щоб сторінка не їздила під модалкою
 function openCart() {
   const drawer = document.getElementById('cartDrawer');
   const overlay = document.getElementById('cartOverlay');
@@ -305,6 +178,7 @@ function openCart() {
   document.body.style.overflow = 'hidden';
 }
 
+// закриває панель кошика і повертає скрол сторінки
 function closeCart() {
   const drawer = document.getElementById('cartDrawer');
   const overlay = document.getElementById('cartOverlay');
@@ -313,7 +187,8 @@ function closeCart() {
   document.body.style.overflow = '';
 }
 
-// Cart button
+// привʼязка кнопок керування кошиком:
+// іконка в навбарі відкриває, хрестик і клік по затемненню — закривають
 const cartBtn = document.getElementById('cartBtn');
 if (cartBtn) cartBtn.addEventListener('click', openCart);
 
@@ -323,33 +198,39 @@ if (cartClose) cartClose.addEventListener('click', closeCart);
 const cartOverlay = document.getElementById('cartOverlay');
 if (cartOverlay) cartOverlay.addEventListener('click', closeCart);
 
+// при старті малюємо те що було в localStorage (наприклад з минулої сесії)
 updateCartUI();
 
-/* ─────────────────────────────────────────
-   4. РЕНДЕР КАТАЛОГУ (цикли + умови)
-───────────────────────────────────────── */
+// стан пошуку/фільтрів. зберігаємо тут, щоб фільтр + пошук + категорія працювали разом
 const searchState = { query: '', brand: '', size: '' };
 
+// рендерить сітку товарів з урахуванням фільтра по категорії, пошуку, бренду й розміру.
+// параметр skipStagger вимикає stagger-анімацію (потрібен коли працює FLIP)
 function renderProducts(filter = 'all', opts = {}) {
   const { skipStagger = false } = opts;
   const grid = document.getElementById('productsGrid');
   if (!grid) return;
 
-  // Фільтрація масиву (умова + ланцюжок)
+  // спочатку фільтруємо по категорії (або беремо все якщо filter='all')
   let filtered = filter === 'all'
     ? products.slice()
     : products.filter(p => p.category === filter);
 
+  // далі застосовуємо додаткові фільтри: текст пошуку, бренд, розмір.
+  // кожен фільтр звужує вибірку
   if (searchState.query)  filtered = filtered.filter(p => p.matchesSearch(searchState.query));
   if (searchState.brand)  filtered = filtered.filter(p => p.brand === searchState.brand);
   if (searchState.size)   filtered = filtered.filter(p => p.sizes.includes(searchState.size));
 
+  // якщо нічого не знайшли — пишемо повідомлення замість карток
   if (filtered.length === 0) {
     grid.innerHTML = '<p class="no-products">Товарів не знайдено</p>';
     return;
   }
 
-  // Рендер через цикл .map()
+  // генеруємо HTML картки для кожного товару через template literals.
+  // на картці: фото (або плейсхолдер), кнопка share, оверлей з кнопкою "купити",
+  // бренд, бейдж (якщо є), назва, ціна, бейдж наявності (заповниться пізніше)
   grid.innerHTML = filtered.map((p, i) => `
     <div class="product-card" data-cat="${p.category}" data-id="${p.id}" style="--i:${i}">
       <div class="product-img">
@@ -377,17 +258,18 @@ function renderProducts(filter = 'all', opts = {}) {
     </div>
   `).join('');
 
-  // Hover overlay listeners
+  // вішаємо обробник на кожну кнопку "Додати в кошик" в оверлеї картки
   grid.querySelectorAll('.btn-add-full').forEach(btn => {
     btn.addEventListener('click', () => addToCart(btn.dataset.productId));
   });
 
-  // Share buttons
+  // кнопка share. stopPropagation() щоб не відкрилась модалка картки разом з share-діалогом
   grid.querySelectorAll('.btn-share').forEach(btn => {
     btn.addEventListener('click', e => { e.stopPropagation(); shareProduct(btn.dataset.shareId); });
   });
 
-  // Card click → product modal
+  // клік по самій картці відкриває модалку з деталями товару.
+  // але якщо клік був по внутрішній кнопці (share/add) — ігноруємо
   grid.querySelectorAll('.product-card').forEach(card => {
     card.style.cursor = 'pointer';
     card.addEventListener('click', (e) => {
@@ -396,10 +278,11 @@ function renderProducts(filter = 'all', opts = {}) {
     });
   });
 
-  // Stock badges
+  // підвантажуємо бейджі наявності з бекенду одним запитом (батч)
   loadStockBadges(filtered.map(p => p.id));
 
-  // Stagger animation (skipped when FLIP handles transitions)
+  // stagger-анімація: картки зʼявляються по черзі з невеликою затримкою.
+  // створює красивий ефект "хвилі" коли каталог завантажується
   if (!skipStagger) {
     grid.querySelectorAll('.product-card').forEach((card, i) => {
       card.style.opacity = '0';
@@ -413,41 +296,45 @@ function renderProducts(filter = 'all', opts = {}) {
   }
 }
 
-/* FLIP technique — animate cards smoothly when filter changes
-   F-irst, L-ast, I-nvert, P-lay
-*/
+// плавне переключення фільтрів через техніку FLIP (First-Last-Invert-Play).
+// суть: запамʼятовуємо де картки були, перерендерюємо в нові позиції,
+// рахуємо різницю і анімуємо рух з старого місця у нове.
+// дає ефект ніби картки "переїжджають" а не зникають/зʼявляються
 function renderProductsFLIP(filter) {
   const grid = document.getElementById('productsGrid');
   if (!grid || grid.children.length === 0) {
     renderProducts(filter);
     return;
   }
-  // FIRST: snapshot positions of every existing card
+  // FIRST: фіксуємо позиції всіх карток до перерендерингу
   const first = new Map();
   grid.querySelectorAll('.product-card').forEach(card => {
     first.set(card.dataset.id, card.getBoundingClientRect());
   });
 
-  // Render new state without staggered fade
+  // перемальовуємо без стандартної stagger-анімації — анімувати будемо самі
   renderProducts(filter, { skipStagger: true });
 
-  // LAST + INVERT + PLAY
+  // LAST + INVERT + PLAY (на наступному кадрі щоб браузер встиг обчислити нові розміри)
   requestAnimationFrame(() => {
     grid.querySelectorAll('.product-card').forEach((card, i) => {
       const f = first.get(card.dataset.id);
       const l = card.getBoundingClientRect();
       if (f) {
+        // якщо картка вже була — рахуємо зсув від старої позиції
         const dx = f.left - l.left;
         const dy = f.top - l.top;
         if (dx === 0 && dy === 0) return;
+        // INVERT: миттєво ставимо картку на стару позицію через translate
         card.style.transform = `translate(${dx}px, ${dy}px)`;
         card.style.transition = 'none';
+        // PLAY: на наступному кадрі знімаємо transform — браузер плавно поверне в нову позицію
         requestAnimationFrame(() => {
           card.style.transition = 'transform .55s cubic-bezier(.16,1,.3,1)';
           card.style.transform = '';
         });
       } else {
-        // new card — soft fade-in from below
+        // нова картка (її раніше не було) — просто плавно зʼявляється з низу
         card.style.opacity = '0';
         card.style.transform = 'translateY(20px) scale(.96)';
         setTimeout(() => {
@@ -460,7 +347,9 @@ function renderProductsFLIP(filter) {
   });
 }
 
-/* SKELETON SCREENS — placeholder cards while products "load" */
+// скелетони — сірі плейсхолдер-картки, які показуємо доки товари "завантажуються".
+// насправді товари локальні і доступні одразу, але це додає відчуття плавності.
+// у диплом це йде як приклад прийому покращення UX
 function renderSkeletons(count = 8) {
   const grid = document.getElementById('productsGrid');
   if (!grid) return;
@@ -477,19 +366,20 @@ function renderSkeletons(count = 8) {
   grid.innerHTML = html;
 }
 
-// Initial render: skeleton screens → products (uses URL filter if present)
+// при першому завантаженні: дивимось чи є фільтр у URL (?filter=skates),
+// показуємо скелетони, потім тягнемо каталог з БД і рендеримо
 const _initialFilter = new URLSearchParams(window.location.search).get('filter') || 'all';
 renderSkeletons();
-setTimeout(() => renderProducts(_initialFilter), 700);
+loadCatalog();   // завантажує каталог з /api/products (БД) або products.json, далі рендерить
 
-/* ─────────────────────────────────────────
-   5. FILTER BUTTONS (addEventListener)
-───────────────────────────────────────── */
 const filterRow = document.getElementById('filterRow');
 function activeCategory() {
   const btn = filterRow ? filterRow.querySelector('.filter-btn.active') : null;
   return btn ? btn.dataset.filter : 'all';
 }
+// кнопки категорій (Все / Ковзани / Ключки і т.д.).
+// при кліку: знімаємо active з усіх, ставимо active на натиснуту, перемальовуємо з FLIP-анімацією,
+// оновлюємо URL через history API щоб можна було копіювати посилання з фільтром
 if (filterRow) {
   filterRow.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -504,7 +394,8 @@ if (filterRow) {
   });
 }
 
-/* ── 5b. Search input + brand/size selects ── */
+// заповнює селекти бренду й розміру варіантами які реально є в каталозі.
+// Set прибирає дублікати (наприклад Bauer зустрічається в багатьох товарах — у списку буде один раз)
 function populateSearchSelects() {
   const brandSel = document.getElementById('filterBrand');
   const sizeSel  = document.getElementById('filterSize');
@@ -517,8 +408,9 @@ function populateSearchSelects() {
     brandSel.appendChild(o);
   });
 
+  // збираємо всі розміри з усіх товарів і сортуємо так,
+  // щоб числові (6, 6.5, 7...) йшли спочатку, а літерні (S, M, L) — потім
   const sizes = [...new Set(products.flatMap(p => p.sizes))];
-  // Sort numeric-first, then alpha
   sizes.sort((a,b) => {
     const na = parseFloat(a), nb = parseFloat(b);
     const aNum = !isNaN(na), bNum = !isNaN(nb);
@@ -533,18 +425,38 @@ function populateSearchSelects() {
     sizeSel.appendChild(o);
   });
 }
-populateSearchSelects();
+
+// завантаження каталогу: спершу пробуємо API (БД) /api/products, при збої — статичний products.json
+// (щоб демо на GitHub Pages без сервера теж працювало). Мапимо у екземпляри Product,
+// заповнюємо селекти фільтрів і рендеримо каталог.
+async function loadCatalog() {
+  let data = [];
+  try {
+    const r = await fetch('/api/products');
+    if (!r.ok) throw new Error('api ' + r.status);
+    data = await r.json();
+  } catch {
+    try { data = await (await fetch('products.json')).json(); }
+    catch (e) { console.error('catalog load failed', e); }
+  }
+  products = data.map(d => new Product(d));
+  populateSearchSelects();
+  renderProducts(_initialFilter);
+}
 
 const searchInput  = document.getElementById('searchInput');
 const filterBrand  = document.getElementById('filterBrand');
 const filterSize   = document.getElementById('filterSize');
 const searchReset  = document.getElementById('searchReset');
 
+// debounce — затримка щоб не перерендерювати на кожен натиск клавіші.
+// тільки коли користувач зупинився на 180мс — запускаємо пошук
 let searchDebounce = null;
 function applySearch() {
   renderProductsFLIP(activeCategory());
 }
 
+// поле пошуку працює з debounce — інакше при швидкому введенні буде лагати
 if (searchInput) {
   searchInput.addEventListener('input', e => {
     searchState.query = e.target.value;
@@ -564,6 +476,7 @@ if (filterSize) {
     applySearch();
   });
 }
+// кнопка-хрестик у пошуку — скидає всі фільтри одночасно
 if (searchReset) {
   searchReset.addEventListener('click', () => {
     searchState.query = ''; searchState.brand = ''; searchState.size = '';
@@ -574,7 +487,8 @@ if (searchReset) {
   });
 }
 
-// Brand links filter
+// клік по логотипу бренду (Bauer/CCM/...) у секції брендів.
+// скролимо до каталогу і пригасуємо товари інших брендів (opacity 0.25)
 document.querySelectorAll('[data-filter-brand]').forEach(link => {
   link.addEventListener('click', (e) => {
     e.preventDefault();
@@ -583,7 +497,6 @@ document.querySelectorAll('[data-filter-brand]').forEach(link => {
     if (catalogSection) {
       catalogSection.scrollIntoView({ behavior: 'smooth' });
       setTimeout(() => {
-        // Знайти фільтр і показати всі цього бренду
         renderProducts('all');
         const grid = document.getElementById('productsGrid');
         if (grid) {
@@ -599,18 +512,15 @@ document.querySelectorAll('[data-filter-brand]').forEach(link => {
   });
 });
 
-/* ─────────────────────────────────────────
-   6. ADD TO CART (featured collection)
-───────────────────────────────────────── */
+// кнопки "+ Додати" на статичних картках топ-колекції (у HTML, не в каталозі)
 document.querySelectorAll('.btn-add').forEach(btn => {
   btn.addEventListener('click', () => {
     addToCart(btn.dataset.id);
   });
 });
 
-/* ─────────────────────────────────────────
-   7. LIVE CLOCK — setInterval
-───────────────────────────────────────── */
+// годинник: оновлює час у навбарі, дату й час на hero, рік у футері та у блоці розробника.
+// викликається кожну секунду через setInterval
 function updateClock() {
   const now = new Date();
   const hh = String(now.getHours()).padStart(2, '0');
@@ -623,36 +533,31 @@ function updateClock() {
   const yyyy = now.getFullYear();
   const dateStr = `${dd} / ${mo} / ${yyyy}`;
 
-  // Год у навбарі
   const navClock = document.getElementById('navClock');
   if (navClock) navClock.textContent = timeStr;
 
-  // Hero date + time
   const heroDate = document.getElementById('heroDate');
   if (heroDate) heroDate.textContent = dateStr;
 
   const heroTime = document.getElementById('heroTime');
   if (heroTime) heroTime.textContent = timeStr;
 
-  // Mobile menu date
   const mobileDate = document.getElementById('mobileDate');
   if (mobileDate) mobileDate.textContent = `${dd}.${mo}.${yyyy}`;
 
-  // Footer year
   const footerYear = document.getElementById('footerYear');
   if (footerYear) footerYear.textContent = yyyy;
 
-  // Developer year
   const devYear = document.getElementById('devYear');
   if (devYear) devYear.textContent = yyyy;
 }
 
+// одразу намалювати, далі — щосекунди
 updateClock();
 setInterval(updateClock, 1000);
 
-/* ─────────────────────────────────────────
-   8. SESSION TIMER + PAGE VISIBILITY API
-───────────────────────────────────────── */
+// лічильник часу на сайті (в футері: "Час на сайті 02:34").
+// показує скільки хвилин:секунд людина вже на сторінці
 let sessionSeconds = 0;
 const sessionEl = document.getElementById('sessionTimer');
 
@@ -665,7 +570,8 @@ function tickSession() {
 
 let sessionInterval = setInterval(tickSession, 1000);
 
-// Page Visibility API — pause timer when tab is hidden
+// Page Visibility API — якщо користувач переключив таб, зупиняємо лічильник.
+// інакше час "на сайті" накручується навіть коли людина дивиться інший таб
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
     clearInterval(sessionInterval);
@@ -674,11 +580,9 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
-/* ─────────────────────────────────────────
-   9. BOM — navigator, alert, confirm
-───────────────────────────────────────── */
-
-// Показати браузер у секції розробника
+// визначення браузера — показуємо у блоці "про розробника".
+// беремо navigator.userAgent і шукаємо характерні маркери.
+// важливо: Edg/ перевіряти ПЕРЕД Chrome/ — бо Edge теж містить "Chrome/" у своєму UA
 const devBrowserEl = document.getElementById('devBrowser');
 if (devBrowserEl) {
   const ua = navigator.userAgent;
@@ -691,6 +595,7 @@ if (devBrowserEl) {
   devBrowserEl.textContent = browserName;
 }
 
+// привітання при першому візиті
 if (!localStorage.getItem('iv_visited')) {
   setTimeout(() => {
     if (typeof showToast === 'function') showToast('Ласкаво просимо до ICEVAULT — преміум хокей.');
@@ -698,9 +603,8 @@ if (!localStorage.getItem('iv_visited')) {
   }, 1800);
 }
 
-/* ─────────────────────────────────────────
-   10. CUSTOM CURSOR
-───────────────────────────────────────── */
+// кастомний курсор: точка йде точно за мишкою, follower трохи відстає.
+// зберігаємо координати у двох парах змінних — поточну позицію миші і поточну позицію follower
 const cursor = document.getElementById('cursor');
 const follower = document.getElementById('cursorFollower');
 let mouseX = 0, mouseY = 0, folX = 0, folY = 0;
@@ -711,6 +615,9 @@ document.addEventListener('mousemove', e => {
   if (cursor) { cursor.style.left = mouseX + 'px'; cursor.style.top = mouseY + 'px'; }
 });
 
+// функція анімації follower через requestAnimationFrame.
+// folX += (mouseX - folX) * 0.11 — це easing: follower кожен кадр зміщується на 11% дистанції до миші.
+// дає плавне "наздоганяння"
 (function animFol() {
   folX += (mouseX - folX) * 0.11;
   folY += (mouseY - folY) * 0.11;
@@ -718,36 +625,37 @@ document.addEventListener('mousemove', e => {
   requestAnimationFrame(animFol);
 })();
 
+// при наведенні на інтерактивні елементи додаємо клас body — курсор стає більший (стилізується в CSS)
 document.querySelectorAll('a, button, .product-card, .col-item, .brand-block, .faq-q').forEach(el => {
   el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
   el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
 });
 
-/* ─────────────────────────────────────────
-   11. NAVBAR + SCROLL PROGRESS
-───────────────────────────────────────── */
+// один обробник скролу робить 3 речі одночасно (оптимізація — не вішати 3 окремих).
+// passive:true каже браузеру що ми не будемо викликати preventDefault — він може скролити плавніше
 const nav = document.getElementById('nav');
 const progressBar = document.getElementById('scrollProgress');
 
 window.addEventListener('scroll', () => {
-  // Navbar scrolled state
+  // 1) клас .scrolled на навбарі коли скролимо нижче 60px — фон стає трохи темніший і зʼявляється blur
   if (nav) nav.classList.toggle('scrolled', window.scrollY > 60);
 
-  // Scroll progress bar
+  // 2) полоска прогресу скролу зверху — ширина у відсотках від (висота_документа - висота_вікна)
   if (progressBar) {
     const total = document.documentElement.scrollHeight - window.innerHeight;
     const pct = total > 0 ? (window.scrollY / total) * 100 : 0;
     progressBar.style.width = pct + '%';
   }
 
-  // Back-to-top
+  // 3) кнопка "вгору" зʼявляється коли проскролили далі ніж 500px
   const bt = document.getElementById('backTop');
   if (bt) bt.classList.toggle('visible', window.scrollY > 500);
 }, { passive: true });
 
-/* ─────────────────────────────────────────
-   12. SCROLL ANIMATIONS (clip-reveal + fade-up)
-───────────────────────────────────────── */
+// анімації при скролі через IntersectionObserver — сучасна заміна для перевірки "чи елемент у viewport".
+// коли елемент зʼявляється у viewport (threshold 0.15 = 15% видимості) — додаємо клас .visible,
+// CSS бачить цей клас і запускає transition (fade-up / clip-reveal).
+// unobserve() після першого запуску — щоб анімація не повторювалась
 function initScrollAnimations() {
   const opts = { threshold: 0.15, rootMargin: '0px 0px -50px 0px' };
 
@@ -765,28 +673,26 @@ function initScrollAnimations() {
   document.querySelectorAll('.clip-reveal, .fade-up').forEach(el => obs.observe(el));
 }
 
-// requestIdleCallback — defer non-critical init for better performance
+// requestIdleCallback — запускаємо анімації коли браузер вільний.
+// для старих браузерів (Safari ще не підтримує) — fallback на одразу
 if ('requestIdleCallback' in window) {
   requestIdleCallback(() => initScrollAnimations(), { timeout: 400 });
 } else {
   initScrollAnimations();
 }
 
-// Parallax на hero bg (через CSS var, не конфліктує з mouse parallax)
+// паралакс фону hero-секції: під час скролу фон рухається повільніше (множник 0.18) ніж сам контент.
+// створює відчуття глибини. передаємо у CSS-змінну --sy яка використовується у transform
 const heroBg = document.querySelector('.hero-bg');
 if (heroBg) {
   window.addEventListener('scroll', () => {
-    // Reduced multiplier — keeps edges within hidden buffer zone
     heroBg.style.setProperty('--sy', (window.scrollY * 0.18) + 'px');
   }, { passive: true });
 }
 
-/* ─────────────────────────────────────────
-   13. HISTORY API — URL state для фільтра
-───────────────────────────────────────── */
+// якщо URL містить ?filter=skates — підсвічуємо відповідну кнопку категорії
 function applyFilterFromURL() {
   const filter = new URLSearchParams(window.location.search).get('filter') || 'all';
-  // Only update active button — initial render handled by skeleton + timeout above
   const filterRow2 = document.getElementById('filterRow');
   if (filterRow2) {
     filterRow2.querySelectorAll('.filter-btn').forEach(b => {
@@ -795,6 +701,8 @@ function applyFilterFromURL() {
   }
 }
 
+// popstate — спрацьовує коли користувач тисне "назад" або "вперед" у браузері.
+// підставляємо потрібний фільтр і перемальовуємо каталог
 window.addEventListener('popstate', e => {
   const filter = e.state?.filter || 'all';
   renderProducts(filter);
@@ -803,9 +711,10 @@ window.addEventListener('popstate', e => {
 
 applyFilterFromURL();
 
-/* ─────────────────────────────────────────
-   14. COUNT-UP ANIMATION (числа у статистиці)
-───────────────────────────────────────── */
+// анімація цифр-лічильників (від 0 до target)
+// анімація цифр-лічильників (від 0 до target за 1.6 секунди).
+// розбиваємо тривалість на кроки по 16мс (~60fps) і додаємо невеликий інкремент на кожному.
+// у фіналі ставимо точне target щоб уникнути floating point похибок
 function countUp(el) {
   const target = parseInt(el.dataset.target, 10);
   const duration = 1600;
@@ -825,6 +734,8 @@ function countUp(el) {
   }, step);
 }
 
+// запускаємо countUp коли число зʼявляється у viewport на 50%.
+// інакше анімація відіграє ще до того як користувач догортав до неї
 const countObs = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -836,9 +747,8 @@ const countObs = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.count-up').forEach(el => countObs.observe(el));
 
-/* ─────────────────────────────────────────
-   15. MOBILE MENU
-───────────────────────────────────────── */
+// мобільне меню: кнопка-бургер відкриває/закриває.
+// data-close на посиланнях усередині меню — щоб меню закривалось після кліку на пункт
 const menuBtn = document.getElementById('menuBtn');
 const mobileMenu = document.getElementById('mobileMenu');
 
@@ -858,9 +768,7 @@ if (menuBtn && mobileMenu) {
   });
 }
 
-/* ─────────────────────────────────────────
-   16. BACK TO TOP — location scroll
-───────────────────────────────────────── */
+// кнопка "вгору" — плавний скрол до самого верху сторінки
 const backTop = document.getElementById('backTop');
 if (backTop) {
   backTop.addEventListener('click', () => {
@@ -868,9 +776,7 @@ if (backTop) {
   });
 }
 
-/* ─────────────────────────────────────────
-   17. SMOOTH ANCHOR SCROLL
-───────────────────────────────────────── */
+// плавний скрол до якорів (#about, #catalog тощо). без цього браузер просто "стрибає"
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
     const target = document.querySelector(a.getAttribute('href'));
@@ -878,9 +784,9 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 });
 
-/* ─────────────────────────────────────────
-   18. NEWSLETTER FORM (index.html)
-───────────────────────────────────────── */
+// форма підписки на знижку (CTA-блок).
+// preventDefault щоб не перезавантажувалась сторінка, валідуємо email регуляркою,
+// якщо все добре — показуємо "Підписано", через 4 секунди повертаємо звичайний стан
 const ctaForm = document.getElementById('ctaForm');
 if (ctaForm) {
   ctaForm.addEventListener('submit', e => {
@@ -891,7 +797,7 @@ if (ctaForm) {
       alert('Будь ласка, введіть коректний email.');
       return;
     }
-    btn.textContent = 'Підписано! ✓';
+    btn.textContent = 'Підписано';
     btn.disabled = true;
     btn.style.opacity = '0.7';
     input.value = '';
@@ -899,12 +805,13 @@ if (ctaForm) {
   });
 }
 
-/* ─────────────────────────────────────────
-   19. CONTACTS FORM VALIDATION
-───────────────────────────────────────── */
+// форма контактів на сторінці contacts.html — з валідацією і відправкою на бекенд.
+// весь код у блоці if(contactForm), щоб не виконувався на інших сторінках
 const contactForm = document.getElementById('contactForm');
 if (contactForm) {
 
+  // показати помилку під полем: ставимо клас has-error батьку (підсвічує бордюр червоним)
+  // і вписуємо текст у span з повідомленням
   function setError(fieldId, msg) {
     const fg = document.getElementById('fg-' + fieldId);
     const err = document.getElementById('err-' + fieldId);
@@ -912,6 +819,7 @@ if (contactForm) {
     if (err) err.textContent = msg;
   }
 
+  // прибрати помилку (коли користувач виправив поле)
   function clearError(fieldId) {
     const fg = document.getElementById('fg-' + fieldId);
     const err = document.getElementById('err-' + fieldId);
@@ -919,6 +827,9 @@ if (contactForm) {
     if (err) err.textContent = '';
   }
 
+  // перевіряє всі поля. повертає true якщо все ок.
+  // правила: імʼя від 2 символів, email по регулярці, телефон опціональний,
+  // тема обовʼязкова, повідомлення від 10 символів, чекбокс згоди має бути натиснутий
   function validateForm() {
     let valid = true;
     ['name','email','subject','msg','agree'].forEach(f => clearError(f));
@@ -940,12 +851,14 @@ if (contactForm) {
     return valid;
   }
 
-  // Real-time validation on blur
+  // real-time валідація: при blur (втраті фокусу) перевіряємо форму.
+  // користувач одразу бачить помилки замість того щоб чекати submit
   ['cName','cEmail','cPhone','cMsg'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('blur', validateForm);
   });
 
+  // обробник submit. async бо всередині await на fetch
   contactForm.addEventListener('submit', async e => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -955,10 +868,12 @@ if (contactForm) {
     const submitSpinner = document.getElementById('submitSpinner');
     const formStatus = document.getElementById('formStatus');
 
+    // ховаємо текст кнопки, показуємо спінер, блокуємо повторне натискання
     if (submitText) submitText.style.display = 'none';
     if (submitSpinner) submitSpinner.style.display = 'inline-block';
     if (submitBtn) submitBtn.disabled = true;
 
+    // збираємо дані з форми у обʼєкт для відправки
     const payload = {
       name:    document.getElementById('cName').value.trim(),
       email:   document.getElementById('cEmail').value.trim(),
@@ -967,6 +882,8 @@ if (contactForm) {
       message: document.getElementById('cMsg').value.trim(),
     };
 
+    // 2 канали відправки: спочатку пробуємо власний бекенд (/api/contact).
+    // якщо сервер не запущений (наприклад на GitHub Pages) — переходимо на Web3Forms як запасний варіант
     let ok = false;
     try {
       const r = await fetch('/api/contact', {
@@ -977,6 +894,7 @@ if (contactForm) {
       if (!r.ok || !d.ok) throw new Error(d.error || ('HTTP ' + r.status));
       ok = true;
     } catch {
+      // fallback: Web3Forms — стороння служба яка пересилає форми на email власника api-ключа
       try {
         const r = await fetch('https://api.web3forms.com/submit', {
           method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
@@ -997,7 +915,7 @@ if (contactForm) {
     if (submitSpinner) submitSpinner.style.display = 'none';
     if (submitText) submitText.style.display = '';
     if (ok) {
-      if (submitText) submitText.textContent = 'Надіслано ✓';
+      if (submitText) submitText.textContent = 'Надіслано';
       if (formStatus) {
         formStatus.textContent = 'Дякуємо! Ваше повідомлення успішно надіслано. Ми звʼяжемось з вами протягом 24 годин.';
         formStatus.className = 'form-status success';
@@ -1016,7 +934,6 @@ if (contactForm) {
     }, 4000);
   });
 
-  // Reset
   const resetBtn = document.getElementById('resetBtn');
   if (resetBtn) {
     resetBtn.addEventListener('click', () => {
@@ -1027,9 +944,8 @@ if (contactForm) {
   }
 }
 
-/* ─────────────────────────────────────────
-   20. FAQ ACCORDION
-───────────────────────────────────────── */
+// FAQ accordion: клік по питанню розкриває відповідь.
+// принцип "по одному відкрито": всі закриваємо, потім відкриваємо натиснуте (якщо було закрите)
 document.querySelectorAll('.faq-q').forEach(btn => {
   btn.addEventListener('click', () => {
     const item = btn.closest('.faq-item');
@@ -1039,9 +955,10 @@ document.querySelectorAll('.faq-q').forEach(btn => {
   });
 });
 
-/* ─────────────────────────────────────────
-   22. TOAST NOTIFICATION
-───────────────────────────────────────── */
+// показує спливаюче повідомлення внизу екрану (toast).
+// створюємо div, додаємо у body, у двох requestAnimationFrame ставимо клас
+// (хитрість щоб transition спрацював, а не просто показався без анімації).
+// через 2.5с прибираємо клас (плавне зникнення), через ще 0.4с видаляємо з DOM
 function showToast(message) {
   const toast = document.createElement('div');
   toast.className = 'toast';
@@ -1056,13 +973,14 @@ function showToast(message) {
   }, 2500);
 }
 
-/* ─────────────────────────────────────────
-   23. NAVIGATOR.SHARE / CLIPBOARD — поділитись товаром
-───────────────────────────────────────── */
+// поділитись товаром.
+// на мобільних — використовуємо системний share (Web Share API), на десктопах — копіюємо у буфер обміну.
+// AbortError виникає коли користувач закрив share-діалог сам — не показуємо помилку
 async function shareProduct(productId) {
   const product = products.find(p => p.id === productId);
   if (!product) return;
 
+  // в URL додаємо фільтр по категорії, щоб одержувач відкрив сайт з тим самим фільтром
   const url = new URL(window.location.href);
   url.searchParams.set('filter', product.category);
 
@@ -1077,7 +995,7 @@ async function shareProduct(productId) {
       await navigator.share(shareData);
     } else {
       await navigator.clipboard.writeText(url.toString());
-      showToast('Посилання скопійовано ✓');
+      showToast('Посилання скопійовано');
     }
   } catch (err) {
     if (err.name !== 'AbortError') {
@@ -1086,16 +1004,14 @@ async function shareProduct(productId) {
   }
 }
 
-/* ─────────────────────────────────────────
-   24. KEYBOARD SHORTCUTS (accessibility + UX)
-───────────────────────────────────────── */
+// гарячі клавіші для зручності.
+// перевіряємо що користувач НЕ друкує в полі вводу — інакше при наборі тексту "С" відкриватиметься кошик.
+// C — кошик, Esc — закрити модалки, Alt+стрілка вгору — скрол на гору, ? — показати підказку
 document.addEventListener('keydown', e => {
-  // Ignore when typing in inputs
   if (e.target.matches('input, textarea, select')) return;
 
   switch (e.key) {
     case 'c': case 'C':
-      // C — toggle cart
       if (document.getElementById('cartDrawer')?.classList.contains('open')) { closeCart(); }
       else { openCart(); }
       break;
@@ -1124,9 +1040,7 @@ document.addEventListener('keydown', e => {
   }
 });
 
-/* ─────────────────────────────────────────
-   26. THEME TOGGLE — prefers-color-scheme + manual override
-───────────────────────────────────────── */
+// тема: спершу беремо вибір користувача, потім — системну
 const THEME_KEY = 'iv_theme';
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
@@ -1138,10 +1052,12 @@ if (userTheme) {
   const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
   applyTheme(prefersLight ? 'light' : 'dark');
 }
-// React to system theme change (only if user hasn't explicitly chosen)
+// якщо користувач сам не обрав тему — реагуємо на зміну системної (наприклад вночі система переключилась)
 window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => {
   if (!localStorage.getItem(THEME_KEY)) applyTheme(e.matches ? 'light' : 'dark');
 });
+
+// кнопка-перемикач теми. зберігаємо вибір у localStorage, щоб при наступному відкритті памʼятати
 const themeToggleBtn = document.getElementById('themeToggle');
 if (themeToggleBtn) {
   themeToggleBtn.addEventListener('click', () => {
@@ -1153,36 +1069,35 @@ if (themeToggleBtn) {
   });
 }
 
-/* ─────────────────────────────────────────
-   27. DYNAMIC FAVICON — canvas-based, reflects cart count
-───────────────────────────────────────── */
+// динамічно малюємо favicon на canvas і показуємо лічильник кошика поверх іконки.
+// крута фішка: коли користувач додає товар у кошик, бачить червоний кружечок з цифрою прямо на вкладці браузера
 function updateFavicon() {
   const size = 64;
   const canvas = document.createElement('canvas');
   canvas.width = size; canvas.height = size;
   const ctx = canvas.getContext('2d');
 
-  // Background puck
+  // фон-шайба: чорне коло
   ctx.fillStyle = '#0a0a0a';
   ctx.beginPath();
   ctx.arc(size/2, size/2, size/2 - 2, 0, Math.PI * 2);
   ctx.fill();
 
-  // Gold ring
+  // золоте кільце по краях — стиль преміум
   ctx.strokeStyle = '#c9a84c';
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.arc(size/2, size/2, size/2 - 7, 0, Math.PI * 2);
   ctx.stroke();
 
-  // "IV" mark
+  // монограма "IV" по центру (бренд icevault)
   ctx.fillStyle = '#f0ede8';
   ctx.font = 'bold 22px Inter, system-ui, sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText('IV', size/2, size/2 + 1);
 
-  // Cart count badge
+  // якщо у кошику щось є — малюємо червоний кружечок з цифрою у правому верхньому куті
   const count = cart.reduce((s, i) => s + i.qty, 0);
   if (count > 0) {
     ctx.fillStyle = '#e62e2e';
@@ -1194,6 +1109,7 @@ function updateFavicon() {
     ctx.fillText(count > 9 ? '9+' : String(count), size - 14, 15);
   }
 
+  // підмінюємо <link rel="icon"> через base64 PNG згенерований з canvas
   let link = document.getElementById('favicon');
   if (!link) {
     link = document.createElement('link');
@@ -1205,7 +1121,8 @@ function updateFavicon() {
   link.href = canvas.toDataURL('image/png');
 }
 
-// Run on load + on cart change (patch updateCartUI)
+// малюємо favicon один раз при старті,
+// далі "обгортаємо" updateCartUI щоб favicon оновлювався після кожної зміни кошика
 updateFavicon();
 const _origUpdateCartUI = updateCartUI;
 updateCartUI = function() {
@@ -1213,9 +1130,9 @@ updateCartUI = function() {
   updateFavicon();
 };
 
-/* ─────────────────────────────────────────
-   29. MOUSE-MOVE PARALLAX (hero)
-───────────────────────────────────────── */
+// паралакс hero за рухом миші. суть: фон і контент рухаються у протилежні боки —
+// створює відчуття глибини, ніби сцена 3D. оновлення через requestAnimationFrame щоб не тригерити layout зайвий раз.
+// mouseDx/mouseDy — від -0.5 до 0.5 (позиція миші відносно центру блоку)
 const heroEl = document.getElementById('hero');
 const heroBgEl = document.querySelector('.hero-bg');
 const heroContentEl = document.querySelector('.hero-content');
@@ -1227,12 +1144,13 @@ if (heroEl && heroBgEl && heroContentEl) {
     const rect = heroEl.getBoundingClientRect();
     mouseDx = ((e.clientX - rect.left) / rect.width - 0.5);
     mouseDy = ((e.clientY - rect.top) / rect.height - 0.5);
+    // запускаємо оновлення тільки якщо попередній кадр вже відбувся (throttling через RAF)
     if (!parallaxRAF) {
       parallaxRAF = requestAnimationFrame(() => {
-        // bg moves opposite to mouse (depth illusion)
+        // фон рухається у протилежний бік (множник -22) — створює ілюзію глибини
         heroBgEl.style.setProperty('--mx', (mouseDx * -22) + 'px');
         heroBgEl.style.setProperty('--my', (mouseDy * -22) + 'px');
-        // content moves WITH mouse (subtle)
+        // контент рухається у бік миші, але слабше — субтильно
         heroContentEl.style.setProperty('--mx', (mouseDx * 14) + 'px');
         heroContentEl.style.setProperty('--my', (mouseDy * 8)  + 'px');
         parallaxRAF = null;
@@ -1247,9 +1165,10 @@ if (heroEl && heroBgEl && heroContentEl) {
   });
 }
 
-/* ─────────────────────────────────────────
-   30. HOVER TILT effect
-───────────────────────────────────────── */
+// 3D-нахил карток при наведенні мишею.
+// rotateY залежить від X-координати, rotateX від Y (знак мінус — щоб картка "дивилась" на курсор).
+// perspective(800px) задає глибину перспективи, scale(1.02) — легке збільшення.
+// при mouseleave скидаємо transform — картка повертається у нормальний стан
 document.querySelectorAll('.hover-tilt').forEach(card => {
   card.addEventListener('mousemove', e => {
     const rect = card.getBoundingClientRect();
@@ -1262,10 +1181,7 @@ document.querySelectorAll('.hover-tilt').forEach(card => {
   });
 });
 
-
-/* ═══════════════════════════════════════════════════════
-   31. AI GEAR ASSISTANT (rule-based wizard)
-═══════════════════════════════════════════════════════ */
+// кроки опитування для AI-помічника підбору
 const AI_STEPS = [
   {
     key: 'position',
@@ -1309,19 +1225,25 @@ const AI_STEPS = [
   },
 ];
 
+// поточний стан опитування: на якому ми кроці й що користувач уже відповів
 const aiState = { step: 0, answers: {} };
 
+// маппимо ціну у бюджетну категорію: дешеві / середні / дорогі
 function priceBucket(p) {
   if (p < 8000)  return 'low';
   if (p < 20000) return 'mid';
   return 'high';
 }
 
+// головний алгоритм підбору товарів.
+// беремо відповіді користувача (категорія, бюджет, позиція, рівень) і повертаємо топ-3 товари.
+// логіка: 1) фільтр по категорії, 2) фільтр воротар/польовий, 3) бюджет, 4) ранжування за рівнем
 function aiRecommend() {
   const { need, budget, position, level } = aiState.answers;
   let pool = products.filter(p => p.category === need);
 
-  // GOALIE filter
+  // якщо обрав воротаря — показуємо тільки воротарські товари (з бейджем GOAL або словом goal у назві).
+  // якщо польовий гравець — навпаки прибираємо воротарські щоб не плутати
   if (position === 'goalie') {
     const goalieItems = pool.filter(p => (p.badge || '').toUpperCase().includes('GOAL') || /goal/i.test(p.name));
     if (goalieItems.length > 0) pool = goalieItems;
@@ -1329,14 +1251,15 @@ function aiRecommend() {
     pool = pool.filter(p => !/goal|goalie/i.test(p.name) && !(p.badge || '').toUpperCase().includes('GOAL'));
   }
 
-  // BUDGET filter
+  // фільтр по бюджету. якщо у вибраний діапазон потрапило мало товарів —
+  // розширюємо: сортуємо весь pool по близькості ціни до "ідеальної" точки бюджету
   let inBudget = pool.filter(p => priceBucket(p.price) === budget);
   if (inBudget.length < 2) {
-    // expand by ±1 bucket
     inBudget = pool.sort((a, b) => Math.abs(a.price - bucketTarget(budget)) - Math.abs(b.price - bucketTarget(budget)));
   }
 
-  // LEVEL ranking
+  // ранжування за рівнем гри: про-гравцям — PRO/TOP товари, початківцям — без таких бейджів.
+  // це робить підбір "розумним" а не випадковим
   const proWords = ['PRO','TOP','TOP PRO','NEW','HANDMADE'];
   const score = (p) => {
     let s = 0;
@@ -1347,13 +1270,17 @@ function aiRecommend() {
   };
   inBudget.sort((a, b) => score(b) - score(a));
 
+  // повертаємо тільки топ-3 — щоб не перевантажувати користувача варіантами
   return inBudget.slice(0, 3);
 }
 
+// "ідеальна" ціна у середині бюджетного діапазону — щоб шукати найближчі товари
 function bucketTarget(b) {
   return b === 'low' ? 5000 : b === 'mid' ? 14000 : 30000;
 }
 
+// рендерить поточний крок опитування. показує прогрес-бар, питання, варіанти відповіді,
+// і кнопку "Назад" (з 2-го кроку). коли всі кроки пройдені — переходить до результату
 function renderAiStep() {
   const body = document.getElementById('aiBody');
   if (!body) return;
@@ -1422,6 +1349,7 @@ function renderAiResult() {
   });
 }
 
+// відкрити модалку AI-помічника. при відкритті скидаємо стан до першого кроку
 function openAi() {
   document.getElementById('aiModal')?.classList.add('open');
   document.getElementById('aiOverlay')?.classList.add('open');
@@ -1438,9 +1366,10 @@ document.getElementById('aiBtn')?.addEventListener('click', openAi);
 document.getElementById('aiClose')?.addEventListener('click', closeAi);
 document.getElementById('aiOverlay')?.addEventListener('click', closeAi);
 
-/* ─────────────────────────────────────────
-   Stock badges — batch fetch after render
-───────────────────────────────────────── */
+// підвантажує бейджі наявності з бекенду одним батч-запитом (1 fetch замість N).
+// сервер повертає обʼєкт {id: qty}. далі для кожного товару дивимось:
+// qty=0 — "Немає", qty<5 — "Мало" (попередження дефіциту), інакше "В наявності".
+// якщо сервер не запущений (статичний хостинг) — мовчки ігноруємо помилку через .catch
 function loadStockBadges(ids) {
   if (!ids.length) return;
   const qs = ids.map(encodeURIComponent).join(',');
@@ -1458,9 +1387,8 @@ function loadStockBadges(ids) {
     .catch(() => {});
 }
 
-/* ═══════════════════════════════════════════════════════
-   32. PRODUCT DETAIL MODAL
-═══════════════════════════════════════════════════════ */
+// детальні описи для конкретних топ-товарів (показуються у модалці).
+// решта товарів отримує згенерований опис через generateProductDesc()
 const productDescriptions = {
   'bauer-supreme-mach':   'Флагман Bauer. Curv Composite конструкція, Carbon Curv Shell. Thermoformable boot + Form-fit X orthopedic insert. Вибір Коннора МакДевіда та еліти NHL.',
   'bauer-vapor-x4':       'Vapor X4 для швидкісних гравців. Asymmetric Curv boot, Quarter Package для вузького профілю. Monoframe Curv Composite — жорсткість без компромісів.',
@@ -1480,6 +1408,8 @@ const productDescriptions = {
   'sw-rekker-m90':        'Sher-Wood Rekker M90 — карбонове волокно, унікальний баланс, культова класика Sher-Wood. Вибір для тих, хто любить традиції.',
 };
 
+// генерує описовий текст для товару на основі його категорії та бренду.
+// потрібен як fallback коли немає індивідуального опису у productDescriptions
 function generateProductDesc(p) {
   const map = {
     skates:      `Преміум хокейні ковзани ${p.brand}. Інженерна точність для льодового майданчика. Обирайте розмір та замовляйте.`,
@@ -1493,6 +1423,8 @@ function generateProductDesc(p) {
   return map[p.category] || `Преміум хокейна екіпіровка ${p.brand} — для тих, хто не йде на компроміс.`;
 }
 
+// відкриває модалку з деталями товару: велике фото, опис, вибір розміру, наявність, кнопка купити.
+// підвантажує наявність з бекенду асинхронно — модалка зʼявляється одразу, бейдж потім
 function openProductModal(productId) {
   const p = products.find(pr => pr.id === productId);
   if (!p) return;
@@ -1529,6 +1461,7 @@ function openProductModal(productId) {
     </div>
   `;
 
+  // вибір розміру: знімаємо selected з усіх чіпсів, ставимо на натиснутий, запамʼятовуємо
   inner.querySelectorAll('.pmodal-size-chip').forEach(chip => {
     chip.addEventListener('click', () => {
       inner.querySelectorAll('.pmodal-size-chip').forEach(c => c.classList.remove('selected'));
@@ -1537,6 +1470,7 @@ function openProductModal(productId) {
     });
   });
 
+  // кнопка "купити" з модалки. без prompt(), бо розмір уже вибраний у чіпсі вище
   inner.querySelector('#pmodalAddBtn').addEventListener('click', () => {
     const product = products.find(pr => pr.id === productId);
     if (!product) return;
@@ -1548,6 +1482,7 @@ function openProductModal(productId) {
     openCart();
   });
 
+  // підвантажуємо точну кількість на складі для цього товару (одиничний запит)
   fetch('/api/stock/' + encodeURIComponent(productId))
     .then(r => r.ok ? r.json() : null)
     .then(data => {
@@ -1573,16 +1508,8 @@ function closeProductModal() {
 document.getElementById('pmodalClose')?.addEventListener('click', closeProductModal);
 document.getElementById('pmodalOverlay')?.addEventListener('click', closeProductModal);
 
-/* ═══════════════════════════════════════════════════════
-   33. CHECKOUT FORM
-═══════════════════════════════════════════════════════ */
-function buildOrderSummary() {
-  if (cart.length === 0) return 'Кошик порожній';
-  const lines = cart.map(i => `${i.brand} ${i.name} — розмір ${i.size}, ${i.qty} шт × ${i.price.toLocaleString('uk-UA')} ₴ = ${(i.price * i.qty).toLocaleString('uk-UA')} ₴`);
-  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
-  return lines.join('\n') + `\n\nРАЗОМ: ${total.toLocaleString('uk-UA')} ₴`;
-}
-
+// формує блок зі змістом замовлення у вікні оформлення:
+// список товарів з розмірами і кількістю + загальна сума
 function renderCheckoutSummary() {
   const box = document.getElementById('checkoutSummary');
   if (!box) return;
@@ -1600,14 +1527,14 @@ function renderCheckoutSummary() {
   `;
 }
 
+// відкриває вікно оформлення замовлення. кошик закриваємо щоб не мати дві відкриті панелі одразу.
+// якщо кошик пустий — блокуємо submit-кнопку
 function openCheckout() {
   closeCart();
   document.getElementById('checkoutModal')?.classList.add('open');
   document.getElementById('checkoutOverlay')?.classList.add('open');
   document.body.style.overflow = 'hidden';
   renderCheckoutSummary();
-  const sumHidden = document.getElementById('orderSummaryHidden');
-  if (sumHidden) sumHidden.value = buildOrderSummary();
   const submitBtn = document.querySelector('#checkoutForm .checkout-submit');
   if (submitBtn) submitBtn.disabled = cart.length === 0;
 }
@@ -1622,104 +1549,65 @@ document.getElementById('cartCheckoutBtn')?.addEventListener('click', openChecko
 document.getElementById('checkoutClose')?.addEventListener('click', closeCheckout);
 document.getElementById('checkoutOverlay')?.addEventListener('click', closeCheckout);
 
-const ADMIN_EMAIL = 'sinelnikovruslan45@gmail.com';
-const WEB3FORMS_KEY = '9f196991-7ce7-49ea-a397-ad2eb9b111dd';
-const API_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1') ? '' : '';
-
-async function sendViaBackend(formObj) {
-  const items = cart.map(i => ({ sku: i.id, name: `${i.brand} ${i.name}`, size: i.size, price: i.price, qty: i.qty }));
-  const r = await fetch((API_BASE || '') + '/api/orders', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ...formObj, items }),
-  });
-  const d = await r.json().catch(() => ({}));
-  if (!r.ok || !d.ok) throw new Error(d.error || ('HTTP ' + r.status));
-  return d;
-}
-
-async function sendViaWeb3Forms(formObj) {
-  if (!WEB3FORMS_KEY) throw new Error('web3forms-not-configured');
-  const post = (body) => fetch('https://api.web3forms.com/submit', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-    body: JSON.stringify(body),
-  }).then(r => r.json());
-  const [a, c] = await Promise.all([
-    post({ access_key: WEB3FORMS_KEY, subject: `ICEVAULT — нове замовлення від ${formObj.name}`,
-           from_name: 'ICEVAULT Shop', email: ADMIN_EMAIL, replyto: formObj.email,
-           message: `Клієнт: ${formObj.name}\nEmail: ${formObj.email}\nТелефон: ${formObj.phone}\nМісто: ${formObj.city}\n${formObj.comment ? 'Коментар: '+formObj.comment+'\n' : ''}\n${formObj.order_summary}` }),
-    post({ access_key: WEB3FORMS_KEY, subject: '✓ Підтвердження замовлення ICEVAULT',
-           from_name: 'ICEVAULT', email: formObj.email, replyto: ADMIN_EMAIL,
-           message: `Привіт, ${formObj.name}!\n\nДякуємо за замовлення. Деталі:\n\n${formObj.order_summary}\n\n— Команда ICEVAULT` }),
-  ]);
-  if (!a.success) throw new Error('admin: ' + (a.message || 'failed'));
-  if (!c.success) throw new Error('customer: ' + (c.message || 'failed'));
-}
-
-function buildMailto(d, to) {
-  const subject = encodeURIComponent('ICEVAULT — нове замовлення від ' + (d.name || 'клієнта'));
-  const body = encodeURIComponent(
-    `Замовлення з сайту ICEVAULT\n\nІмʼя: ${d.name}\nEmail: ${d.email}\nТелефон: ${d.phone}\nМісто: ${d.city}\n` +
-    (d.comment ? `Коментар: ${d.comment}\n` : '') + `\n${d.order_summary}\n`
-  );
-  return `mailto:${to}?subject=${subject}&body=${body}&cc=${d.email}`;
-}
-
 const checkoutForm = document.getElementById('checkoutForm');
 if (checkoutForm) {
   checkoutForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const note = document.getElementById('checkoutNote');
     const submitBtn = checkoutForm.querySelector('.checkout-submit');
-    const formObj = Object.fromEntries(new FormData(checkoutForm));
-    if (cart.length === 0) { note.innerHTML = '⚠ Кошик порожній.'; note.classList.add('warn'); return; }
+    const email = (new FormData(checkoutForm).get('email') || '').toString().trim();
 
-    note.innerHTML = '⏳ Надсилаємо…';
+    // дві базові перевірки перед відправкою: кошик не пустий і email валідний
+    if (cart.length === 0) { note.textContent = 'Кошик порожній.'; note.classList.add('warn'); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { note.textContent = 'Невірний email.'; note.classList.add('warn'); return; }
+
+    note.textContent = 'Надсилаємо…';
     note.classList.remove('ok', 'warn');
     submitBtn.disabled = true;
 
-    let success = false, orderId = null;
+    // готуємо список товарів і відправляємо через Web3Forms (зовнішня служба).
+    // це сторонній сервіс який пересилає форми на email власника api-ключа.
+    // для дипломної демонстрації — імітація відправки замовлення без власного сервера
     try {
-      const r = await sendViaBackend(formObj);
-      orderId = r.id;
-      success = true;
-      note.innerHTML = `✓ Замовлення <b>${r.id}</b> прийнято! Сума: <b>${r.total.toLocaleString('uk-UA')} ₴</b>.<br><small>Збережено в БД. Менеджер звʼяжеться з вами.</small>`;
-    } catch (backendErr) {
-      try {
-        await sendViaWeb3Forms(formObj);
-        success = true;
-        note.innerHTML = `✓ Замовлення надіслано на <b>${formObj.email}</b>.`;
-      } catch (web3err) {
-        const link = buildMailto(formObj, ADMIN_EMAIL);
-        note.innerHTML = `⚠ Backend та email недоступні. <a href="${link}" target="_blank" style="color:#c4b5fd;text-decoration:underline"><b>Відкрити поштовий клієнт →</b></a><br><small>${backendErr.message} / ${web3err.message}</small>`;
-        note.classList.add('warn');
-      }
-    }
-
-    if (success) {
+      const lines = cart.map(i => `${i.brand} ${i.name} ×${i.qty}`).join('\n');
+      const r = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: '9f196991-7ce7-49ea-a397-ad2eb9b111dd',
+          from_name: 'ICEVAULT',
+          email,
+          subject: 'ICEVAULT — тестовий лист',
+          message: `Це тестовий лист від ICEVAULT.\n\nТвоє замовлення:\n${lines}\n\n— Команда ICEVAULT`,
+        }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok || !d.success) throw new Error(d.message || ('HTTP ' + r.status));
+      note.innerHTML = `Тестовий лист надіслано на <b>${email}</b>.`;
       note.classList.add('ok');
-      try { localStorage.setItem('iv_last_order', orderId || ''); } catch {}
+      // очищаємо кошик після успішного "оформлення"
       cart = []; saveCart(); updateCartUI();
       setTimeout(() => {
         closeCheckout(); checkoutForm.reset();
-        note.innerHTML = ''; note.classList.remove('ok');
+        note.textContent = ''; note.classList.remove('ok');
         submitBtn.disabled = false;
-      }, 6500);
-    } else {
+      }, 4000);
+    } catch (err) {
+      note.textContent = 'Помилка: ' + err.message;
+      note.classList.add('warn');
       submitBtn.disabled = false;
     }
   });
 }
 
-/* ═══════════════════════════════════════════════════════
-   34. BACKEND EXTRAS — pageview ping + order tracker
-═══════════════════════════════════════════════════════ */
+// фіксуємо перегляд сторінки на бекенді (для статистики у адмін-панелі).
+// мовчки ігноруємо помилку якщо сервер не запущений
 fetch('/api/pageview', {
   method: 'POST', headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ path: location.pathname }),
 }).catch(() => {});
 
+// функція пошуку замовлення за ID. винесена у window щоб можна було викликати з консолі або з іншого скрипта
 window.trackOrder = async function (id) {
   if (!id) return null;
   try {
@@ -1728,6 +1616,9 @@ window.trackOrder = async function (id) {
   } catch { return null; }
 };
 
+// IIFE — самовикликна функція. секція "Перевірити статус замовлення" на сторінці.
+// користувач вводить ID типу IV-XXXXXXXX, ми робимо запит на бекенд і показуємо статус.
+// якщо у localStorage збережений останній ID — підставляємо його у поле
 (function initOrderTracker() {
   const btn = document.getElementById('trackOrderBtn');
   const inp = document.getElementById('trackOrderInput');
@@ -1738,9 +1629,9 @@ window.trackOrder = async function (id) {
   btn.addEventListener('click', async () => {
     const id = inp.value.trim();
     if (!id) { out.textContent = 'Введи ID замовлення'; return; }
-    out.textContent = '⏳ Шукаємо…';
+    out.textContent = 'Шукаємо…';
     const r = await window.trackOrder(id);
-    if (!r) { out.textContent = '⚠ Замовлення не знайдено'; return; }
+    if (!r) { out.textContent = 'Замовлення не знайдено'; return; }
     const map = { new: 'Новий', processing: 'Обробляється', shipped: 'Відправлено', delivered: 'Доставлено', cancelled: 'Скасовано' };
     out.innerHTML = `<b>${r.id}</b> — <span style="color:#10b981">${map[r.status] || r.status}</span> • ${r.total.toLocaleString('uk-UA')} ₴ • ${r.city}`;
   });

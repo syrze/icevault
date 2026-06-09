@@ -1,8 +1,10 @@
-/* ═══════════════════════════════════════
-   ICEVAULT — STYLES
-   Font: Unbounded (pharaoh-style, Cyrillic)
-═══════════════════════════════════════ */
-
+/* CSS-змінні (custom properties) для темної теми за замовчуванням.
+   --bg/bg-2/bg-3 — рівні темного фону (від найтемнішого до світлішого).
+   --white — основний колір тексту, --dim — приглушений.
+   --accent — червоний акцент бренду, --gold — золотий.
+   --border/border-s — кольори рамок різної інтенсивності.
+   --ff-* — шрифти (Unbounded для заголовків, Space Grotesk для тексту).
+   --ease — стандартна крива анімацій (плавне сповільнення наприкінці). */
 :root {
   --bg:    #080808;
   --bg-2:  #101010;
@@ -19,7 +21,9 @@
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ─── LIGHT THEME (prefers-color-scheme + manual toggle) ─── */
+/* світла тема. перевизначаємо CSS-змінні коли на :root стоїть data-theme="light" —
+   це переключає всі кольори по сайту одразу (бо все використовує var(--bg) тощо).
+   нижче окремі overrides для специфічних компонентів які мають інакший вигляд у світлій темі */
 :root[data-theme="light"] {
   --bg:    #f5f2ed;
   --bg-2:  #ffffff;
@@ -48,7 +52,51 @@
 :root[data-theme="light"] .btn-share { background: rgba(245,242,237,.85); color: var(--white); }
 :root[data-theme="light"] .footer-session #sessionTimer { color: var(--accent); }
 
-/* ─── THEME TOGGLE BTN ─── */
+:root[data-theme="light"] .pmodal,
+:root[data-theme="light"] .checkout-modal,
+:root[data-theme="light"] .ai-modal { background: var(--bg-2); border-color: var(--border-s); color: var(--white); }
+:root[data-theme="light"] .pmodal-img-col { background: var(--bg-3); }
+:root[data-theme="light"] .pmodal-name,
+:root[data-theme="light"] .pmodal-price,
+:root[data-theme="light"] .checkout-header h3,
+:root[data-theme="light"] .ai-brand h3,
+:root[data-theme="light"] .ai-q { color: var(--white); }
+:root[data-theme="light"] .pmodal-desc,
+:root[data-theme="light"] .ai-brand p,
+:root[data-theme="light"] .ai-option-hint,
+:root[data-theme="light"] .ai-result-sub,
+:root[data-theme="light"] .ai-restart { color: var(--dim); }
+:root[data-theme="light"] .pmodal-section-label,
+:root[data-theme="light"] .ai-step-num,
+:root[data-theme="light"] .checkout-field > span,
+:root[data-theme="light"] .checkout-summary-title { color: var(--dim); }
+:root[data-theme="light"] .pmodal-size-chip,
+:root[data-theme="light"] .ai-option,
+:root[data-theme="light"] .ai-rec,
+:root[data-theme="light"] .checkout-field input,
+:root[data-theme="light"] .checkout-field textarea,
+:root[data-theme="light"] .checkout-summary,
+:root[data-theme="light"] .ai-restart { background: var(--bg-3); border-color: var(--border-s); color: var(--white); }
+:root[data-theme="light"] .pmodal-close,
+:root[data-theme="light"] .checkout-close,
+:root[data-theme="light"] .ai-close { background: var(--bg-3); color: var(--white); border:1px solid var(--border-s); }
+:root[data-theme="light"] .pmodal-overlay,
+:root[data-theme="light"] .checkout-overlay,
+:root[data-theme="light"] .ai-overlay { background: rgba(0,0,0,0.4); }
+:root[data-theme="light"] .checkout-list li,
+:root[data-theme="light"] .checkout-list b,
+:root[data-theme="light"] .checkout-total { color: var(--white); }
+:root[data-theme="light"] .checkout-list em,
+:root[data-theme="light"] .checkout-empty,
+:root[data-theme="light"] .checkout-note,
+:root[data-theme="light"] .checkout-field small { color: var(--dim); }
+:root[data-theme="light"] .checkout-banner { background: rgba(214,40,40,.06); border-color: rgba(214,40,40,.3); color: var(--white); }
+:root[data-theme="light"] .track-order-form input { background: var(--bg-2); color: var(--white); }
+:root[data-theme="light"] .track-order-form input::placeholder { color: rgba(10,10,10,.35); }
+:root[data-theme="light"] .track-order-title { color: var(--white); }
+:root[data-theme="light"] #trackOrderResult { color: var(--dim); }
+
+/* перемикач теми */
 .theme-toggle {
   width:30px; height:30px;
   display:flex; align-items:center; justify-content:center;
@@ -59,10 +107,14 @@
 :root[data-theme="light"] .theme-toggle .ic-moon { display:none; }
 :root[data-theme="light"] .theme-toggle .ic-sun { display:block; }
 
+/* скидаємо стандартні margin/padding браузера для всіх елементів (включно з псевдо).
+   box-sizing:border-box — щоб padding і border входили у задану width/height (інакше треба весь час рахувати) */
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
 html { scroll-behavior:smooth; }
 
+/* базові стилі тіла. cursor:none — приховуємо системний курсор бо у нас власний кастомний.
+   overflow-x:hidden — захист від горизонтального скролу через паралакс-ефекти */
 body {
   background: var(--bg);
   color: var(--white);
@@ -77,7 +129,8 @@ a { color:inherit; text-decoration:none; }
 img { max-width:100%; display:block; }
 button { cursor:none; border:none; background:none; font-family:inherit; color:inherit; }
 
-/* ─── SCROLL PROGRESS ─── */
+/* тонка червона смужка зверху сторінки яка росте при скролі.
+   ширину контролює JS — рахує відсоток від загальної висоти документа */
 .scroll-progress {
   position: fixed;
   top: 0; left: 0;
@@ -88,7 +141,9 @@ button { cursor:none; border:none; background:none; font-family:inherit; color:i
   transition: width 0.1s linear;
 }
 
-/* ─── GRAIN ─── */
+/* кінематографічний "шум" поверх сайту. SVG fractal noise inline через data: URL.
+   inset:-200% і width/height 400% — щоб шум вийшов за межі екрану і анімація зсуву не показувала краї.
+   opacity 0.025 — ледь помітно але дає кінематографічну текстуру */
 .grain {
   position: fixed;
   inset: -200%; width:400%; height:400%;
@@ -104,7 +159,9 @@ button { cursor:none; border:none; background:none; font-family:inherit; color:i
   80%  { transform:translate(10%,0); }  100%{ transform:translate(3%,-4%); }
 }
 
-/* ─── CURSOR ─── */
+/* кастомний курсор — біла точка яка йде точно за мишею.
+   mix-blend-mode:difference — інвертує колір під собою, тому курсор завжди видно і на світлому і на темному.
+   pointer-events:none — щоб курсор не блокував кліки через себе */
 .cursor {
   position:fixed; width:7px; height:7px;
   background:var(--white); border-radius:50%;
@@ -113,6 +170,7 @@ button { cursor:none; border:none; background:none; font-family:inherit; color:i
   transition: width .2s var(--ease), height .2s var(--ease);
   mix-blend-mode:difference;
 }
+/* follower — кільце що відстає від курсора. дає ефект "інерції" */
 .cursor-follower {
   position:fixed; width:34px; height:34px;
   border:1px solid rgba(240,237,232,0.45); border-radius:50%;
@@ -124,7 +182,10 @@ button { cursor:none; border:none; background:none; font-family:inherit; color:i
 body.cursor-hover .cursor { width:13px; height:13px; }
 body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 
-/* ─── SCROLL ANIMATIONS ─── */
+/* анімації що запускаються коли елемент потрапляє у viewport (через IntersectionObserver у JS).
+   .clip-reveal — текст "відкривається" знизу вверх через clip-path (як штора піднімається).
+   .fade-up — простіше зʼявлення з прозорості і зсувом вгору.
+   --delay береться з inline-стилю — дає каскадний ефект коли декілька елементів зʼявляються по черзі */
 .clip-reveal {
   display: inline-block;
   clip-path: inset(0 0 100% 0);
@@ -144,7 +205,8 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 }
 .fade-up.visible { opacity:1; transform:translateY(0); }
 
-/* ─── IMAGE PLACEHOLDERS ─── */
+/* контейнер для зображень. якщо img не завантажилось — показуємо плейсхолдер з пунктирною рамкою.
+   .has-img — клас додається коли картинка є, прибирає рамку і шахівницю-патерн */
 .img-placeholder {
   width:100%; height:100%; min-height:200px;
   background: var(--bg-3);
@@ -166,7 +228,7 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 .img-placeholder.has-img::before { display:none; }
 .img-placeholder.has-img .ph-label { display:none; }
 
-/* Transparent PNG products → contain + product spotlight */
+/* прозорі PNG: contain + підсвітка товару */
 .img-placeholder.has-img--contain {
   background: radial-gradient(ellipse at 50% 60%, rgba(230,46,46,.07) 0%, var(--bg-3) 65%);
 }
@@ -179,7 +241,8 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 .ph-label p { font-size:.72rem; color:var(--dim); line-height:1.55; }
 .ph-label.sm span { font-size:.65rem; color:var(--dim); line-height:1.5; }
 
-/* ─── NAV ─── */
+/* навігація: фіксована зверху, спочатку без фону.
+   при скролі додається клас .scrolled — зʼявляється напівпрозорий фон з blur (frosted glass ефект) */
 .nav {
   position:fixed; top:0; left:0; right:0; z-index:1000;
   display:flex; align-items:center; justify-content:space-between;
@@ -229,7 +292,7 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 .menu-btn.open span:first-child { transform:rotate(45deg) translate(5px,5px); }
 .menu-btn.open span:last-child { transform:rotate(-45deg) translate(5px,-5px); }
 
-/* Mobile Menu */
+/* мобільне меню */
 .mobile-menu {
   position:fixed; inset:0;
   background:var(--bg); z-index:999;
@@ -247,7 +310,9 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 .mobile-link:hover { color:var(--accent); transform:translateX(8px); }
 .mobile-menu-footer { margin-top:auto; font-size:.7rem; color:var(--dim); letter-spacing:.1em; text-transform:uppercase; }
 
-/* ─── CART DRAWER ─── */
+/* кошик у вигляді бічної панелі (drawer): виїжджає справа.
+   overlay — затемнення фону, drawer — сама панель.
+   transform:translateX(100%) — спочатку панель за межами екрану, .open повертає на 0 */
 .cart-overlay {
   position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:2000;
   opacity:0; pointer-events:none; transition:opacity .4s;
@@ -283,7 +348,8 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 .cart-total { font-family:var(--ff-display); font-size:1.1rem; color:var(--white); letter-spacing:.06em; }
 .cart-checkout { text-align:center; width:100%; }
 
-/* ─── HERO ─── */
+/* hero-секція на повний екран. 100svh — Small Viewport Height (на мобільних врахує панель браузера).
+   align-items:flex-end — контент притиснутий до низу, працює з paralax-фоном */
 .hero {
   position:relative; height:100svh; min-height:600px;
   display:flex; align-items:flex-end; overflow:hidden;
@@ -296,6 +362,9 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 }
 .hero-content { position:relative; z-index:2; padding:0 48px 80px; max-width:1000px; }
 .hero-eyebrow { font-size:.65rem; font-weight:600; letter-spacing:.28em; text-transform:uppercase; color:var(--accent); margin-bottom:16px; }
+/* hero-заголовок: гігантський адаптивний текст.
+   clamp(min, preferred, max) — щоб шрифт ріс з шириною екрану але мав межі.
+   13vw — масштабується від ширини viewport */
 .hero-title {
   font-family:var(--ff-display); font-weight:900;
   font-size:clamp(4.5rem, 13vw, 12rem);
@@ -330,7 +399,9 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
   100% { transform:scaleY(0); transform-origin:bottom; }
 }
 
-/* ─── MARQUEE ─── */
+/* бігучий рядок з назвами брендів. трюк: дублюємо контент у HTML,
+   а CSS-анімація зсуває на -50% — це дає безшовний нескінченний прокрут.
+   width:max-content — щоб рядок зайняв всю ширину свого контенту, не обмежувався контейнером */
 .marquee-wrap { overflow:hidden; border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:16px 0; background:var(--bg); }
 .marquee-dark { background:var(--bg-2); }
 .marquee-track { display:flex; gap:32px; width:max-content; animation:marquee-run 22s linear infinite; align-items:center; }
@@ -339,13 +410,13 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 .marquee-track .dot { color:var(--accent); }
 @keyframes marquee-run { from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
-/* ─── SECTION HEADERS ─── */
+/* заголовки секцій */
 .section-header { padding:80px 48px 44px; position:relative; }
 .section-num { font-family:var(--ff-display); font-size:5rem; color:rgba(128,128,128,.08); position:absolute; top:40px; left:36px; line-height:1; pointer-events:none; user-select:none; }
 .section-title { font-family:var(--ff-display); font-size:clamp(2.2rem,4.5vw,4.5rem); letter-spacing:.04em; line-height:1; color:var(--white); text-transform:uppercase; display:block; }
 .section-desc { font-size:.88rem; color:var(--dim); margin-top:12px; max-width:340px; line-height:1.75; }
 
-/* ─── BUTTONS ─── */
+/* кнопки */
 .btn-primary {
   display:inline-flex; align-items:center; gap:10px;
   background:var(--white); color:var(--bg);
@@ -375,7 +446,7 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 }
 .btn-add-full:hover { background:var(--accent); color:#fff; }
 
-/* ─── COLLECTION GRID ─── */
+/* сітка колекції */
 .collection { padding-bottom:80px; }
 .collection-grid { display:grid; grid-template-columns:1.35fr 1fr 1fr; gap:2px; padding:0 48px; }
 .col-item { position:relative; background:var(--bg-2); overflow:hidden; transition:transform .5s var(--ease); }
@@ -396,7 +467,7 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 }
 .item-badge-sm { font-size:.55rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); background:rgba(230,46,46,.12); padding:2px 6px; border:1px solid rgba(230,46,46,.3); }
 
-/* ─── BRANDS ─── */
+/* бренди */
 .brands { padding-bottom:40px; }
 .brand-block { display:grid; grid-template-columns:1fr 1fr; min-height:480px; border-top:1px solid var(--border); transition:background .3s; }
 .brand-block:hover { background:rgba(240,237,232,.012); }
@@ -409,7 +480,8 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 .brand-img-wrap { overflow:hidden; background:var(--bg-3); }
 .brand-img-ph { min-height:100%; border:none; }
 
-/* ─── CATALOG ─── */
+/* каталог. search-bar — grid 4 колонки: поле пошуку (розтягується) + 2 селекти фіксованої ширини + кнопка очистити.
+   на мобільних (768px і менше) — все у одну колонку (грид перемикається у медіазапиті нижче) */
 .catalog { padding-bottom:100px; }
 .search-bar {
   display:grid; grid-template-columns:1fr 180px 140px 44px;
@@ -446,8 +518,12 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
   transition:background .25s, color .25s, border-color .25s;
 }
 .filter-btn:hover, .filter-btn.active { background:var(--white); color:var(--bg); border-color:var(--white); }
+/* сітка карток товарів: 4 колонки на десктопі, на мобільних змінюється у медіазапиті */
 .products-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; padding:0 48px; }
 .no-products { padding:40px; color:var(--dim); font-size:.9rem; text-align:center; grid-column:1/-1; }
+/* картка товару. при ховері: фото плавно збільшується (scale 1.06),
+   зʼявляється градієнтний оверлей знизу з кнопкою "Додати в кошик".
+   aspect-ratio:3/4 — однакова пропорція фото незалежно від оригінального розміру */
 .product-card { background:var(--bg-2); overflow:hidden; position:relative; }
 .product-img { aspect-ratio:3/4; overflow:hidden; position:relative; }
 .product-img .img-placeholder { min-height:100%; transition:transform .6s var(--ease); }
@@ -466,17 +542,18 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 .product-name { font-family:var(--ff-display); font-size:.9rem; letter-spacing:.04em; color:var(--white); margin-bottom:7px; font-weight:600; }
 .product-price { font-size:.9rem; font-weight:600; color:var(--white); font-family:var(--ff-display); }
 
-/* ─── EDITORIAL ─── */
+/* editorial-блок */
 .editorial { background:var(--bg-2); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
 .editorial-inner { display:grid; grid-template-columns:1fr 1fr; min-height:560px; }
 .editorial-text { padding:72px 64px; display:flex; flex-direction:column; justify-content:center; gap:22px; }
 .editorial-title { font-family:var(--ff-display); font-size:clamp(2.8rem,5vw,5.5rem); line-height:.92; letter-spacing:.02em; color:var(--white); font-weight:900; }
+/* "порожній" контурний текст — кольору немає, тільки обведення. ефектно для дизайнерських акцентів */
 .outline-text { -webkit-text-stroke:1.5px var(--white); color:transparent; }
 .editorial-sub { font-size:.88rem; color:var(--dim); line-height:1.85; max-width:360px; }
 .editorial-img-col { overflow:hidden; }
 .editorial-img-ph { min-height:100%; border:none; }
 
-/* ─── ABOUT ─── */
+/* про нас */
 .about { padding:80px 0 100px; }
 .about-inner { display:grid; grid-template-columns:1fr 1.3fr; gap:2px; padding:0 48px; align-items:center; min-height:560px; }
 .about-img-col { overflow:hidden; height:100%; min-height:460px; }
@@ -489,7 +566,7 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 .stat-num { font-family:var(--ff-display); font-size:2rem; letter-spacing:.04em; color:var(--white); line-height:1; font-weight:700; }
 .stat-label { font-size:.62rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--dim); }
 
-/* ─── CTA ─── */
+/* cta-блок */
 .cta { background:var(--accent); padding:100px 48px; text-align:center; position:relative; overflow:hidden; }
 .cta::before { content:'ICEVAULT'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-family:var(--ff-display); font-size:clamp(6rem,18vw,16rem); color:rgba(0,0,0,.07); white-space:nowrap; pointer-events:none; letter-spacing:.05em; font-weight:900; }
 .cta-inner { position:relative; z-index:1; max-width:600px; margin:0 auto; }
@@ -502,7 +579,9 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 .cta-form .btn-primary { background:#fff; color:var(--accent); border-color:#fff; white-space:nowrap; }
 .cta-form .btn-primary:hover { background:var(--bg); color:#fff; border-color:var(--bg); }
 
-/* ─── CSS HOUDINI @property ─── */
+/* CSS Houdini @property — реєструє кастомну CSS-змінну з типом.
+   це дозволяє анімувати її (звичайні CSS-змінні не анімуються через transition).
+   у моєму випадку — анімую розмір "світіння" фото у блоці розробника */
 @property --dev-glow {
   syntax: '<length>';
   initial-value: 4px;
@@ -514,7 +593,7 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
   to   { --dev-glow: 26px; }
 }
 
-/* ─── TOAST ─── */
+/* спливаючі повідомлення */
 .toast {
   position:fixed; bottom:88px; right:24px; z-index:6000;
   background:var(--bg-3); border:1px solid var(--border-s);
@@ -525,14 +604,14 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 }
 .toast--show { opacity:1; transform:translateY(0); }
 
-/* ─── KEYBOARD HINT ─── */
+/* підказка клавіш */
 .kbd-hint {
   display:inline-flex; align-items:center; gap:6px;
   font-size:.6rem; color:var(--dim); letter-spacing:.1em;
 }
 .kbd { background:var(--bg-3); border:1px solid var(--border-s); border-radius:3px; padding:2px 6px; font-family:var(--ff-display); font-size:.58rem; color:var(--dim); }
 
-/* ─── SHARE BTN ─── */
+/* кнопка поділитись */
 .btn-share {
   position:absolute; top:10px; right:10px;
   background:rgba(8,8,8,.7); border:1px solid var(--border-s);
@@ -544,7 +623,9 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 .product-card:hover .btn-share { opacity:1; }
 .btn-share:hover { color:var(--white); }
 
-/* ─── SKELETON SCREENS ─── */
+/* скелетони — плейсхолдер-картки з shimmer-ефектом (бігунець світла).
+   градієнт зі світлою смугою посередині + background-size:200% — потім анімація рухає background-position
+   і ми бачимо як світла смуга "пробігає" по поверхні */
 .skeleton .skel-block,
 .skeleton .skel-line {
   background: linear-gradient(90deg, var(--bg-3) 0%, rgba(255,255,255,0.05) 50%, var(--bg-3) 100%);
@@ -562,11 +643,11 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
   100% { background-position: -200% 0; }
 }
 
-/* ─── FLIP technique transition ─── */
+/* flip-перехід */
 .product-card { will-change: transform; }
 .product-card.flip-anim { transition: transform .55s var(--ease); }
 
-/* ─── TECH SHOWCASE (3D PUCK) ─── */
+/* 3d-шайба */
 .tech-showcase {
   background: var(--bg-2);
   border-top: 1px solid var(--border);
@@ -603,8 +684,10 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
   padding:5px 12px;
 }
 
-/* ─── HERO PARALLAX (mouse + scroll combined via CSS vars) ─── */
-/* Extend bg beyond hero bounds so mouse parallax never reveals edges */
+/* hero-фон з паралаксом. розширений за межі секції (top:-15%, width:120%)
+   щоб трансформація не показувала краї.
+   --mx/--my задає JS на основі позиції миші, --sy — на основі скролу.
+   обʼєднуємо обидва ефекти через calc() в одному transform */
 .hero-bg {
   --mx: 0px; --my: 0px; --sy: 0px;
   position:absolute;
@@ -620,7 +703,7 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
   will-change: transform;
 }
 
-/* ─── DEVELOPER SECTION ─── */
+/* секція розробника */
 .developer-section {
   background: var(--bg-2);
   border-top: 1px solid var(--border);
@@ -678,7 +761,7 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 .dev-tech { color:var(--gold); font-family:var(--ff-display); font-size:.75rem; letter-spacing:.1em; }
 .dev-browser { font-size:.8rem; color:var(--dim); }
 
-/* ─── FOOTER ─── */
+/* футер */
 .footer { background:var(--bg-2); border-top:1px solid var(--border); padding:60px 48px 96px; }
 .footer-top { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:44px; padding-bottom:60px; border-bottom:1px solid var(--border); margin-bottom:48px; }
 .footer-logo { font-family:var(--ff-display); font-size:1.8rem; letter-spacing:.08em; color:var(--white); margin-bottom:10px; font-weight:700; }
@@ -708,7 +791,7 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 .footer-social a { font-size:.65rem; font-weight:700; letter-spacing:.15em; color:var(--dim); transition:color .25s; }
 .footer-social a:hover { color:var(--accent); }
 
-/* ─── WIKI PAGE ─── */
+/* сторінка wiki */
 .wiki-hero-sub {
   font-size:.95rem; color:var(--dim); line-height:1.85;
   max-width:580px; margin-top:24px;
@@ -738,26 +821,6 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
   transition:border-color .35s, transform .35s;
 }
 .wiki-card:hover { border-color:var(--border-s); }
-.wiki-illustration {
-  width:100%; aspect-ratio:1/1;
-  /* Always dark — SVG stroke colors designed for dark bg */
-  background: radial-gradient(ellipse at 50% 50%, #1a1a1a 0%, #0a0a0a 100%);
-  border-bottom:1px solid var(--border);
-  display:flex; align-items:center; justify-content:center; padding:24px;
-  position:relative;
-}
-.wiki-illustration::after {
-  content:''; position:absolute; inset:0;
-  background: repeating-linear-gradient(45deg, transparent 0, transparent 18px, rgba(255,255,255,0.015) 18px, rgba(255,255,255,0.015) 19px);
-  pointer-events:none;
-}
-.wiki-illustration svg { width:100%; height:100%; max-width:280px; max-height:280px; position:relative; z-index:1; }
-.wiki-num {
-  position:absolute; top:18px; right:24px;
-  font-family:var(--ff-display); font-size:1.2rem;
-  color:rgba(128,128,128,.5);
-  letter-spacing:.05em; font-weight:700; z-index:3;
-}
 .wiki-body { padding:36px 40px 40px; }
 .wiki-tag {
   font-size:.6rem; font-weight:700; letter-spacing:.22em;
@@ -773,6 +836,9 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
   font-size:.88rem; color:var(--dim); line-height:1.85;
   margin-bottom:22px;
 }
+/* нумерований список кроків у wiki-статтях.
+   counter-reset/increment + content:counter() — стилізована нумерація.
+   decimal-leading-zero дає "01", "02", "03" замість "1", "2", "3" */
 .wiki-steps {
   list-style:none; counter-reset:wiki-step;
   padding:0; margin:0 0 28px 0;
@@ -821,7 +887,7 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
   .wiki-cta { padding:60px 28px; }
 }
 
-/* ─── BACK TO TOP ─── */
+/* кнопка вгору */
 .back-top {
   position:fixed; bottom:24px; left:32px; z-index:999;
   width:44px; height:44px; background:var(--bg-3); border:1px solid var(--border-s);
@@ -833,7 +899,7 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 .back-top.visible { opacity:1; transform:translateY(0) scale(1); pointer-events:all; }
 .back-top:hover { background:var(--accent); border-color:var(--accent); }
 
-/* ─── PAGE HERO (contacts) ─── */
+/* hero сторінки контактів */
 .page-hero {
   padding-top: 140px; padding-bottom: 60px;
   padding-left: 48px; padding-right: 48px;
@@ -842,7 +908,7 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 .page-hero-eyebrow { font-size:.65rem; font-weight:600; letter-spacing:.26em; text-transform:uppercase; color:var(--accent); margin-bottom:16px; }
 .page-hero-title { font-family:var(--ff-display); font-size:clamp(3.5rem,8vw,8rem); letter-spacing:.04em; line-height:.9; color:var(--white); font-weight:900; display:block; }
 
-/* ─── CONTACTS PAGE ─── */
+/* сторінка контактів */
 .contact-section { padding:80px 48px 100px; }
 .contact-grid { display:grid; grid-template-columns:1fr 1.1fr; gap:80px; }
 .contact-info-title { font-family:var(--ff-display); font-size:clamp(2rem,3.5vw,3.5rem); letter-spacing:.03em; line-height:.95; color:var(--white); font-weight:900; margin-bottom:40px; display:block; }
@@ -892,7 +958,7 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 .form-status.success { background:rgba(46,160,90,.1); border:1px solid rgba(46,160,90,.3); color:#5ac87a; }
 .form-status.error { background:rgba(230,46,46,.1); border:1px solid rgba(230,46,46,.3); color:var(--accent); }
 
-/* ─── FAQ ─── */
+/* faq */
 .faq-section { padding:0 48px 100px; }
 .faq-list { display:flex; flex-direction:column; }
 .faq-item { border-bottom:1px solid var(--border); }
@@ -911,7 +977,9 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 }
 .faq-item.open .faq-a { max-height:300px; padding-bottom:20px; }
 
-/* ─── RESPONSIVE ─── */
+/* адаптивна верстка через медіазапити.
+   ширина 768px — типова межа між десктопом і планшетом/мобілою.
+   на менших екранах змінюємо колонки grid на 1, зменшуємо padding, шрифти */
 @media (max-width:1100px) {
   .collection-grid { grid-template-columns:1fr 1fr; }
   .col-item--large { grid-column:span 2; }
@@ -968,9 +1036,8 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
   .form-actions { flex-direction:column; }
 }
 
-/* ═══════════════════════════════════════════════════════
-   AI BUTTON + MODAL
-═══════════════════════════════════════════════════════ */
+/* стилі для AI-помічника підбору товарів: кнопка у навбарі та модальне вікно з опитуванням.
+   модалка центрована, відкривається через .open (transform/opacity transition) */
 .ai-btn {
   display: inline-flex;
   align-items: center;
@@ -1197,9 +1264,8 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 }
 .ai-to-catalog:hover { color: #ec4899; }
 
-/* ═══════════════════════════════════════════════════════
-   CHECKOUT MODAL
-═══════════════════════════════════════════════════════ */
+/* стилі модального вікна оформлення замовлення.
+   містить форму з email і блок зі змістом кошика */
 .checkout-overlay {
   position: fixed; inset: 0;
   background: rgba(0,0,0,0.72);
@@ -1337,9 +1403,8 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
   color: rgba(255,255,255,0.85);
 }
 
-/* ═══════════════════════════════════════════════════════
-   PRODUCT DETAIL MODAL
-═══════════════════════════════════════════════════════ */
+/* стилі модалки з деталями товару — велике фото зліва, опис справа.
+   ширше за інші модалки бо тут більше контенту */
 .pmodal-overlay {
   position: fixed; inset: 0;
   background: rgba(0,0,0,0.8);
@@ -1483,9 +1548,7 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
   .pmodal-info-col { padding: 24px 20px 28px; }
 }
 
-/* ═══════════════════════════════════════════════════════
-   STOCK BADGES (product cards)
-═══════════════════════════════════════════════════════ */
+/* кольорові маркери наявності на картках товарів: зелений (в наявності), жовтий (мало), сірий (немає) */
 .product-price-row {
   display: flex; align-items: center; justify-content: space-between; gap: 6px;
 }
@@ -1498,9 +1561,7 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 .stock-low { background: rgba(245,158,11,.15);  color: #f59e0b; }
 .stock-out { background: rgba(239,68,68,.15);   color: #ef4444; }
 
-/* ═══════════════════════════════════════════════════════
-   TRACK ORDER SECTION
-═══════════════════════════════════════════════════════ */
+/* блок "перевірити статус замовлення" — користувач вводить IV-XXXX і бачить статус */
 .track-order-section {
   background: var(--bg-2);
   border-top: 1px solid var(--border);
@@ -1524,13 +1585,13 @@ body.cursor-hover .cursor-follower { width:56px; height:56px; opacity:.5; }
 .track-order-form input {
   flex: 1;
   background: rgba(255,255,255,.04);
-  border: 1px solid rgba(255,255,255,.12);
+  border: 2px solid var(--accent);
   border-radius: 10px; padding: 13px 16px;
-  color: #fff;
+  color: var(--white);
   font: 600 14px/1 'Space Grotesk', sans-serif; letter-spacing: .1em;
-  transition: border-color .2s;
+  transition: box-shadow .2s;
 }
-.track-order-form input:focus { outline: none; border-color: var(--accent); }
+.track-order-form input:focus { outline: none; box-shadow: 0 0 0 3px rgba(230,46,46,.2); }
 .track-order-form input::placeholder { color: rgba(255,255,255,.3); letter-spacing: .08em; }
 #trackOrderResult {
   min-height: 22px; font-size: .85rem;

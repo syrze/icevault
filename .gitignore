@@ -5,8 +5,14 @@
 output/
 Звіт з практики/
 
-# Claude
-.claude/settings.local.json
+# Редакторські конфіги
+.claude/
+
+# Документи, презентації, шаблони (тримаємо локально, не в репозиторії)
+*.pdf
+*.docx
+*.pptx
+*.key
 
 # Dependencies & build
 node_modules/
